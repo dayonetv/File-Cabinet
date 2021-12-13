@@ -12,8 +12,17 @@ namespace FileCabinetApp
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth)
         {
-            // TODO: добавьте реализацию метода
-            return 0;
+            FileCabinetRecord record = new FileCabinetRecord()
+            {
+                Id = this.list.Count + 1,
+                FirstName = firstName,
+                LastName = lastName,
+                DateOfBirth = dateOfBirth,
+            };
+
+            this.list.Add(record);
+
+            return record.Id;
         }
 
         public FileCabinetRecord[] GetRecords()
@@ -24,8 +33,7 @@ namespace FileCabinetApp
 
         public int GetStat()
         {
-            // TODO: добавьте реализацию метода
-            return 0;
+            return this.list.Count;
         }
     }
 }
