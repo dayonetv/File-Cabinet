@@ -12,6 +12,7 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
 
         private static bool isRunning = true;
+
         private static FileCabinetService fileCabinetService = new FileCabinetService();
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
@@ -20,6 +21,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("exit", Exit),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("list", List),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -27,7 +29,8 @@ namespace FileCabinetApp
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "prints statistics", "The 'stat' command prints statistics" },
-            new string[] { "create", "creates new record", "The 'create' command creates new record"},
+            new string[] { "create", "creates new record", "The 'create' command creates new record." },
+            new string[] { "list", "prints current records", "The 'list' command prints current records. "},
         };
 
         public static void Main(string[] args)
@@ -121,6 +124,16 @@ namespace FileCabinetApp
             DateTime dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "d", CultureInfo.InvariantCulture);
 
             Console.WriteLine($"Record #{fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth)} is created.");
+        }
+
+        private static void List(string parameters)
+        {
+            FileCabinetRecord[] currentRecords = fileCabinetService.GetRecords();
+
+            foreach (var record in currentRecords)
+            {
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}");
+            }
         }
     }
 }
