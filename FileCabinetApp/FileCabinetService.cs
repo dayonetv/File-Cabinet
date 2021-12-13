@@ -71,7 +71,7 @@ namespace FileCabinetApp
 
             if (dateOfBirth > DateTime.Now || dateOfBirth < MinDateOfBirth)
             {
-                throw new ArgumentException($"Date Of Birth can not be less than {MinDateOfBirth} or more than now", nameof(dateOfBirth));
+                throw new ArgumentException($"Date Of Birth can not be less than {MinDateOfBirth.ToString("yyyy-MMM-dd", CurrentCulture)} or more than now", nameof(dateOfBirth));
             }
 
             if (salary < 0 || salary > MaxSalary)
@@ -79,7 +79,7 @@ namespace FileCabinetApp
                 throw new ArgumentException("Salary can not be more than 1_000_000 or less than 0", nameof(salary));
             }
 
-            if (char.ToLower(sex, CurrentCulture) != 'm' || char.ToLower(sex, CurrentCulture) != 'f')
+            if (char.ToLower(sex, CurrentCulture) != 'm' && char.ToLower(sex, CurrentCulture) != 'f')
             {
                 throw new ArgumentException("Sex can be only Male or Female", nameof(sex));
             }

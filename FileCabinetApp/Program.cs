@@ -114,25 +114,46 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            Console.Write("First Name: ");
-            string firstName = Console.ReadLine();
+            bool isValid = true;
 
-            Console.Write("Last Name: ");
-            string lastName = Console.ReadLine();
+            do
+            {
+                try
+                {
+                    Console.Write("First Name: ");
+                    string firstName = Console.ReadLine();
 
-            Console.Write("Date Of Birth: ");
-            DateTime dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "d", CultureInfo.InvariantCulture);
+                    Console.Write("Last Name: ");
+                    string lastName = Console.ReadLine();
 
-            Console.Write("Height: ");
-            short height = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                    Console.Write("Date Of Birth: ");
+                    DateTime dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "d", CultureInfo.InvariantCulture);
 
-            Console.Write("Salary: ");
-            decimal salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                    Console.Write("Height: ");
+                    short height = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
 
-            Console.Write("Sex: ");
-            char sex = Console.ReadKey().KeyChar;
+                    Console.Write("Salary: ");
+                    decimal salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
 
-            Console.WriteLine($"\nRecord #{fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, salary, sex)} is created.");
+                    Console.Write("Sex: ");
+                    char sex = Console.ReadKey().KeyChar;
+
+                    Console.WriteLine($"\nRecord #{fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, salary, sex)} is created.");
+
+                    isValid = true;
+                }
+                catch (FormatException ex)
+                {
+                    isValid = false;
+                    Console.WriteLine(ex.Message);
+                }
+                catch (ArgumentException ex)
+                {
+                    isValid = false;
+                    Console.WriteLine($"\n{ex.Message}. Please try again. ");
+                }
+            }
+            while (!isValid);
         }
 
         private static void List(string parameters)
