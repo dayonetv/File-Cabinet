@@ -47,6 +47,27 @@ namespace FileCabinetApp
             return this.list.Count;
         }
 
+        public void EditRecord(int id, string firstName, string lastName, DateTime dateOfBirth, short height, decimal salary, char sex)
+        {
+            FileCabinetRecord recordToEdit = this.list.Find(rec => rec.Id == id);
+
+            if (recordToEdit == null)
+            {
+                throw new ArgumentException("record is not found", nameof(id));
+            }
+            else
+            {
+                ValidateParams(firstName, lastName, dateOfBirth, height, salary, sex);
+
+                recordToEdit.FirstName = firstName;
+                recordToEdit.LastName = lastName;
+                recordToEdit.DateOfBirth = dateOfBirth;
+                recordToEdit.Height = height;
+                recordToEdit.Salary = salary;
+                recordToEdit.Sex = sex;
+            }
+        }
+
         private static void ValidateParams(string firstName, string lastName, DateTime dateOfBirth, short height, decimal salary, char sex)
         {
             if (string.IsNullOrEmpty(firstName) || string.IsNullOrWhiteSpace(firstName))

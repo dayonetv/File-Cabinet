@@ -22,6 +22,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("edit", Edit),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -30,7 +31,8 @@ namespace FileCabinetApp
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "prints statistics", "The 'stat' command prints statistics" },
             new string[] { "create", "creates new record", "The 'create' command creates new record." },
-            new string[] { "list", "prints current records", "The 'list' command prints current records. "},
+            new string[] { "list", "prints current records", "The 'list' command prints current records." },
+            new string[] { "edit", "edits record by id", "The 'edit' command edits record by id." },
         };
 
         public static void Main(string[] args)
@@ -161,6 +163,54 @@ namespace FileCabinetApp
             foreach (var record in fileCabinetService.GetRecords())
             {
                 Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, {record.Height}, {record.Salary}, {record.Sex}");
+            }
+        }
+
+        private static void Edit(string parameters)
+        {
+            try
+            {
+                int id;
+
+                bool parseResult = int.TryParse(parameters, NumberStyles.Any, CultureInfo.InvariantCulture, out id);
+
+                FileCabinetRecord recordToEdit = parseResult ? Array.Find(fileCabinetService.GetRecords(), rec => rec.Id == id) : null;
+
+                if (recordToEdit == null)
+                {
+                    Console.WriteLine($"#{parameters} record is not found.");
+                }
+                else
+                {
+                    Console.Write("First Name: ");
+                    string firstName = Console.ReadLine();
+
+                    Console.Write("Last Name: ");
+                    string lastName = Console.ReadLine();
+
+                    Console.Write("Date Of Birth: ");
+                    DateTime dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "d", CultureInfo.InvariantCulture);
+
+                    Console.Write("Height: ");
+                    short height = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+
+                    Console.Write("Salary: ");
+                    decimal salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+
+                    Console.Write("Sex: ");
+                    char sex = Console.ReadKey().KeyChar;
+
+                    fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, height, salary, sex);
+                    Console.WriteLine($"\nRecord #{id} is updated.");
+                }
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine($"\n{ex.Message}. Try later.");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"\n{ex.Message}. Try later.");
             }
         }
     }
