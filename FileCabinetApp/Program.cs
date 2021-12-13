@@ -123,23 +123,23 @@ namespace FileCabinetApp
             Console.Write("Date Of Birth: ");
             DateTime dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "d", CultureInfo.InvariantCulture);
 
-            Console.Write("Propety 1: ");
-            short prop1 = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+            Console.Write("Height: ");
+            short height = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
 
-            Console.Write("Property 2: ");
-            decimal prop2 = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+            Console.Write("Salary: ");
+            decimal salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
 
-            Console.Write("Property 3: ");
-            char prop3 = Console.ReadKey().KeyChar;
+            Console.Write("Sex: ");
+            char sex = Console.ReadKey().KeyChar;
 
-            Console.WriteLine($"\nRecord #{fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, prop1, prop2, prop3)} is created.");
+            Console.WriteLine($"\nRecord #{fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, salary, sex)} is created.");
         }
 
         private static void List(string parameters)
         {
             foreach (var record in fileCabinetService.GetRecords())
             {
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, {record.Property1}, {record.Property2}, {record.Property3}");
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, {record.Height}, {record.Salary}, {record.Sex}");
             }
         }
     }
