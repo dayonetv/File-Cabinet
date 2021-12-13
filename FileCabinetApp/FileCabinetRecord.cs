@@ -16,10 +16,10 @@ namespace FileCabinetApp
 
         public DateTime DateOfBirth { get; set; }
 
-        public short Property1 { get; set; }
+        public short Height { get; set; }
 
-        public decimal Property2 { get; set; }
+        public decimal Salary { get; set; }
 
-        public char Property3 { get; set; }
+        public char Sex { get; set; }
     }
 }

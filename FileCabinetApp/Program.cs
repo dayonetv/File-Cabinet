@@ -22,6 +22,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("edit", Edit),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -30,7 +31,8 @@ namespace FileCabinetApp
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "prints statistics", "The 'stat' command prints statistics" },
             new string[] { "create", "creates new record", "The 'create' command creates new record." },
-            new string[] { "list", "prints current records", "The 'list' command prints current records. "},
+            new string[] { "list", "prints current records", "The 'list' command prints current records." },
+            new string[] { "edit", "edits record by id", "The 'edit' command edits record by id." },
         };
 
         public static void Main(string[] args)
@@ -114,32 +116,101 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            Console.Write("First Name: ");
-            string firstName = Console.ReadLine();
+            bool isValid = true;
 
-            Console.Write("Last Name: ");
-            string lastName = Console.ReadLine();
+            do
+            {
+                try
+                {
+                    Console.Write("First Name: ");
+                    string firstName = Console.ReadLine();
 
-            Console.Write("Date Of Birth: ");
-            DateTime dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "d", CultureInfo.InvariantCulture);
+                    Console.Write("Last Name: ");
+                    string lastName = Console.ReadLine();
 
-            Console.Write("Propety 1: ");
-            short prop1 = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                    Console.Write("Date Of Birth: ");
+                    DateTime dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "d", CultureInfo.InvariantCulture);
 
-            Console.Write("Property 2: ");
-            decimal prop2 = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                    Console.Write("Height: ");
+                    short height = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
 
-            Console.Write("Property 3: ");
-            char prop3 = Console.ReadKey().KeyChar;
+                    Console.Write("Salary: ");
+                    decimal salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
 
-            Console.WriteLine($"\nRecord #{fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, prop1, prop2, prop3)} is created.");
+                    Console.Write("Sex: ");
+                    char sex = Console.ReadKey().KeyChar;
+
+                    Console.WriteLine($"\nRecord #{fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, salary, sex)} is created.");
+
+                    isValid = true;
+                }
+                catch (FormatException ex)
+                {
+                    isValid = false;
+                    Console.WriteLine(ex.Message);
+                }
+                catch (ArgumentException ex)
+                {
+                    isValid = false;
+                    Console.WriteLine($"\n{ex.Message}. Please try again. ");
+                }
+            }
+            while (!isValid);
         }
 
         private static void List(string parameters)
         {
             foreach (var record in fileCabinetService.GetRecords())
             {
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, {record.Property1}, {record.Property2}, {record.Property3}");
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, {record.Height}, {record.Salary}, {record.Sex}");
+            }
+        }
+
+        private static void Edit(string parameters)
+        {
+            try
+            {
+                int id;
+
+                bool parseResult = int.TryParse(parameters, NumberStyles.Any, CultureInfo.InvariantCulture, out id);
+
+                FileCabinetRecord recordToEdit = parseResult ? Array.Find(fileCabinetService.GetRecords(), rec => rec.Id == id) : null;
+
+                if (recordToEdit == null)
+                {
+                    Console.WriteLine($"#{parameters} record is not found.");
+                }
+                else
+                {
+                    Console.Write("First Name: ");
+                    string firstName = Console.ReadLine();
+
+                    Console.Write("Last Name: ");
+                    string lastName = Console.ReadLine();
+
+                    Console.Write("Date Of Birth: ");
+                    DateTime dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "d", CultureInfo.InvariantCulture);
+
+                    Console.Write("Height: ");
+                    short height = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+
+                    Console.Write("Salary: ");
+                    decimal salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+
+                    Console.Write("Sex: ");
+                    char sex = Console.ReadKey().KeyChar;
+
+                    fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, height, salary, sex);
+                    Console.WriteLine($"\nRecord #{id} is updated.");
+                }
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine($"\n{ex.Message}. Try later.");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"\n{ex.Message}. Try later.");
             }
         }
     }
