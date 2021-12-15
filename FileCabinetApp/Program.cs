@@ -224,29 +224,23 @@ namespace FileCabinetApp
 
         private static void Find(string parameters)
         {
-            var inputParams = parameters.ToUpperInvariant().Trim().Split(' ', 2);
+            var inputParams = parameters.Trim().Split(' ', 2);
 
             string findBy = inputParams[0];
+            string toFind = inputParams.Length == 2 ? inputParams[^1].Trim('"') : string.Empty;
 
             FileCabinetRecord[] findedRecords = Array.Empty<FileCabinetRecord>();
 
-            switch (findBy)
+            switch (findBy.ToUpperInvariant())
             {
-                case "FIRSTNAME":
-                    string firstNameToFind = inputParams[^1].Trim('"');
-                    findedRecords = fileCabinetService.FindByFirstName(firstNameToFind);
-                    break;
-                case "LASTNAME":
-                    string lastNameToFind = inputParams[^1].Trim('"');
-                    findedRecords = fileCabinetService.FindByLastName(lastNameToFind);
-                    break;
+                case "FIRSTNAME": findedRecords = fileCabinetService.FindByFirstName(toFind); break;
+                case "LASTNAME": findedRecords = fileCabinetService.FindByLastName(toFind); break;
                 case "DATEOFBIRTH":
                     DateTime dateOfBithToFind;
-                    bool parseResult = DateTime.TryParseExact(inputParams[^1].Trim('"'), DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOfBithToFind);
+                    bool parseResult = DateTime.TryParseExact(toFind, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOfBithToFind);
                     findedRecords = parseResult ? fileCabinetService.FindByDateOfBith(dateOfBithToFind) : findedRecords;
                     break;
-                default:
-                    break;
+                default: Console.WriteLine($"Unknown '{findBy}' record field"); return;
             }
 
             if (findedRecords != Array.Empty<FileCabinetRecord>())
@@ -258,7 +252,7 @@ namespace FileCabinetApp
             }
             else
             {
-                Console.WriteLine("No records finded");
+                Console.WriteLine($"There is no records with {findBy}: '{toFind}'");
             }
         }
     }

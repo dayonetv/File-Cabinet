@@ -18,6 +18,7 @@ namespace FileCabinetApp
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, short height, decimal salary, char sex)
         {
@@ -46,8 +47,14 @@ namespace FileCabinetApp
                 this.lastNameDictionary.Add(record.LastName, new List<FileCabinetRecord>());
             }
 
+            if (!this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
+            {
+                this.dateOfBirthDictionary.Add(record.DateOfBirth, new List<FileCabinetRecord>());
+            }
+
             this.firstNameDictionary[record.FirstName].Add(record);
             this.lastNameDictionary[record.LastName].Add(record);
+            this.dateOfBirthDictionary[record.DateOfBirth].Add(record);
 
             return record.Id;
         }
@@ -76,6 +83,7 @@ namespace FileCabinetApp
 
                 this.firstNameDictionary[recordToEdit.FirstName].Remove(recordToEdit);
                 this.lastNameDictionary[recordToEdit.LastName].Remove(recordToEdit);
+                this.dateOfBirthDictionary[recordToEdit.DateOfBirth].Remove(recordToEdit);
 
                 recordToEdit.FirstName = firstName;
                 recordToEdit.LastName = lastName;
@@ -96,6 +104,7 @@ namespace FileCabinetApp
 
                 this.firstNameDictionary[recordToEdit.FirstName].Add(recordToEdit);
                 this.lastNameDictionary[recordToEdit.LastName].Add(recordToEdit);
+                this.dateOfBirthDictionary[recordToEdit.DateOfBirth].Add(recordToEdit);
             }
         }
 
@@ -111,7 +120,7 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByDateOfBith(DateTime dateOfBirth)
         {
-            return (from rec in this.list where rec.DateOfBirth == dateOfBirth select rec).ToArray();
+            return this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth)?.ToArray() ?? Array.Empty<FileCabinetRecord>();
         }
 
         private static void ValidateParams(string firstName, string lastName, DateTime dateOfBirth, short height, decimal salary, char sex)
