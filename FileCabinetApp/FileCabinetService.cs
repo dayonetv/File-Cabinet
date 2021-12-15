@@ -13,10 +13,11 @@ namespace FileCabinetApp
         private const int MinNameLength = 2;
         private const int MaxSalary = 1_000_000;
         private static readonly DateTime MinDateOfBirth = new DateTime(1950, 1, 1);
-        private static readonly CultureInfo CurrentCulture = CultureInfo.InvariantCulture;
+        private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
 
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, short height, decimal salary, char sex)
         {
@@ -40,7 +41,13 @@ namespace FileCabinetApp
                 this.firstNameDictionary.Add(record.FirstName, new List<FileCabinetRecord>());
             }
 
+            if (!this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.lastNameDictionary.Add(record.LastName, new List<FileCabinetRecord>());
+            }
+
             this.firstNameDictionary[record.FirstName].Add(record);
+            this.lastNameDictionary[record.LastName].Add(record);
 
             return record.Id;
         }
@@ -68,6 +75,7 @@ namespace FileCabinetApp
                 ValidateParams(firstName, lastName, dateOfBirth, height, salary, sex);
 
                 this.firstNameDictionary[recordToEdit.FirstName].Remove(recordToEdit);
+                this.lastNameDictionary[recordToEdit.LastName].Remove(recordToEdit);
 
                 recordToEdit.FirstName = firstName;
                 recordToEdit.LastName = lastName;
@@ -81,7 +89,13 @@ namespace FileCabinetApp
                     this.firstNameDictionary.Add(recordToEdit.FirstName, new List<FileCabinetRecord>());
                 }
 
+                if (!this.lastNameDictionary.ContainsKey(recordToEdit.LastName))
+                {
+                    this.lastNameDictionary.Add(recordToEdit.LastName, new List<FileCabinetRecord>());
+                }
+
                 this.firstNameDictionary[recordToEdit.FirstName].Add(recordToEdit);
+                this.lastNameDictionary[recordToEdit.LastName].Add(recordToEdit);
             }
         }
 
@@ -92,7 +106,7 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
-            return (from rec in this.list where rec.LastName.ToUpperInvariant() == lastName select rec).ToArray();
+            return this.lastNameDictionary.GetValueOrDefault(lastName)?.ToArray() ?? Array.Empty<FileCabinetRecord>();
         }
 
         public FileCabinetRecord[] FindByDateOfBith(DateTime dateOfBirth)
@@ -124,7 +138,7 @@ namespace FileCabinetApp
 
             if (dateOfBirth > DateTime.Now || dateOfBirth < MinDateOfBirth)
             {
-                throw new ArgumentException($"Date Of Birth can not be less than {MinDateOfBirth.ToString("yyyy-MMM-dd", CurrentCulture)} or more than now", nameof(dateOfBirth));
+                throw new ArgumentException($"Date Of Birth can not be less than {MinDateOfBirth.ToString("yyyy-MMM-dd", Culture)} or more than now", nameof(dateOfBirth));
             }
 
             if (salary < 0 || salary > MaxSalary)
@@ -132,7 +146,7 @@ namespace FileCabinetApp
                 throw new ArgumentException("Salary can not be more than 1_000_000 or less than 0", nameof(salary));
             }
 
-            if (char.ToLower(sex, CurrentCulture) != 'm' && char.ToLower(sex, CurrentCulture) != 'f')
+            if (char.ToLower(sex, Culture) != 'm' && char.ToLower(sex, Culture) != 'f')
             {
                 throw new ArgumentException("Sex can be only Male or Female", nameof(sex));
             }

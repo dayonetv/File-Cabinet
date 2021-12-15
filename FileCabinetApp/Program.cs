@@ -211,7 +211,7 @@ namespace FileCabinetApp
                 catch (FormatException ex)
                 {
                     isValid = false;
-                    Console.WriteLine($"\n{ex.Message}.\nPlease try again.");
+                    Console.WriteLine($"\n{ex.Message}. Please try again.");
                 }
                 catch (ArgumentException ex)
                 {
@@ -243,7 +243,7 @@ namespace FileCabinetApp
                 case "DATEOFBIRTH":
                     DateTime dateOfBithToFind;
                     bool parseResult = DateTime.TryParseExact(inputParams[^1].Trim('"'), DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOfBithToFind);
-                    findedRecords = parseResult ? fileCabinetService.FindByDateOfBith(dateOfBithToFind) : Array.Empty<FileCabinetRecord>();
+                    findedRecords = parseResult ? fileCabinetService.FindByDateOfBith(dateOfBithToFind) : findedRecords;
                     break;
                 default:
                     break;
