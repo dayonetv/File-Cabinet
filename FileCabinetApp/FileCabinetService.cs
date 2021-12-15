@@ -78,6 +78,11 @@ namespace FileCabinetApp
             return (from rec in this.list where rec.LastName.ToUpperInvariant() == lastName select rec).ToArray();
         }
 
+        public FileCabinetRecord[] FindByDateOfBith(DateTime dateOfBirth)
+        {
+            return (from rec in this.list where rec.DateOfBirth == dateOfBirth select rec).ToArray();
+        }
+
         private static void ValidateParams(string firstName, string lastName, DateTime dateOfBirth, short height, decimal salary, char sex)
         {
             if (string.IsNullOrEmpty(firstName) || string.IsNullOrWhiteSpace(firstName))

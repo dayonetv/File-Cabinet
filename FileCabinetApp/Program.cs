@@ -122,31 +122,14 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            bool isValid = true;
-
+            bool isValid;
             do
             {
                 try
                 {
-                    Console.Write("First Name: ");
-                    string firstName = Console.ReadLine();
+                    FileCabinetRecord recordToCreate = EnterInfo();
 
-                    Console.Write("Last Name: ");
-                    string lastName = Console.ReadLine();
-
-                    Console.Write("Date Of Birth: ");
-                    DateTime dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "d", CultureInfo.InvariantCulture);
-
-                    Console.Write("Height: ");
-                    short height = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-
-                    Console.Write("Salary: ");
-                    decimal salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-
-                    Console.Write("Sex: ");
-                    char sex = Console.ReadKey().KeyChar;
-
-                    Console.WriteLine($"\nRecord #{fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, salary, sex)} is created.");
+                    Console.WriteLine($"\nRecord #{fileCabinetService.CreateRecord(recordToCreate.FirstName, recordToCreate.LastName, recordToCreate.DateOfBirth, recordToCreate.Height, recordToCreate.Salary, recordToCreate.Sex)} is created.");
 
                     isValid = true;
                 }
@@ -158,10 +141,35 @@ namespace FileCabinetApp
                 catch (ArgumentException ex)
                 {
                     isValid = false;
-                    Console.WriteLine($"\n{ex.Message}. Please try again. ");
+                    Console.WriteLine($"\n{ex.Message}.\nPlease try again. ");
                 }
             }
             while (!isValid);
+        }
+
+        private static FileCabinetRecord EnterInfo()
+        {
+            FileCabinetRecord cabinetRecord = new FileCabinetRecord();
+
+            Console.Write("First Name: ");
+            cabinetRecord.FirstName = Console.ReadLine().Trim();
+
+            Console.Write("Last Name: ");
+            cabinetRecord.LastName = Console.ReadLine().Trim();
+
+            Console.Write("Date Of Birth: ");
+            cabinetRecord.DateOfBirth = DateTime.ParseExact(Console.ReadLine().Trim(), "d", CultureInfo.InvariantCulture);
+
+            Console.Write("Height: ");
+            cabinetRecord.Height = short.Parse(Console.ReadLine().Trim(), CultureInfo.InvariantCulture);
+
+            Console.Write("Salary: ");
+            cabinetRecord.Salary = decimal.Parse(Console.ReadLine().Trim(), CultureInfo.InvariantCulture);
+
+            Console.Write("Sex: ");
+            cabinetRecord.Sex = Console.ReadKey().KeyChar;
+
+            return cabinetRecord;
         }
 
         private static void List(string parameters)
@@ -174,50 +182,44 @@ namespace FileCabinetApp
 
         private static void Edit(string parameters)
         {
-            try
+            bool isValid = true;
+            do
             {
-                int id;
-
-                bool parseResult = int.TryParse(parameters, NumberStyles.Any, CultureInfo.InvariantCulture, out id);
-
-                FileCabinetRecord recordToEdit = parseResult ? Array.Find(fileCabinetService.GetRecords(), rec => rec.Id == id) : null;
-
-                if (recordToEdit == null)
+                try
                 {
-                    Console.WriteLine($"#{parameters} record is not found.");
+                    int id;
+
+                    bool parseResult = int.TryParse(parameters, NumberStyles.Any, CultureInfo.InvariantCulture, out id);
+
+                    FileCabinetRecord recordToEdit = parseResult ? Array.Find(fileCabinetService.GetRecords(), rec => rec.Id == id) : null;
+
+                    if (recordToEdit == null)
+                    {
+                        Console.WriteLine($"#{parameters} record is not found.");
+                    }
+                    else
+                    {
+                        FileCabinetRecord newRecord = EnterInfo();
+
+                        fileCabinetService.EditRecord(id, newRecord.FirstName, newRecord.LastName, newRecord.DateOfBirth, newRecord.Height, newRecord.Salary, newRecord.Sex);
+
+                        Console.WriteLine($"\nRecord #{id} is updated.");
+
+                        isValid = true;
+                    }
                 }
-                else
+                catch (FormatException ex)
                 {
-                    Console.Write("First Name: ");
-                    string firstName = Console.ReadLine();
-
-                    Console.Write("Last Name: ");
-                    string lastName = Console.ReadLine();
-
-                    Console.Write("Date Of Birth: ");
-                    DateTime dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "d", CultureInfo.InvariantCulture);
-
-                    Console.Write("Height: ");
-                    short height = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-
-                    Console.Write("Salary: ");
-                    decimal salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-
-                    Console.Write("Sex: ");
-                    char sex = Console.ReadKey().KeyChar;
-
-                    fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, height, salary, sex);
-                    Console.WriteLine($"\nRecord #{id} is updated.");
+                    isValid = false;
+                    Console.WriteLine($"\n{ex.Message}.\nPlease try again.");
+                }
+                catch (ArgumentException ex)
+                {
+                    isValid = false;
+                    Console.WriteLine($"\n{ex.Message}.\nPlease try again.");
                 }
             }
-            catch (FormatException ex)
-            {
-                Console.WriteLine($"\n{ex.Message}. Try later.");
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine($"\n{ex.Message}. Try later.");
-            }
+            while (!isValid);
         }
 
         private static void Find(string parameters)
@@ -236,7 +238,13 @@ namespace FileCabinetApp
                     break;
                 case "LASTNAME":
                     string lastNameToFind = inputParams[^1].Trim('"');
+
                     findedRecords = fileCabinetService.FindByLastName(lastNameToFind);
+                    break;
+                case "DATEOFBIRTH":
+                    DateTime dateOfBithToFind;
+                    bool parseResult = DateTime.TryParseExact(inputParams[^1].Trim('"'), DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOfBithToFind);
+                    findedRecords = parseResult ? fileCabinetService.FindByDateOfBith(dateOfBithToFind) : Array.Empty<FileCabinetRecord>();
                     break;
                 default:
                     break;
