@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.Reflection;
+using System.Text;
 
 namespace FileCabinetApp
 {
@@ -7,6 +9,8 @@ namespace FileCabinetApp
     {
         private const string DeveloperName = "Konstantin Karasiov";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
+        private const string DateFormat = "yyyy-MMM-dd";
+
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
@@ -23,6 +27,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -33,6 +38,7 @@ namespace FileCabinetApp
             new string[] { "create", "creates new record", "The 'create' command creates new record." },
             new string[] { "list", "prints current records", "The 'list' command prints current records." },
             new string[] { "edit", "edits record by id", "The 'edit' command edits record by id." },
+            new string[] { "find", "finds record by some record field", "The 'find' command finds record by some record field." },
         };
 
         public static void Main(string[] args)
@@ -162,7 +168,7 @@ namespace FileCabinetApp
         {
             foreach (var record in fileCabinetService.GetRecords())
             {
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, {record.Height}, {record.Salary}, {record.Sex}");
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString(DateFormat, CultureInfo.InvariantCulture)}, {record.Height}, {record.Salary}, {record.Sex}");
             }
         }
 
@@ -211,6 +217,38 @@ namespace FileCabinetApp
             catch (ArgumentException ex)
             {
                 Console.WriteLine($"\n{ex.Message}. Try later.");
+            }
+        }
+
+        private static void Find(string parameters)
+        {
+            var inputParams = parameters.ToUpperInvariant().Trim().Split(' ', 2);
+
+            string findBy = inputParams[0];
+
+            FileCabinetRecord[] findedRecords = null;
+
+            switch (findBy)
+            {
+                case "FIRSTNAME":
+                    string firstNameToFind = inputParams[1].Trim('"');
+                    findedRecords = fileCabinetService.FindByFirstName(firstNameToFind);
+                    break;
+                default:
+                    findedRecords = Array.Empty<FileCabinetRecord>();
+                    break;
+            }
+
+            if (findedRecords != Array.Empty<FileCabinetRecord>())
+            {
+                foreach (var record in findedRecords)
+                {
+                    Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString(DateFormat, CultureInfo.InvariantCulture)}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No records finded");
             }
         }
     }
