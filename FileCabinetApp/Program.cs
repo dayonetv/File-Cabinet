@@ -238,7 +238,6 @@ namespace FileCabinetApp
                     break;
                 case "LASTNAME":
                     string lastNameToFind = inputParams[^1].Trim('"');
-
                     findedRecords = fileCabinetService.FindByLastName(lastNameToFind);
                     break;
                 case "DATEOFBIRTH":

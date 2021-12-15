@@ -16,6 +16,7 @@ namespace FileCabinetApp
         private static readonly CultureInfo CurrentCulture = CultureInfo.InvariantCulture;
 
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, short height, decimal salary, char sex)
         {
@@ -33,6 +34,13 @@ namespace FileCabinetApp
             };
 
             this.list.Add(record);
+
+            if (!this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.firstNameDictionary.Add(record.FirstName, new List<FileCabinetRecord>());
+            }
+
+            this.firstNameDictionary[record.FirstName].Add(record);
 
             return record.Id;
         }
@@ -59,18 +67,27 @@ namespace FileCabinetApp
             {
                 ValidateParams(firstName, lastName, dateOfBirth, height, salary, sex);
 
+                this.firstNameDictionary[recordToEdit.FirstName].Remove(recordToEdit);
+
                 recordToEdit.FirstName = firstName;
                 recordToEdit.LastName = lastName;
                 recordToEdit.DateOfBirth = dateOfBirth;
                 recordToEdit.Height = height;
                 recordToEdit.Salary = salary;
                 recordToEdit.Sex = sex;
+
+                if (!this.firstNameDictionary.ContainsKey(recordToEdit.FirstName))
+                {
+                    this.firstNameDictionary.Add(recordToEdit.FirstName, new List<FileCabinetRecord>());
+                }
+
+                this.firstNameDictionary[recordToEdit.FirstName].Add(recordToEdit);
             }
         }
 
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
-            return (from rec in this.list where rec.FirstName.ToUpperInvariant() == firstName select rec).ToArray();
+            return this.firstNameDictionary.GetValueOrDefault(firstName)?.ToArray() ?? Array.Empty<FileCabinetRecord>();
         }
 
         public FileCabinetRecord[] FindByLastName(string lastName)
