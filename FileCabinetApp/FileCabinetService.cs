@@ -73,6 +73,11 @@ namespace FileCabinetApp
             return (from rec in this.list where rec.FirstName.ToUpperInvariant() == firstName select rec).ToArray();
         }
 
+        public FileCabinetRecord[] FindByLastName(string lastName)
+        {
+            return (from rec in this.list where rec.LastName.ToUpperInvariant() == lastName select rec).ToArray();
+        }
+
         private static void ValidateParams(string firstName, string lastName, DateTime dateOfBirth, short height, decimal salary, char sex)
         {
             if (string.IsNullOrEmpty(firstName) || string.IsNullOrWhiteSpace(firstName))

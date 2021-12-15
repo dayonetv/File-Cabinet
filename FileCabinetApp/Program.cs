@@ -226,16 +226,19 @@ namespace FileCabinetApp
 
             string findBy = inputParams[0];
 
-            FileCabinetRecord[] findedRecords = null;
+            FileCabinetRecord[] findedRecords = Array.Empty<FileCabinetRecord>();
 
             switch (findBy)
             {
                 case "FIRSTNAME":
-                    string firstNameToFind = inputParams[1].Trim('"');
+                    string firstNameToFind = inputParams[^1].Trim('"');
                     findedRecords = fileCabinetService.FindByFirstName(firstNameToFind);
                     break;
+                case "LASTNAME":
+                    string lastNameToFind = inputParams[^1].Trim('"');
+                    findedRecords = fileCabinetService.FindByLastName(lastNameToFind);
+                    break;
                 default:
-                    findedRecords = Array.Empty<FileCabinetRecord>();
                     break;
             }
 
