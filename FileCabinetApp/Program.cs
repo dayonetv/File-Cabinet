@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.Reflection;
+using System.Text;
 
 namespace FileCabinetApp
 {
@@ -7,6 +9,8 @@ namespace FileCabinetApp
     {
         private const string DeveloperName = "Konstantin Karasiov";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
+        private const string DateFormat = "yyyy-MMM-dd";
+
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
@@ -23,6 +27,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -33,6 +38,7 @@ namespace FileCabinetApp
             new string[] { "create", "creates new record", "The 'create' command creates new record." },
             new string[] { "list", "prints current records", "The 'list' command prints current records." },
             new string[] { "edit", "edits record by id", "The 'edit' command edits record by id." },
+            new string[] { "find", "finds record by some record field", "The 'find' command finds record by some record field." },
         };
 
         public static void Main(string[] args)
@@ -116,31 +122,14 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            bool isValid = true;
-
+            bool isValid;
             do
             {
                 try
                 {
-                    Console.Write("First Name: ");
-                    string firstName = Console.ReadLine();
+                    FileCabinetRecord recordToCreate = EnterInfo();
 
-                    Console.Write("Last Name: ");
-                    string lastName = Console.ReadLine();
-
-                    Console.Write("Date Of Birth: ");
-                    DateTime dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "d", CultureInfo.InvariantCulture);
-
-                    Console.Write("Height: ");
-                    short height = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-
-                    Console.Write("Salary: ");
-                    decimal salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-
-                    Console.Write("Sex: ");
-                    char sex = Console.ReadKey().KeyChar;
-
-                    Console.WriteLine($"\nRecord #{fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, salary, sex)} is created.");
+                    Console.WriteLine($"\nRecord #{fileCabinetService.CreateRecord(recordToCreate.FirstName, recordToCreate.LastName, recordToCreate.DateOfBirth, recordToCreate.Height, recordToCreate.Salary, recordToCreate.Sex)} is created.");
 
                     isValid = true;
                 }
@@ -152,65 +141,118 @@ namespace FileCabinetApp
                 catch (ArgumentException ex)
                 {
                     isValid = false;
-                    Console.WriteLine($"\n{ex.Message}. Please try again. ");
+                    Console.WriteLine($"\n{ex.Message}.\nPlease try again. ");
                 }
             }
             while (!isValid);
+        }
+
+        private static FileCabinetRecord EnterInfo()
+        {
+            FileCabinetRecord cabinetRecord = new FileCabinetRecord();
+
+            Console.Write("First Name: ");
+            cabinetRecord.FirstName = Console.ReadLine().Trim();
+
+            Console.Write("Last Name: ");
+            cabinetRecord.LastName = Console.ReadLine().Trim();
+
+            Console.Write("Date Of Birth: ");
+            cabinetRecord.DateOfBirth = DateTime.ParseExact(Console.ReadLine().Trim(), "d", CultureInfo.InvariantCulture);
+
+            Console.Write("Height: ");
+            cabinetRecord.Height = short.Parse(Console.ReadLine().Trim(), CultureInfo.InvariantCulture);
+
+            Console.Write("Salary: ");
+            cabinetRecord.Salary = decimal.Parse(Console.ReadLine().Trim(), CultureInfo.InvariantCulture);
+
+            Console.Write("Sex: ");
+            cabinetRecord.Sex = Console.ReadKey().KeyChar;
+
+            return cabinetRecord;
         }
 
         private static void List(string parameters)
         {
             foreach (var record in fileCabinetService.GetRecords())
             {
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, {record.Height}, {record.Salary}, {record.Sex}");
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString(DateFormat, CultureInfo.InvariantCulture)}, {record.Height}, {record.Salary}, {record.Sex}");
             }
         }
 
         private static void Edit(string parameters)
         {
-            try
+            bool isValid = true;
+            do
             {
-                int id;
-
-                bool parseResult = int.TryParse(parameters, NumberStyles.Any, CultureInfo.InvariantCulture, out id);
-
-                FileCabinetRecord recordToEdit = parseResult ? Array.Find(fileCabinetService.GetRecords(), rec => rec.Id == id) : null;
-
-                if (recordToEdit == null)
+                try
                 {
-                    Console.WriteLine($"#{parameters} record is not found.");
+                    int id;
+
+                    bool parseResult = int.TryParse(parameters, NumberStyles.Any, CultureInfo.InvariantCulture, out id);
+
+                    FileCabinetRecord recordToEdit = parseResult ? Array.Find(fileCabinetService.GetRecords(), rec => rec.Id == id) : null;
+
+                    if (recordToEdit == null)
+                    {
+                        Console.WriteLine($"#{parameters} record is not found.");
+                    }
+                    else
+                    {
+                        FileCabinetRecord newRecord = EnterInfo();
+
+                        fileCabinetService.EditRecord(id, newRecord.FirstName, newRecord.LastName, newRecord.DateOfBirth, newRecord.Height, newRecord.Salary, newRecord.Sex);
+
+                        Console.WriteLine($"\nRecord #{id} is updated.");
+
+                        isValid = true;
+                    }
                 }
-                else
+                catch (FormatException ex)
                 {
-                    Console.Write("First Name: ");
-                    string firstName = Console.ReadLine();
-
-                    Console.Write("Last Name: ");
-                    string lastName = Console.ReadLine();
-
-                    Console.Write("Date Of Birth: ");
-                    DateTime dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "d", CultureInfo.InvariantCulture);
-
-                    Console.Write("Height: ");
-                    short height = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-
-                    Console.Write("Salary: ");
-                    decimal salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-
-                    Console.Write("Sex: ");
-                    char sex = Console.ReadKey().KeyChar;
-
-                    fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, height, salary, sex);
-                    Console.WriteLine($"\nRecord #{id} is updated.");
+                    isValid = false;
+                    Console.WriteLine($"\n{ex.Message}. Please try again.");
+                }
+                catch (ArgumentException ex)
+                {
+                    isValid = false;
+                    Console.WriteLine($"\n{ex.Message}.\nPlease try again.");
                 }
             }
-            catch (FormatException ex)
+            while (!isValid);
+        }
+
+        private static void Find(string parameters)
+        {
+            var inputParams = parameters.Trim().Split(' ', 2);
+
+            string findBy = inputParams[0];
+            string toFind = inputParams.Length == 2 ? inputParams[^1].Trim('"') : string.Empty;
+
+            FileCabinetRecord[] findedRecords = Array.Empty<FileCabinetRecord>();
+
+            switch (findBy.ToUpperInvariant())
             {
-                Console.WriteLine($"\n{ex.Message}. Try later.");
+                case "FIRSTNAME": findedRecords = fileCabinetService.FindByFirstName(toFind); break;
+                case "LASTNAME": findedRecords = fileCabinetService.FindByLastName(toFind); break;
+                case "DATEOFBIRTH":
+                    DateTime dateOfBithToFind;
+                    bool parseResult = DateTime.TryParseExact(toFind, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOfBithToFind);
+                    findedRecords = parseResult ? fileCabinetService.FindByDateOfBith(dateOfBithToFind) : findedRecords;
+                    break;
+                default: Console.WriteLine($"Unknown '{findBy}' record field"); return;
             }
-            catch (ArgumentException ex)
+
+            if (findedRecords != Array.Empty<FileCabinetRecord>())
             {
-                Console.WriteLine($"\n{ex.Message}. Try later.");
+                foreach (var record in findedRecords)
+                {
+                    Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString(DateFormat, CultureInfo.InvariantCulture)}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"There is no records with {findBy}: '{toFind}'");
             }
         }
     }
