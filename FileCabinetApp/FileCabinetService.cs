@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileCabinetApp
 {
@@ -12,6 +9,10 @@ namespace FileCabinetApp
         private const int MaxNameLength = 60;
         private const int MinNameLength = 2;
         private const int MaxSalary = 1_000_000;
+        private const short MaxHeight = 220;
+        private const short MinHeight = 120;
+
+        private static readonly char[] Genders = { 'M', 'F' };
         private static readonly DateTime MinDateOfBirth = new DateTime(1950, 1, 1);
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
 
@@ -37,24 +38,7 @@ namespace FileCabinetApp
 
             this.list.Add(record);
 
-            if (!this.firstNameDictionary.ContainsKey(record.FirstName))
-            {
-                this.firstNameDictionary.Add(record.FirstName, new List<FileCabinetRecord>());
-            }
-
-            if (!this.lastNameDictionary.ContainsKey(record.LastName))
-            {
-                this.lastNameDictionary.Add(record.LastName, new List<FileCabinetRecord>());
-            }
-
-            if (!this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
-            {
-                this.dateOfBirthDictionary.Add(record.DateOfBirth, new List<FileCabinetRecord>());
-            }
-
-            this.firstNameDictionary[record.FirstName].Add(record);
-            this.lastNameDictionary[record.LastName].Add(record);
-            this.dateOfBirthDictionary[record.DateOfBirth].Add(record);
+            this.AddToDictionaries(record);
 
             return record.Id;
         }
@@ -92,19 +76,7 @@ namespace FileCabinetApp
                 recordToEdit.Salary = salary;
                 recordToEdit.Sex = sex;
 
-                if (!this.firstNameDictionary.ContainsKey(recordToEdit.FirstName))
-                {
-                    this.firstNameDictionary.Add(recordToEdit.FirstName, new List<FileCabinetRecord>());
-                }
-
-                if (!this.lastNameDictionary.ContainsKey(recordToEdit.LastName))
-                {
-                    this.lastNameDictionary.Add(recordToEdit.LastName, new List<FileCabinetRecord>());
-                }
-
-                this.firstNameDictionary[recordToEdit.FirstName].Add(recordToEdit);
-                this.lastNameDictionary[recordToEdit.LastName].Add(recordToEdit);
-                this.dateOfBirthDictionary[recordToEdit.DateOfBirth].Add(recordToEdit);
+                this.AddToDictionaries(recordToEdit);
             }
         }
 
@@ -147,23 +119,45 @@ namespace FileCabinetApp
 
             if (dateOfBirth > DateTime.Now || dateOfBirth < MinDateOfBirth)
             {
-                throw new ArgumentException($"Date Of Birth can not be less than {MinDateOfBirth.ToString("yyyy-MMM-dd", Culture)} or more than now", nameof(dateOfBirth));
+                throw new ArgumentException($"Date Of Birth can not be less than {MinDateOfBirth.ToString("yyyy-MMM-dd", Culture)} or more than {DateTime.Now}", nameof(dateOfBirth));
             }
 
             if (salary < 0 || salary > MaxSalary)
             {
-                throw new ArgumentException("Salary can not be more than 1_000_000 or less than 0", nameof(salary));
+                throw new ArgumentException($"Salary can not be more than {MaxSalary} or less than 0", nameof(salary));
             }
 
-            if (char.ToLower(sex, Culture) != 'm' && char.ToLower(sex, Culture) != 'f')
+            if (Array.FindIndex(Genders, s => s.Equals(char.ToUpperInvariant(sex))) < 0)
             {
-                throw new ArgumentException("Sex can be only Male or Female", nameof(sex));
+                throw new ArgumentException($"Sex can be only Male or Female", nameof(sex));
             }
 
-            if (height < 120 || height > 220)
+            if (height < MinHeight || height > MaxHeight)
             {
-                throw new ArgumentException("Height can not be less 120 than or more than 220", nameof(height));
+                throw new ArgumentException($"Height can not be less than {MinHeight} or more than {MaxHeight}", nameof(height));
             }
+        }
+
+        private void AddToDictionaries(FileCabinetRecord recordToAdd)
+        {
+            if (!this.firstNameDictionary.ContainsKey(recordToAdd.FirstName))
+            {
+                this.firstNameDictionary.Add(recordToAdd.FirstName, new List<FileCabinetRecord>());
+            }
+
+            if (!this.lastNameDictionary.ContainsKey(recordToAdd.LastName))
+            {
+                this.lastNameDictionary.Add(recordToAdd.LastName, new List<FileCabinetRecord>());
+            }
+
+            if (!this.dateOfBirthDictionary.ContainsKey(recordToAdd.DateOfBirth))
+            {
+                this.dateOfBirthDictionary.Add(recordToAdd.DateOfBirth, new List<FileCabinetRecord>());
+            }
+
+            this.firstNameDictionary[recordToAdd.FirstName].Add(recordToAdd);
+            this.lastNameDictionary[recordToAdd.LastName].Add(recordToAdd);
+            this.dateOfBirthDictionary[recordToAdd.DateOfBirth].Add(recordToAdd);
         }
     }
 }

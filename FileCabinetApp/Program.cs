@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
-using System.Reflection;
-using System.Text;
+using System.Linq;
 
 namespace FileCabinetApp
 {
@@ -14,10 +13,7 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
-
-        private static bool isRunning = true;
-
-        private static FileCabinetService fileCabinetService = new FileCabinetService();
+        private const int AmountOfFindByParams = 2;
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -40,6 +36,16 @@ namespace FileCabinetApp
             new string[] { "edit", "edits record by id", "The 'edit' command edits record by id." },
             new string[] { "find", "finds record by some record field", "The 'find' command finds record by some record field." },
         };
+
+        private static Tuple<string, Func<string, FileCabinetRecord[]>>[] findByFunctions = new Tuple<string, Func<string, FileCabinetRecord[]>>[]
+        {
+            new Tuple<string, Func<string, FileCabinetRecord[]>>("firstname", FindByFirstName),
+            new Tuple<string, Func<string, FileCabinetRecord[]>>("lastname", FindByLastName),
+            new Tuple<string, Func<string, FileCabinetRecord[]>>("dateofbirth", FindByDateOfBirth),
+        };
+
+        private static bool isRunning = true;
+        private static FileCabinetService fileCabinetService = new FileCabinetService();
 
         public static void Main(string[] args)
         {
@@ -187,9 +193,7 @@ namespace FileCabinetApp
             {
                 try
                 {
-                    int id;
-
-                    bool parseResult = int.TryParse(parameters, NumberStyles.Any, CultureInfo.InvariantCulture, out id);
+                    bool parseResult = int.TryParse(parameters, NumberStyles.Any, CultureInfo.InvariantCulture, out int id);
 
                     FileCabinetRecord recordToEdit = parseResult ? Array.Find(fileCabinetService.GetRecords(), rec => rec.Id == id) : null;
 
@@ -224,24 +228,26 @@ namespace FileCabinetApp
 
         private static void Find(string parameters)
         {
-            var inputParams = parameters.Trim().Split(' ', 2);
+            var inputParams = parameters.Trim().Split(' ', AmountOfFindByParams);
 
-            string findBy = inputParams[0];
-            string toFind = inputParams.Length == 2 ? inputParams[^1].Trim('"') : string.Empty;
-
-            FileCabinetRecord[] findedRecords = Array.Empty<FileCabinetRecord>();
-
-            switch (findBy.ToUpperInvariant())
+            if (inputParams.Length != AmountOfFindByParams)
             {
-                case "FIRSTNAME": findedRecords = fileCabinetService.FindByFirstName(toFind); break;
-                case "LASTNAME": findedRecords = fileCabinetService.FindByLastName(toFind); break;
-                case "DATEOFBIRTH":
-                    DateTime dateOfBithToFind;
-                    bool parseResult = DateTime.TryParseExact(toFind, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOfBithToFind);
-                    findedRecords = parseResult ? fileCabinetService.FindByDateOfBith(dateOfBithToFind) : findedRecords;
-                    break;
-                default: Console.WriteLine($"Unknown '{findBy}' record field"); return;
+                Console.WriteLine($"'find' command requires at least {AmountOfFindByParams} parameters. ");
+                return;
             }
+
+            string findBy = inputParams[0].Trim();
+            string toFind = inputParams[^1].Trim();
+
+            var findByFunc = (from func in findByFunctions where func.Item1.Equals(findBy, StringComparison.InvariantCultureIgnoreCase) select func.Item2).FirstOrDefault();
+
+            if (findByFunc == null)
+            {
+                Console.WriteLine($"Unknown '{findBy}' property for 'find' command. ");
+                return;
+            }
+
+            FileCabinetRecord[] findedRecords = findByFunc.Invoke(toFind);
 
             if (findedRecords != Array.Empty<FileCabinetRecord>())
             {
@@ -252,8 +258,24 @@ namespace FileCabinetApp
             }
             else
             {
-                Console.WriteLine($"There is no records with {findBy}: '{toFind}'");
+                Console.WriteLine($"There is no records with {findBy}: '{toFind}'. ");
             }
+        }
+
+        private static FileCabinetRecord[] FindByDateOfBirth(string dateToFind)
+        {
+            bool parseResult = DateTime.TryParseExact(dateToFind.Trim('"'), DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBithToFind);
+            return parseResult ? fileCabinetService.FindByDateOfBith(dateOfBithToFind) : Array.Empty<FileCabinetRecord>();
+        }
+
+        private static FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            return fileCabinetService.FindByFirstName(firstName.Trim('"'));
+        }
+
+        private static FileCabinetRecord[] FindByLastName(string lastName)
+        {
+            return fileCabinetService.FindByLastName(lastName.Trim('"'));
         }
     }
 }
