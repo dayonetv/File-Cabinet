@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Represents the main interface for user to use corresponding commands.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Konstantin Karasiov";
@@ -15,7 +20,7 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
         private const int AmountOfFindByParams = 2;
 
-        private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
+        private static readonly Tuple<string, Action<string>>[] Commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
@@ -26,7 +31,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
         };
 
-        private static string[][] helpMessages = new string[][]
+        private static readonly string[][] HelpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
@@ -37,7 +42,7 @@ namespace FileCabinetApp
             new string[] { "find", "finds record by some record field", "The 'find' command finds record by some record field." },
         };
 
-        private static Tuple<string, Func<string, FileCabinetRecord[]>>[] findByFunctions = new Tuple<string, Func<string, FileCabinetRecord[]>>[]
+        private static readonly Tuple<string, Func<string, FileCabinetRecord[]>>[] FindByFunctions = new Tuple<string, Func<string, FileCabinetRecord[]>>[]
         {
             new Tuple<string, Func<string, FileCabinetRecord[]>>("firstname", FindByFirstName),
             new Tuple<string, Func<string, FileCabinetRecord[]>>("lastname", FindByLastName),
@@ -47,6 +52,10 @@ namespace FileCabinetApp
         private static bool isRunning = true;
         private static FileCabinetService fileCabinetService = new FileCabinetService();
 
+        /// <summary>
+        /// The main console application entry point.
+        /// </summary>
+        /// <param name="args">Applicattion startup parameters. </param>
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -66,12 +75,12 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(Commands, 0, Commands.Length, i => i.Item1.Equals(command, StringComparison.InvariantCultureIgnoreCase));
                 if (index >= 0)
                 {
                     const int parametersIndex = 1;
                     var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
-                    commands[index].Item2(parameters);
+                    Commands[index].Item2(parameters);
                 }
                 else
                 {
@@ -91,10 +100,10 @@ namespace FileCabinetApp
         {
             if (!string.IsNullOrEmpty(parameters))
             {
-                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(HelpMessages, 0, HelpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
                 if (index >= 0)
                 {
-                    Console.WriteLine(helpMessages[index][Program.ExplanationHelpIndex]);
+                    Console.WriteLine(HelpMessages[index][Program.ExplanationHelpIndex]);
                 }
                 else
                 {
@@ -105,7 +114,7 @@ namespace FileCabinetApp
             {
                 Console.WriteLine("Available commands:");
 
-                foreach (var helpMessage in helpMessages)
+                foreach (var helpMessage in HelpMessages)
                 {
                     Console.WriteLine("\t{0}\t- {1}", helpMessage[Program.CommandHelpIndex], helpMessage[Program.DescriptionHelpIndex]);
                 }
@@ -239,7 +248,7 @@ namespace FileCabinetApp
             string findBy = inputParams[0].Trim();
             string toFind = inputParams[^1].Trim();
 
-            var findByFunc = (from func in findByFunctions where func.Item1.Equals(findBy, StringComparison.InvariantCultureIgnoreCase) select func.Item2).FirstOrDefault();
+            var findByFunc = (from func in FindByFunctions where func.Item1.Equals(findBy, StringComparison.InvariantCultureIgnoreCase) select func.Item2).FirstOrDefault();
 
             if (findByFunc == null)
             {
