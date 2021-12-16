@@ -45,6 +45,22 @@
             </summary>
             <value></value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetCustomService">
+            <summary>
+            Represents service for stroring records with the ability to add, edit records using custom validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateParams(FileCabinetApp.CreateEditParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetDefaultService">
+            <summary>
+            Represents service for stroring records with the ability to add, edit records using default validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateParams(FileCabinetApp.CreateEditParameters)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Provides properties of the record.
@@ -94,7 +110,7 @@
         </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
-            Represents service for stroring records with the ability to add, edit and find some of them.
+            Represents abstract service for stroring records with the ability to add, edit and find some of them.
             </summary>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.CreateEditParameters)">
@@ -143,6 +159,12 @@
             </summary>
             <param name="dateOfBirth">Date of Birth to search by, in format "yyyy-MMM-dd".</param>
             <returns>Array of finded records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateParams(FileCabinetApp.CreateEditParameters)">
+            <summary>
+            Checks parameters correctness.
+            </summary>
+            <param name="parameters">Parameter object to validate. </param>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>

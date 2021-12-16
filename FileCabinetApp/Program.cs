@@ -50,7 +50,7 @@ namespace FileCabinetApp
         };
 
         private static bool isRunning = true;
-        private static FileCabinetService fileCabinetService = new FileCabinetService();
+        private static FileCabinetService fileCabinetService;
 
         /// <summary>
         /// The main console application entry point.
@@ -58,6 +58,8 @@ namespace FileCabinetApp
         /// <param name="args">Applicattion startup parameters. </param>
         public static void Main(string[] args)
         {
+            fileCabinetService = new FileCabinetCustomService();
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
