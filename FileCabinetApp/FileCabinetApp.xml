@@ -4,6 +4,47 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.CreateEditParameters">
+            <summary>
+            Parameter object for FileCabinetService.CreateRecord and FileCabinetService.EditRecord methods.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.CreateEditParameters.FirstName">
+            <summary>
+            Gets or sets first name parameter.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.CreateEditParameters.LastName">
+            <summary>
+            Gets or sets last name parameter.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.CreateEditParameters.DateOfBirth">
+            <summary>
+            Gets or sets date of birth parameter.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.CreateEditParameters.Height">
+            <summary>
+            Gets or sets height parameter.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.CreateEditParameters.Salary">
+            <summary>
+            Gets or sets salary parameter.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.CreateEditParameters.Sex">
+            <summary>
+            Gets or sets gender parameter.
+            </summary>
+            <value></value>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Provides properties of the record.
@@ -56,16 +97,11 @@
             Represents service for stroring records with the ability to add, edit and find some of them.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(System.String,System.String,System.DateTime,System.Int16,System.Decimal,System.Char)">
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.CreateEditParameters)">
             <summary>
             Creates new record and adds its to the list.
             </summary>
-            <param name="firstName">First Name of record to create.</param>
-            <param name="lastName"> Last Name of record to create. </param>
-            <param name="dateOfBirth">Date of Birth of record to create in format "yyyy-MMM-dd".</param>
-            <param name="height">Height of record to create in centimeters. </param>
-            <param name="salary">Salary of record to create.</param>
-            <param name="sex">Gender of created record. 'M' is for Male, 'F' is for Female.</param>
+            <param name="parameters">Parameter object. </param>
             <returns>The Id of created record.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
@@ -80,17 +116,12 @@
             </summary>
             <returns>The number of existing records.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,System.String,System.String,System.DateTime,System.Int16,System.Decimal,System.Char)">
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
             <summary>
             Edits existing record by it's Id.
             </summary>
-            <param name="id">Id of existing record to find by. </param>
-            <param name="firstName">new First Name of existing record.</param>
-            <param name="lastName"> new Last Name of existing record. </param>
-            <param name="dateOfBirth">new Date of Birth of existing record in format "yyyy-MMM-dd".</param>
-            <param name="height">new Height of existing record in centimeters. </param>
-            <param name="salary">new Salary of existing record.</param>
-            <param name="sex">new Gender of existing record. 'M' is for Male, 'F' is for Female.</param>
+            <param name="id">Record Id to edit by. </param>
+            <param name="parameters">Parameter object. </param>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
             <summary>

@@ -27,26 +27,26 @@ namespace FileCabinetApp
         /// <summary>
         /// Creates new record and adds its to the list.
         /// </summary>
-        /// <param name="firstName">First Name of record to create.</param>
-        /// <param name="lastName"> Last Name of record to create. </param>
-        /// <param name="dateOfBirth">Date of Birth of record to create in format "yyyy-MMM-dd".</param>
-        /// <param name="height">Height of record to create in centimeters. </param>
-        /// <param name="salary">Salary of record to create.</param>
-        /// <param name="sex">Gender of created record. 'M' is for Male, 'F' is for Female.</param>
+        /// <param name="parameters">Parameter object. </param>
         /// <returns>The Id of created record.</returns>
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, short height, decimal salary, char sex)
+        public int CreateRecord(CreateEditParameters parameters)
         {
-            ValidateParams(firstName, lastName, dateOfBirth, height, salary, sex);
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            ValidateParams(parameters);
 
             FileCabinetRecord record = new ()
             {
                 Id = this.list.Count + 1,
-                FirstName = firstName,
-                LastName = lastName,
-                DateOfBirth = dateOfBirth,
-                Height = height,
-                Salary = salary,
-                Sex = sex,
+                FirstName = parameters.FirstName,
+                LastName = parameters.LastName,
+                DateOfBirth = parameters.DateOfBirth,
+                Height = parameters.Height,
+                Salary = parameters.Salary,
+                Sex = parameters.Sex,
             };
 
             this.list.Add(record);
@@ -77,34 +77,35 @@ namespace FileCabinetApp
         /// <summary>
         /// Edits existing record by it's Id.
         /// </summary>
-        /// <param name="id">Id of existing record to find by. </param>
-        /// <param name="firstName">new First Name of existing record.</param>
-        /// <param name="lastName"> new Last Name of existing record. </param>
-        /// <param name="dateOfBirth">new Date of Birth of existing record in format "yyyy-MMM-dd".</param>
-        /// <param name="height">new Height of existing record in centimeters. </param>
-        /// <param name="salary">new Salary of existing record.</param>
-        /// <param name="sex">new Gender of existing record. 'M' is for Male, 'F' is for Female.</param>
-        public void EditRecord(int id, string firstName, string lastName, DateTime dateOfBirth, short height, decimal salary, char sex)
+        /// <param name="id">Record Id to edit by. </param>
+        /// <param name="parameters">Parameter object. </param>
+        public void EditRecord(int id, CreateEditParameters parameters)
         {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
             FileCabinetRecord recordToEdit = this.list.Find(rec => rec.Id == id);
+
             if (recordToEdit == null)
             {
                 throw new ArgumentException("record is not found", nameof(id));
             }
             else
             {
-                ValidateParams(firstName, lastName, dateOfBirth, height, salary, sex);
+                ValidateParams(parameters);
 
                 this.firstNameDictionary[recordToEdit.FirstName].Remove(recordToEdit);
                 this.lastNameDictionary[recordToEdit.LastName].Remove(recordToEdit);
                 this.dateOfBirthDictionary[recordToEdit.DateOfBirth].Remove(recordToEdit);
 
-                recordToEdit.FirstName = firstName;
-                recordToEdit.LastName = lastName;
-                recordToEdit.DateOfBirth = dateOfBirth;
-                recordToEdit.Height = height;
-                recordToEdit.Salary = salary;
-                recordToEdit.Sex = sex;
+                recordToEdit.FirstName = parameters.FirstName;
+                recordToEdit.LastName = parameters.LastName;
+                recordToEdit.DateOfBirth = parameters.DateOfBirth;
+                recordToEdit.Height = parameters.Height;
+                recordToEdit.Salary = parameters.Salary;
+                recordToEdit.Sex = parameters.Sex;
 
                 this.AddToDictionaries(recordToEdit);
             }
@@ -140,46 +141,46 @@ namespace FileCabinetApp
             return this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth)?.ToArray() ?? Array.Empty<FileCabinetRecord>();
         }
 
-        private static void ValidateParams(string firstName, string lastName, DateTime dateOfBirth, short height, decimal salary, char sex)
+        private static void ValidateParams(CreateEditParameters parameters)
         {
-            if (string.IsNullOrEmpty(firstName) || string.IsNullOrWhiteSpace(firstName))
+            if (string.IsNullOrEmpty(parameters.FirstName) || string.IsNullOrWhiteSpace(parameters.FirstName))
             {
-                throw new ArgumentNullException(nameof(firstName));
+                throw new ArgumentNullException(parameters.FirstName);
             }
 
-            if (string.IsNullOrEmpty(lastName) || string.IsNullOrWhiteSpace(lastName))
+            if (string.IsNullOrEmpty(parameters.LastName) || string.IsNullOrWhiteSpace(parameters.LastName))
             {
-                throw new ArgumentNullException(nameof(lastName));
+                throw new ArgumentNullException(parameters.LastName);
             }
 
-            if (firstName.Length < MinNameLength || firstName.Length > MaxNameLength)
+            if (parameters.FirstName.Length < MinNameLength || parameters.FirstName.Length > MaxNameLength)
             {
-                throw new ArgumentException($"First Name Lenght is more than {MaxNameLength} or less than {MinNameLength}", nameof(firstName));
+                throw new ArgumentException($"First Name Lenght is more than {MaxNameLength} or less than {MinNameLength}", parameters.FirstName);
             }
 
-            if (lastName.Length < MinNameLength || lastName.Length > MaxNameLength)
+            if (parameters.LastName.Length < MinNameLength || parameters.LastName.Length > MaxNameLength)
             {
-                throw new ArgumentException($"Last Name Lenght is more than {MaxNameLength} or less than {MinNameLength}", nameof(firstName));
+                throw new ArgumentException($"Last Name Lenght is more than {MaxNameLength} or less than {MinNameLength}", parameters.FirstName);
             }
 
-            if (dateOfBirth > DateTime.Now || dateOfBirth < MinDateOfBirth)
+            if (parameters.DateOfBirth > DateTime.Now || parameters.DateOfBirth < MinDateOfBirth)
             {
-                throw new ArgumentException($"Date Of Birth can not be less than {MinDateOfBirth.ToString("yyyy-MMM-dd", Culture)} or more than {DateTime.Now}", nameof(dateOfBirth));
+                throw new ArgumentException($"Date Of Birth can not be less than {MinDateOfBirth.ToString("yyyy-MMM-dd", Culture)} or more than {DateTime.Now}", parameters.DateOfBirth.ToString("yyyy-MMM-dd", Culture));
             }
 
-            if (salary < 0 || salary > MaxSalary)
+            if (parameters.Salary < 0 || parameters.Salary > MaxSalary)
             {
-                throw new ArgumentException($"Salary can not be more than {MaxSalary} or less than 0", nameof(salary));
+                throw new ArgumentException($"Salary can not be more than {MaxSalary} or less than 0", parameters.Salary.ToString(Culture));
             }
 
-            if (Array.FindIndex(Genders, s => s.Equals(char.ToUpperInvariant(sex))) < 0)
+            if (Array.FindIndex(Genders, s => s.Equals(char.ToUpperInvariant(parameters.Sex))) < 0)
             {
-                throw new ArgumentException($"Sex can be only Male or Female", nameof(sex));
+                throw new ArgumentException($"Sex can be only Male or Female", parameters.Sex.ToString(Culture));
             }
 
-            if (height < MinHeight || height > MaxHeight)
+            if (parameters.Height < MinHeight || parameters.Height > MaxHeight)
             {
-                throw new ArgumentException($"Height can not be less than {MinHeight} or more than {MaxHeight}", nameof(height));
+                throw new ArgumentException($"Height can not be less than {MinHeight} or more than {MaxHeight}", parameters.Height.ToString(Culture));
             }
         }
 

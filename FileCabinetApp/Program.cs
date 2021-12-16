@@ -142,9 +142,9 @@ namespace FileCabinetApp
             {
                 try
                 {
-                    FileCabinetRecord recordToCreate = EnterInfo();
+                    CreateEditParameters creationParams = EnterInfo();
 
-                    Console.WriteLine($"\nRecord #{fileCabinetService.CreateRecord(recordToCreate.FirstName, recordToCreate.LastName, recordToCreate.DateOfBirth, recordToCreate.Height, recordToCreate.Salary, recordToCreate.Sex)} is created.");
+                    Console.WriteLine($"\nRecord #{fileCabinetService.CreateRecord(creationParams)} is created.");
 
                     isValid = true;
                 }
@@ -162,29 +162,29 @@ namespace FileCabinetApp
             while (!isValid);
         }
 
-        private static FileCabinetRecord EnterInfo()
+        private static CreateEditParameters EnterInfo()
         {
-            FileCabinetRecord cabinetRecord = new FileCabinetRecord();
+            CreateEditParameters parameters = new ();
 
             Console.Write("First Name: ");
-            cabinetRecord.FirstName = Console.ReadLine().Trim();
+            parameters.FirstName = Console.ReadLine().Trim();
 
             Console.Write("Last Name: ");
-            cabinetRecord.LastName = Console.ReadLine().Trim();
+            parameters.LastName = Console.ReadLine().Trim();
 
             Console.Write("Date Of Birth: ");
-            cabinetRecord.DateOfBirth = DateTime.ParseExact(Console.ReadLine().Trim(), "d", CultureInfo.InvariantCulture);
+            parameters.DateOfBirth = DateTime.ParseExact(Console.ReadLine().Trim(), "d", CultureInfo.InvariantCulture);
 
             Console.Write("Height: ");
-            cabinetRecord.Height = short.Parse(Console.ReadLine().Trim(), CultureInfo.InvariantCulture);
+            parameters.Height = short.Parse(Console.ReadLine().Trim(), CultureInfo.InvariantCulture);
 
             Console.Write("Salary: ");
-            cabinetRecord.Salary = decimal.Parse(Console.ReadLine().Trim(), CultureInfo.InvariantCulture);
+            parameters.Salary = decimal.Parse(Console.ReadLine().Trim(), CultureInfo.InvariantCulture);
 
             Console.Write("Sex: ");
-            cabinetRecord.Sex = Console.ReadKey().KeyChar;
+            parameters.Sex = Console.ReadKey().KeyChar;
 
-            return cabinetRecord;
+            return parameters;
         }
 
         private static void List(string parameters)
@@ -212,9 +212,9 @@ namespace FileCabinetApp
                     }
                     else
                     {
-                        FileCabinetRecord newRecord = EnterInfo();
+                        CreateEditParameters updatedParams = EnterInfo();
 
-                        fileCabinetService.EditRecord(id, newRecord.FirstName, newRecord.LastName, newRecord.DateOfBirth, newRecord.Height, newRecord.Salary, newRecord.Sex);
+                        fileCabinetService.EditRecord(id, updatedParams);
 
                         Console.WriteLine($"\nRecord #{id} is updated.");
 
