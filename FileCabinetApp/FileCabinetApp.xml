@@ -166,6 +166,58 @@
             <param name="dateOfBirth">Date of Birth to search by, in format "yyyy-MMM-dd".</param>
             <returns>Array of finded records.</returns>
         </member>
+        <member name="T:FileCabinetApp.IFileCabinetService">
+            <summary>
+            File cabinet service main interface.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.CreateEditParameters)">
+            <summary>
+            Creates new record and adds its to the list.
+            </summary>
+            <param name="parameters">Parameter object. </param>
+            <returns>The Id of created record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
+            <summary>
+            Gets a copy of array of current created records.
+            </summary>
+            <returns>Array of current records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetStat">
+            <summary>
+            Gets the information about the amount of current existing records.
+            </summary>
+            <returns>The number of existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
+            <summary>
+            Edits existing record by it's Id.
+            </summary>
+            <param name="id">Record Id to edit by. </param>
+            <param name="parameters">Parameter object. </param>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            Searches records by First Name in curent records.
+            </summary>
+            <param name="firstName">First Name to search by.</param>
+            <returns>Array of finded records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByLastName(System.String)">
+            <summary>
+            Searches a records by Last Name in curent records.
+            </summary>
+            <param name="lastName">Last Name to search by.</param>
+            <returns>Array of finded records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfBith(System.DateTime)">
+            <summary>
+            Searches a records by Date of birth in curent records using.
+            </summary>
+            <param name="dateOfBirth">Date of Birth to search by.</param>
+            <returns>Array of finded records.</returns>
+        </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
             Represents methods that shoud be implemented by inheritors.

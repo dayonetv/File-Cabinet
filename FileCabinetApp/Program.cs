@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Resources;
 
@@ -66,7 +66,7 @@ namespace FileCabinetApp
         };
 
         private static bool isRunning = true;
-        private static FileCabinetService fileCabinetService;
+        private static IFileCabinetService fileCabinetService;
 
         /// <summary>
         /// The main console-application entry point.
