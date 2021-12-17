@@ -45,21 +45,43 @@
             </summary>
             <value></value>
         </member>
+        <member name="T:FileCabinetApp.CustomValidator">
+            <summary>
+            Represents custom record validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.DefaultValidator">
+            <summary>
+            Represents default validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetCustomService">
             <summary>
             Represents service for stroring records with the ability to add, edit records using custom validation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateParams(FileCabinetApp.CreateEditParameters)">
-            <inheritdoc/>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.CreateValidator">
+            <summary>
+            Creates custom record validator.
+            </summary>
+            <returns>Custom record validator (CustomValidaotr).</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetDefaultService">
             <summary>
             Represents service for stroring records with the ability to add, edit records using default validation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateParams(FileCabinetApp.CreateEditParameters)">
-            <inheritdoc/>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.CreateValidator">
+            <summary>
+            Creates default record validator.
+            </summary>
+            <returns>Default record validator (DefaultValidator).</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
@@ -160,7 +182,18 @@
             <param name="dateOfBirth">Date of Birth to search by, in format "yyyy-MMM-dd".</param>
             <returns>Array of finded records.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateParams(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.FileCabinetService.CreateValidator">
+            <summary>
+            Creates specific record validator.
+            </summary>
+            <returns>Specific record validator. </returns>
+        </member>
+        <member name="T:FileCabinetApp.IRecordValidator">
+            <summary>
+            Represents methods that shoud be implemented by inheritors.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
             <summary>
             Checks parameters correctness.
             </summary>

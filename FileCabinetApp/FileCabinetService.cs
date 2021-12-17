@@ -26,7 +26,7 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            this.ValidateParams(parameters);
+            this.CreateValidator().ValidateParameters(parameters);
 
             FileCabinetRecord record = new ()
             {
@@ -84,7 +84,7 @@ namespace FileCabinetApp
             }
             else
             {
-                this.ValidateParams(parameters);
+                this.CreateValidator().ValidateParameters(parameters);
 
                 this.firstNameDictionary[recordToEdit.FirstName].Remove(recordToEdit);
                 this.lastNameDictionary[recordToEdit.LastName].Remove(recordToEdit);
@@ -132,10 +132,10 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Checks parameters correctness.
+        /// Creates specific record validator.
         /// </summary>
-        /// <param name="parameters">Parameter object to validate. </param>
-        protected abstract void ValidateParams(CreateEditParameters parameters);
+        /// <returns>Specific record validator. </returns>
+        protected abstract IRecordValidator CreateValidator();
 
         private void AddToDictionaries(FileCabinetRecord recordToAdd)
         {
