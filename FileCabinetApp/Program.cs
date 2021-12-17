@@ -6,12 +6,6 @@ using System.Resources;
 
 namespace FileCabinetApp
 {
-    internal enum RuleSet
-    {
-        Default,
-        Custom,
-    }
-
     /// <summary>
     /// Represents the main interface for user to use corresponding commands.
     /// </summary>
@@ -64,17 +58,17 @@ namespace FileCabinetApp
             new Tuple<string, int>("-v", AmountOfInputArgsForShortMode),
         };
 
-        private static readonly Tuple<string, FileCabinetService>[] RuleSet = new Tuple<string, FileCabinetService>[]
+        private static readonly Tuple<string, IRecordValidator>[] RuleSet = new Tuple<string, IRecordValidator>[]
         {
-            new Tuple<string, FileCabinetService>("default", new FileCabinetDefaultService()),
-            new Tuple<string, FileCabinetService>("custom", new FileCabinetCustomService()),
+            new Tuple<string, IRecordValidator>("default", new DefaultValidator()),
+            new Tuple<string, IRecordValidator>("custom", new CustomValidator()),
         };
 
         private static bool isRunning = true;
         private static FileCabinetService fileCabinetService;
 
         /// <summary>
-        /// The main console application entry point.
+        /// The main console-application entry point.
         /// </summary>
         /// <param name="args">Applicattion startup parameters. </param>
         public static void Main(string[] args)
@@ -84,16 +78,18 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(args));
             }
 
-            fileCabinetService = ValidateInputArgs(args);
+            IRecordValidator chosenValidator = ValidateInputArgs(args);
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
 
-            switch (fileCabinetService)
+            switch (chosenValidator)
             {
-                case FileCabinetDefaultService: Console.WriteLine("Using default validation rules."); break;
-                case FileCabinetCustomService: Console.WriteLine("Using custom validation rules."); break;
+                case DefaultValidator: Console.WriteLine("Using default validation rules."); break;
+                case CustomValidator: Console.WriteLine("Using custom validation rules."); break;
                 default: Console.WriteLine($"Unknown startup arguments: {string.Join(' ', args)}"); return;
             }
+
+            fileCabinetService = new FileCabinetService(chosenValidator);
 
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
@@ -126,11 +122,11 @@ namespace FileCabinetApp
             while (isRunning);
         }
 
-        private static FileCabinetService ValidateInputArgs(string[] args)
+        private static IRecordValidator ValidateInputArgs(string[] args)
         {
             if (args.Length == 0)
             {
-                return new FileCabinetDefaultService();
+                return new DefaultValidator();
             }
 
             var inputs = args.Length == AmountOfInputArgsForShortMode ? args : args.First().Split(FullStartupModeSeparator, 2);

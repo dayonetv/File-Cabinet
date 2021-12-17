@@ -61,26 +61,6 @@
         <member name="M:FileCabinetApp.DefaultValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.FileCabinetCustomService">
-            <summary>
-            Represents service for stroring records with the ability to add, edit records using custom validation.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetCustomService"/> class.
-            </summary>
-        </member>
-        <member name="T:FileCabinetApp.FileCabinetDefaultService">
-            <summary>
-            Represents service for stroring records with the ability to add, edit records using default validation.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetDefaultService"/> class.
-            </summary>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Provides properties of the record.
@@ -204,7 +184,7 @@
         </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
-            The main console application entry point.
+            The main console-application entry point.
             </summary>
             <param name="args">Applicattion startup parameters. </param>
         </member>
