@@ -13,6 +13,16 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private readonly IRecordValidator validator;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetService"/> class with specific validator.
+        /// </summary>
+        /// <param name="validator">Validator to be used. </param>
+        protected FileCabinetService(IRecordValidator validator)
+        {
+            this.validator = validator;
+        }
 
         /// <summary>
         /// Creates new record and adds its to the list.
@@ -26,7 +36,7 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            this.CreateValidator().ValidateParameters(parameters);
+            this.validator.ValidateParameters(parameters);
 
             FileCabinetRecord record = new ()
             {
@@ -84,7 +94,7 @@ namespace FileCabinetApp
             }
             else
             {
-                this.CreateValidator().ValidateParameters(parameters);
+                this.validator.ValidateParameters(parameters);
 
                 this.firstNameDictionary[recordToEdit.FirstName].Remove(recordToEdit);
                 this.lastNameDictionary[recordToEdit.LastName].Remove(recordToEdit);
@@ -130,12 +140,6 @@ namespace FileCabinetApp
         {
             return this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth)?.ToArray() ?? Array.Empty<FileCabinetRecord>();
         }
-
-        /// <summary>
-        /// Creates specific record validator.
-        /// </summary>
-        /// <returns>Specific record validator. </returns>
-        protected abstract IRecordValidator CreateValidator();
 
         private void AddToDictionaries(FileCabinetRecord recordToAdd)
         {

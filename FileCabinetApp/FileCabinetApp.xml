@@ -66,22 +66,20 @@
             Represents service for stroring records with the ability to add, edit records using custom validation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.CreateValidator">
+        <member name="M:FileCabinetApp.FileCabinetCustomService.#ctor">
             <summary>
-            Creates custom record validator.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetCustomService"/> class.
             </summary>
-            <returns>Custom record validator (CustomValidaotr).</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetDefaultService">
             <summary>
             Represents service for stroring records with the ability to add, edit records using default validation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.CreateValidator">
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.#ctor">
             <summary>
-            Creates default record validator.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetDefaultService"/> class.
             </summary>
-            <returns>Default record validator (DefaultValidator).</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
@@ -135,6 +133,12 @@
             Represents abstract service for stroring records with the ability to add, edit and find some of them.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class with specific validator.
+            </summary>
+            <param name="validator">Validator to be used. </param>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.CreateEditParameters)">
             <summary>
             Creates new record and adds its to the list.
@@ -181,12 +185,6 @@
             </summary>
             <param name="dateOfBirth">Date of Birth to search by, in format "yyyy-MMM-dd".</param>
             <returns>Array of finded records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateValidator">
-            <summary>
-            Creates specific record validator.
-            </summary>
-            <returns>Specific record validator. </returns>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
