@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 
 namespace FileCabinetApp
@@ -60,9 +61,9 @@ namespace FileCabinetApp
         /// Gets a copy of array of current created records.
         /// </summary>
         /// <returns>Array of current records.</returns>
-        public FileCabinetRecord[] GetRecords()
+        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return new List<FileCabinetRecord>(this.list).ToArray();
+            return this.list.AsReadOnly();
         }
 
         /// <summary>
@@ -116,9 +117,9 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">First Name to search by.</param>
         /// <returns>Array of finded records.</returns>
-        public FileCabinetRecord[] FindByFirstName(string firstName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            return this.firstNameDictionary.GetValueOrDefault(firstName)?.ToArray() ?? Array.Empty<FileCabinetRecord>();
+            return this.firstNameDictionary.GetValueOrDefault(firstName)?.AsReadOnly();
         }
 
         /// <summary>
@@ -126,9 +127,9 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">Last Name to search by.</param>
         /// <returns>Array of finded records.</returns>
-        public FileCabinetRecord[] FindByLastName(string lastName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            return this.lastNameDictionary.GetValueOrDefault(lastName)?.ToArray() ?? Array.Empty<FileCabinetRecord>();
+            return this.lastNameDictionary.GetValueOrDefault(lastName)?.AsReadOnly();
         }
 
         /// <summary>
@@ -136,9 +137,9 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">Date of Birth to search by, in format "yyyy-MMM-dd".</param>
         /// <returns>Array of finded records.</returns>
-        public FileCabinetRecord[] FindByDateOfBith(DateTime dateOfBirth)
+        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
         {
-            return this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth)?.ToArray() ?? Array.Empty<FileCabinetRecord>();
+            return this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth)?.AsReadOnly();
         }
 
         private void AddToDictionaries(FileCabinetRecord recordToAdd)

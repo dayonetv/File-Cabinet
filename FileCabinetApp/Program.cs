@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Resources;
 
@@ -45,11 +46,11 @@ namespace FileCabinetApp
             new string[] { "find", "finds record by some record field", "The 'find' command finds record by some record field." },
         };
 
-        private static readonly Tuple<string, Func<string, FileCabinetRecord[]>>[] FindByFunctions = new Tuple<string, Func<string, FileCabinetRecord[]>>[]
+        private static readonly Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[] FindByFunctions = new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[]
         {
-            new Tuple<string, Func<string, FileCabinetRecord[]>>("firstname", FindByFirstName),
-            new Tuple<string, Func<string, FileCabinetRecord[]>>("lastname", FindByLastName),
-            new Tuple<string, Func<string, FileCabinetRecord[]>>("dateofbirth", FindByDateOfBirth),
+            new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("firstname", FindByFirstName),
+            new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("lastname", FindByLastName),
+            new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("dateofbirth", FindByDateOfBirth),
         };
 
         private static readonly Tuple<string, int>[] StartupModes = new Tuple<string, int>[]
@@ -265,7 +266,7 @@ namespace FileCabinetApp
                 {
                     bool parseResult = int.TryParse(parameters, NumberStyles.Any, CultureInfo.InvariantCulture, out int id);
 
-                    FileCabinetRecord recordToEdit = parseResult ? Array.Find(fileCabinetService.GetRecords(), rec => rec.Id == id) : null;
+                    FileCabinetRecord recordToEdit = parseResult ? fileCabinetService.GetRecords()?.FirstOrDefault(rec => rec.Id == id) : null;
 
                     if (recordToEdit == null)
                     {
@@ -317,9 +318,9 @@ namespace FileCabinetApp
                 return;
             }
 
-            FileCabinetRecord[] findedRecords = findByFunc.Invoke(toFind);
+            ReadOnlyCollection<FileCabinetRecord> findedRecords = findByFunc.Invoke(toFind);
 
-            if (findedRecords != Array.Empty<FileCabinetRecord>())
+            if (findedRecords != null)
             {
                 foreach (var record in findedRecords)
                 {
@@ -332,18 +333,18 @@ namespace FileCabinetApp
             }
         }
 
-        private static FileCabinetRecord[] FindByDateOfBirth(string dateToFind)
+        private static ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)
         {
             bool parseResult = DateTime.TryParseExact(dateToFind.Trim('"'), DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBithToFind);
-            return parseResult ? fileCabinetService.FindByDateOfBith(dateOfBithToFind) : Array.Empty<FileCabinetRecord>();
+            return parseResult ? fileCabinetService.FindByDateOfBith(dateOfBithToFind) : null;
         }
 
-        private static FileCabinetRecord[] FindByFirstName(string firstName)
+        private static ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             return fileCabinetService.FindByFirstName(firstName.Trim('"'));
         }
 
-        private static FileCabinetRecord[] FindByLastName(string lastName)
+        private static ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
             return fileCabinetService.FindByLastName(lastName.Trim('"'));
         }
