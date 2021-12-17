@@ -6,6 +6,12 @@ using System.Resources;
 
 namespace FileCabinetApp
 {
+    internal enum RuleSet
+    {
+        Default,
+        Custom,
+    }
+
     /// <summary>
     /// Represents the main interface for user to use corresponding commands.
     /// </summary>
@@ -19,6 +25,9 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
         private const int AmountOfFindByParams = 2;
+        private const int AmountOfInputArgsForShortMode = 2;
+        private const int AmountOfInputArgsForFullMode = 1;
+        private const char FullStartupModeSeparator = '=';
 
         private static readonly Tuple<string, Action<string>>[] Commands = new Tuple<string, Action<string>>[]
         {
@@ -49,6 +58,18 @@ namespace FileCabinetApp
             new Tuple<string, Func<string, FileCabinetRecord[]>>("dateofbirth", FindByDateOfBirth),
         };
 
+        private static readonly Tuple<string, int>[] StartupModes = new Tuple<string, int>[]
+        {
+            new Tuple<string, int>("--validation-rules", AmountOfInputArgsForFullMode),
+            new Tuple<string, int>("-v", AmountOfInputArgsForShortMode),
+        };
+
+        private static readonly Tuple<string, FileCabinetService>[] RuleSet = new Tuple<string, FileCabinetService>[]
+        {
+            new Tuple<string, FileCabinetService>("default", new FileCabinetDefaultService()),
+            new Tuple<string, FileCabinetService>("custom", new FileCabinetCustomService()),
+        };
+
         private static bool isRunning = true;
         private static FileCabinetService fileCabinetService;
 
@@ -58,9 +79,22 @@ namespace FileCabinetApp
         /// <param name="args">Applicattion startup parameters. </param>
         public static void Main(string[] args)
         {
-            fileCabinetService = new FileCabinetCustomService();
+            if (args == null)
+            {
+                throw new ArgumentNullException(nameof(args));
+            }
+
+            fileCabinetService = ValidateInputArgs(args);
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+
+            switch (fileCabinetService)
+            {
+                case FileCabinetDefaultService: Console.WriteLine("Using default validation rules."); break;
+                case FileCabinetCustomService: Console.WriteLine("Using custom validation rules."); break;
+                default: Console.WriteLine($"Unknown startup arguments: {string.Join(' ', args)}"); return;
+            }
+
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -90,6 +124,35 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+        }
+
+        private static FileCabinetService ValidateInputArgs(string[] args)
+        {
+            if (args.Length == 0)
+            {
+                return new FileCabinetDefaultService();
+            }
+
+            var inputs = args.Length == AmountOfInputArgsForShortMode ? args : args.First().Split(FullStartupModeSeparator, 2);
+
+            string inputRule;
+            string inputMode;
+
+            inputMode = inputs.First();
+
+            int indexOfMode = Array.FindIndex(StartupModes, mode => inputMode.Equals(mode.Item1, StringComparison.InvariantCultureIgnoreCase) && args.Length == mode.Item2);
+            if (indexOfMode >= 0)
+            {
+                inputRule = inputs[1];
+            }
+            else
+            {
+                return null;
+            }
+
+            int ruleIndex = Array.FindIndex(RuleSet, tuple => tuple.Item1.Equals(inputRule, StringComparison.InvariantCultureIgnoreCase));
+
+            return ruleIndex >= 0 ? RuleSet[ruleIndex].Item2 : null;
         }
 
         private static void PrintMissedCommandInfo(string command)
