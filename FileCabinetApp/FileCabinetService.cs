@@ -111,6 +111,12 @@ namespace FileCabinetApp
             }
         }
 
+        /// <inheritdoc/>
+        public FileCabinetServiceSnapshot MakeSnapShot()
+        {
+            return new FileCabinetServiceSnapshot(this.GetRecords());
+        }
+
         /// <summary>
         /// Searches records by First Name in curent records using special 'firstNameDictionary' dictionary.
         /// </summary>
