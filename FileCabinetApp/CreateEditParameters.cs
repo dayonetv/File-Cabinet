@@ -7,48 +7,42 @@ using System.Threading.Tasks;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Provides properties of the record.
+    /// Parameter object for FileCabinetService.CreateRecord and FileCabinetService.EditRecord methods.
     /// </summary>
-    public class FileCabinetRecord
+    public class CreateEditParameters
     {
         /// <summary>
-        /// Gets or sets unique Identificator of the record.
-        /// </summary>
-        /// <value></value>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets first name of the person.
+        /// Gets or sets first name parameter.
         /// </summary>
         /// <value></value>
         public string FirstName { get; set; }
 
         /// <summary>
-        /// Gets or sets last name of the person.
+        /// Gets or sets last name parameter.
         /// </summary>
         /// <value></value>
         public string LastName { get; set; }
 
         /// <summary>
-        /// Gets or sets date of birth of the person.
+        /// Gets or sets date of birth parameter.
         /// </summary>
         /// <value></value>
         public DateTime DateOfBirth { get; set; }
 
         /// <summary>
-        /// Gets or sets height of the person.
+        /// Gets or sets height parameter.
         /// </summary>
         /// <value></value>
         public short Height { get; set; }
 
         /// <summary>
-        /// Gets or sets salary of the person.
+        /// Gets or sets salary parameter.
         /// </summary>
         /// <value></value>
         public decimal Salary { get; set; }
 
         /// <summary>
-        /// Gets or sets gender of the person.
+        /// Gets or sets gender parameter.
         /// </summary>
         /// <value></value>
         public char Sex { get; set; }
