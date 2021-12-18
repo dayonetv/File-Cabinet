@@ -82,6 +82,7 @@ namespace FileCabinetApp
         private static readonly Tuple<string, Func<FileInfo, bool, string>>[] SavingModes = new Tuple<string, Func<FileInfo, bool, string>>[]
         {
             new Tuple<string, Func<FileInfo, bool, string>>("csv", WriteToCsv),
+            new Tuple<string, Func<FileInfo, bool, string>>("xml", WriteToXml),
         };
 
         private static readonly Tuple<char, bool>[] Choices = new Tuple<char, bool>[]
@@ -402,6 +403,23 @@ namespace FileCabinetApp
 
                 var snapShot = fileCabinetService.MakeSnapShot();
                 snapShot.SaveToScv(writer);
+
+                writer.Close();
+
+                return $"All records are exported to file {fileToWriteTo.FullName}.";
+            }
+
+            return $"Saving canceled";
+        }
+
+        private static string WriteToXml(FileInfo fileToWriteTo, bool rewrite)
+        {
+            if (rewrite)
+            {
+                StreamWriter writer = fileToWriteTo.CreateText();
+
+                var snapShot = fileCabinetService.MakeSnapShot();
+                snapShot.SaveToXml(writer);
 
                 writer.Close();
 

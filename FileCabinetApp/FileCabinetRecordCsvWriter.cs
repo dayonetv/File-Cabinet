@@ -51,6 +51,7 @@ namespace FileCabinetApp
             }
 
             this.csvWriter.WriteLine();
+            this.csvWriter.Flush();
         }
 
         private void WritePropertyNames(Type type)

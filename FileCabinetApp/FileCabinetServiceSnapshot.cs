@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Xml;
 
 namespace FileCabinetApp
 {
@@ -31,6 +32,20 @@ namespace FileCabinetApp
             for (int i = 0; i < this.records.Length; i++)
             {
                 csvWriter.Write(this.records[i], i == 0);
+            }
+        }
+
+        /// <summary>
+        /// Saves all records to *.xml file.
+        /// </summary>
+        /// <param name="writer">Stream to file.</param>
+        public void SaveToXml(StreamWriter writer)
+        {
+            FileCabinetRecordXmlWriter xmlWriter = new FileCabinetRecordXmlWriter(XmlWriter.Create(writer));
+
+            for (int i = 0; i < this.records.Length; i++)
+            {
+                xmlWriter.Write(this.records[i], i == 0, i == this.records.Length - 1);
             }
         }
     }
