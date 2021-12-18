@@ -108,6 +108,43 @@
             </summary>
             <value></value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
+            <summary>
+            Represents class for saving records to *.csv files.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+            <param name="writer">writer to save info. </param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord,System.Boolean)">
+            <summary>
+            Write property-values if the record to *.csv file.
+            </summary>
+            <param name="record">record to be saved. </param>
+            <param name="isFirst">is it the first record. </param>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            Represents class for saving records to *.xml files.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.Xml.XmlWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">writer to save info. </param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord,System.Boolean,System.Boolean)">
+            <summary>
+            Write property-values if the record to *.xml file.
+            </summary>
+            <param name="record">record to be saved. </param>
+            <param name="isFirst">is it the first record. </param>
+            <param name="isLast">is it the last record. </param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             Represents abstract service for stroring records with the ability to add, edit and find some of them.
@@ -145,6 +182,9 @@
             <param name="id">Record Id to edit by. </param>
             <param name="parameters">Parameter object. </param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapShot">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
             <summary>
             Searches records by First Name in curent records using special 'firstNameDictionary' dictionary.
@@ -165,6 +205,29 @@
             </summary>
             <param name="dateOfBirth">Date of Birth to search by, in format "yyyy-MMM-dd".</param>
             <returns>Array of finded records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
+            <summary>
+            Represents snapshot of current property-values of the records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(System.Collections.ObjectModel.ReadOnlyCollection{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="records">array of records to be snapshoted. </param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToScv(System.IO.StreamWriter)">
+            <summary>
+            Saves all records to *.scv file.
+            </summary>
+            <param name="writer">Stream to file.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Saves all records to *.xml file.
+            </summary>
+            <param name="writer">Stream to file.</param>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
@@ -217,6 +280,12 @@
             </summary>
             <param name="dateOfBirth">Date of Birth to search by.</param>
             <returns>Array of finded records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapShot">
+            <summary>
+            Makes snapshot of all current records.
+            </summary>
+            <returns>snapshot of current records. </returns>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>

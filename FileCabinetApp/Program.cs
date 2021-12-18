@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Resources;
 
 namespace FileCabinetApp
 {
@@ -20,6 +19,7 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
         private const int AmountOfFindByParams = 2;
+        private const int AmountOfExportParams = 2;
         private const int AmountOfInputArgsForShortMode = 2;
         private const int AmountOfInputArgsForFullMode = 1;
         private const char FullStartupModeSeparator = '=';
@@ -45,6 +45,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
+            new Tuple<string, Action<string>>("export", Export),
         };
 
         private static readonly string[][] HelpMessages = new string[][]
@@ -56,6 +57,7 @@ namespace FileCabinetApp
             new string[] { "list", "prints current records", "The 'list' command prints current records." },
             new string[] { "edit", "edits record by id", "The 'edit' command edits record by id." },
             new string[] { "find", "finds record by some record field", "The 'find' command finds record by some record field." },
+            new string[] { "export", "exports all records to the file", "The 'command' exports all records to the file." },
         };
 
         private static readonly Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[] FindByFunctions = new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[]
@@ -75,6 +77,18 @@ namespace FileCabinetApp
         {
             new Tuple<string, IRecordValidator>("default", new DefaultValidator()),
             new Tuple<string, IRecordValidator>("custom", new CustomValidator()),
+        };
+
+        private static readonly Tuple<string, Func<FileInfo, bool, string>>[] SavingModes = new Tuple<string, Func<FileInfo, bool, string>>[]
+        {
+            new Tuple<string, Func<FileInfo, bool, string>>("csv", WriteToCsv),
+            new Tuple<string, Func<FileInfo, bool, string>>("xml", WriteToXml),
+        };
+
+        private static readonly Tuple<char, bool>[] Choices = new Tuple<char, bool>[]
+        {
+            new Tuple<char, bool>('Y', true),
+            new Tuple<char, bool>('N', false),
         };
 
         private static bool isRunning = true;
@@ -219,7 +233,7 @@ namespace FileCabinetApp
                 {
                     CreateEditParameters creationParams = EnterInfo();
 
-                    Console.WriteLine($"\nRecord #{fileCabinetService.CreateRecord(creationParams)} is created.");
+                    Console.WriteLine($"Record #{fileCabinetService.CreateRecord(creationParams)} is created.");
 
                     isValid = true;
                 }
@@ -334,6 +348,85 @@ namespace FileCabinetApp
             {
                 Console.WriteLine($"There is no records with {findBy}: '{toFind}'. ");
             }
+        }
+
+        private static void Export(string parameters)
+        {
+            var inputParams = parameters.Trim().Split(' ', AmountOfExportParams);
+
+            if (inputParams.Length != AmountOfExportParams)
+            {
+                Console.WriteLine($"'export' command requires at least {AmountOfExportParams} parameters. ");
+                return;
+            }
+
+            string fileExtention = inputParams[0].Trim();
+            string fileName = inputParams[^1].Trim();
+
+            FileInfo exportFile = new FileInfo(fileName);
+
+            bool toRewrite = true;
+
+            if (exportFile.Exists)
+            {
+                Console.WriteLine($"File is exist - rewrite {exportFile.FullName}? [Y/n] ");
+                char inputChoice = ReadInput(CharConverter, YesNoChoiceValidator);
+
+                int choiseIndex = Array.FindIndex(Choices, choice => choice.Item1.ToString().Equals(inputChoice.ToString(), StringComparison.InvariantCultureIgnoreCase));
+                toRewrite = Choices[choiseIndex].Item2;
+            }
+
+            int saveModeIndex = Array.FindIndex(SavingModes, (mode) => mode.Item1.Equals(fileExtention, StringComparison.InvariantCultureIgnoreCase));
+
+            if (saveModeIndex >= 0)
+            {
+                try
+                {
+                    Console.WriteLine(SavingModes[saveModeIndex].Item2.Invoke(exportFile, toRewrite));
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Unknown: {fileExtention} parameter for 'export' command");
+            }
+        }
+
+        private static string WriteToCsv(FileInfo fileToWriteTo, bool rewrite)
+        {
+            if (rewrite)
+            {
+                StreamWriter writer = fileToWriteTo.CreateText();
+
+                var snapShot = fileCabinetService.MakeSnapShot();
+                snapShot.SaveToScv(writer);
+
+                writer.Close();
+
+                return $"All records are exported to file {fileToWriteTo.FullName}.";
+            }
+
+            return $"Saving canceled";
+        }
+
+        private static string WriteToXml(FileInfo fileToWriteTo, bool rewrite)
+        {
+            if (rewrite)
+            {
+                StreamWriter writer = fileToWriteTo.CreateText();
+
+                var snapShot = fileCabinetService.MakeSnapShot();
+                snapShot.SaveToXml(writer);
+
+                writer.Close();
+
+                return $"All records are exported to file {fileToWriteTo.FullName}.";
+            }
+
+            return $"Saving canceled";
         }
 
         private static ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)
@@ -451,6 +544,12 @@ namespace FileCabinetApp
         {
             bool result = chosenValidator is DefaultValidator ? DefaultGenderPredicate(sex) : CustomGenderPredicate(sex);
             return new Tuple<bool, string>(result, result ? "Valid" : "gender wrong format");
+        }
+
+        private static Tuple<bool, string> YesNoChoiceValidator(char inputChoice)
+        {
+            bool result = Array.FindIndex(Choices, choice => choice.Item1.ToString().Equals(inputChoice.ToString(), StringComparison.InvariantCultureIgnoreCase)) >= 0;
+            return new Tuple<bool, string>(result, result ? "Valid" : "Choice can only be 'Y' or 'N'");
         }
     }
 }
