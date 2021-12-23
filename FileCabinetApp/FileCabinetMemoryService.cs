@@ -5,9 +5,9 @@ using System.Collections.ObjectModel;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Represents abstract service for stroring records with the ability to add, edit and find some of them.
+    /// Represents service for stroring records with the ability to add, edit and find some of them.
     /// </summary>
-    public class FileCabinetService : IFileCabinetService
+    public class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
@@ -16,10 +16,10 @@ namespace FileCabinetApp
         private readonly IRecordValidator validator;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetService"/> class with specific validator.
+        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class with specific validator.
         /// </summary>
         /// <param name="validator">Validator to be used. </param>
-        public FileCabinetService(IRecordValidator validator)
+        public FileCabinetMemoryService(IRecordValidator validator)
         {
             this.validator = validator;
         }

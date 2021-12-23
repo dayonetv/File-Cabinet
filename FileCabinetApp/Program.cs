@@ -117,7 +117,7 @@ namespace FileCabinetApp
                 default: Console.WriteLine($"Unknown startup arguments: {string.Join(' ', args)}"); return;
             }
 
-            fileCabinetService = new FileCabinetService(chosenValidator);
+            fileCabinetService = new FileCabinetMemoryService(chosenValidator);
 
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
