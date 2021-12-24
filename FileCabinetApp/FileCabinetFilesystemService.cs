@@ -13,6 +13,11 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService
     {
+        private const int RecordByteSize = 275;
+        private const int NameByteSize = 120;
+
+        private static readonly Encoding CurrentEncoding = Encoding.Default;
+
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator;
 
@@ -30,7 +35,27 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public int CreateRecord(CreateEditParameters parameters)
         {
-            throw new NotImplementedException();
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            this.validator.ValidateParameters(parameters);
+
+            FileCabinetRecord record = new ()
+            {
+                Id = ((int)this.fileStream.Length / RecordByteSize) + 1,
+                FirstName = parameters.FirstName,
+                LastName = parameters.LastName,
+                DateOfBirth = parameters.DateOfBirth,
+                Height = parameters.Height,
+                Salary = parameters.Salary,
+                Sex = parameters.Sex,
+            };
+
+            this.WriteRecordToFile(record);
+
+            return record.Id;
         }
 
         /// <inheritdoc/>
@@ -66,7 +91,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public int GetStat()
         {
-            throw new NotImplementedException();
+            return (int)this.fileStream.Length / RecordByteSize;
         }
 
         /// <inheritdoc/>
@@ -79,6 +104,32 @@ namespace FileCabinetApp
         public override string ToString()
         {
             return "Filesystem service";
+        }
+
+        private void WriteRecordToFile(FileCabinetRecord record)
+        {
+            using (BinaryWriter binWriter = new (this.fileStream, CurrentEncoding, true))
+            {
+                var nameChars = new char[NameByteSize];
+
+                binWriter.Write(record.Id);
+
+                Array.Copy(record.FirstName.ToCharArray(), nameChars, record.FirstName.Length);
+                binWriter.Write(nameChars);
+
+                Array.Copy(record.LastName.ToCharArray(), nameChars, record.LastName.Length);
+                binWriter.Write(nameChars);
+
+                binWriter.Write(record.DateOfBirth.Year);
+                binWriter.Write(record.DateOfBirth.Month);
+                binWriter.Write(record.DateOfBirth.Day);
+
+                binWriter.Write(record.Height);
+
+                binWriter.Write(record.Salary);
+
+                binWriter.Write(record.Sex);
+            }
         }
     }
 }
