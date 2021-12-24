@@ -147,6 +147,12 @@ namespace FileCabinetApp
             return this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth)?.AsReadOnly();
         }
 
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return "Memory service";
+        }
+
         private void AddToDictionaries(FileCabinetRecord recordToAdd)
         {
             if (!this.firstNameDictionary.ContainsKey(recordToAdd.FirstName))

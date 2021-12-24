@@ -14,14 +14,17 @@ namespace FileCabinetApp
     public class FileCabinetFilesystemService : IFileCabinetService
     {
         private readonly FileStream fileStream;
+        private readonly IRecordValidator validator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
         /// <param name="fileStream">Stream to binary file.</param>
-        public FileCabinetFilesystemService(FileStream fileStream)
+        /// <param name="validator">Current validator to be used. </param>
+        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;
+            this.validator = validator;
         }
 
         /// <inheritdoc/>
@@ -70,6 +73,12 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot MakeSnapShot()
         {
             throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return "Filesystem service";
         }
     }
 }
