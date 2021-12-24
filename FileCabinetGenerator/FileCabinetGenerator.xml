@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FileCabinetGenerator</name>
+    </assembly>
+    <members>
+        <member name="T:FileCabinetGenerator.Program">
+            <summary>
+            Generator of file cabinet reacords.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.Program.Main(System.String[])">
+            <summary>
+            The main console-application entry point.
+            </summary>
+            <param name="args">Applicattion startup parameters. </param>
+        </member>
+    </members>
+</doc>
