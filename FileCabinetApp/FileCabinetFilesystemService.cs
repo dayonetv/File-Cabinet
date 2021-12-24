@@ -85,7 +85,16 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            throw new NotImplementedException();
+            this.fileStream.Seek(default, SeekOrigin.Begin);
+
+            List<FileCabinetRecord> readedRecords = new List<FileCabinetRecord>();
+
+            for (int i = 0; i < this.fileStream.Length / RecordByteSize; i++)
+            {
+                readedRecords.Add(this.ReadOneRecord());
+            }
+
+            return readedRecords.AsReadOnly();
         }
 
         /// <inheritdoc/>
@@ -130,6 +139,32 @@ namespace FileCabinetApp
 
                 binWriter.Write(record.Sex);
             }
+        }
+
+        private FileCabinetRecord ReadOneRecord()
+        {
+            FileCabinetRecord readedRecord = new FileCabinetRecord();
+
+            using (BinaryReader binReader = new BinaryReader(this.fileStream, CurrentEncoding, true))
+            {
+                readedRecord.Id = binReader.ReadInt32();
+
+                readedRecord.FirstName = CurrentEncoding.GetString(binReader.ReadBytes(NameByteSize)).Trim('\0');
+                readedRecord.LastName = CurrentEncoding.GetString(binReader.ReadBytes(NameByteSize)).Trim('\0');
+
+                int yearOfBirth = binReader.ReadInt32();
+                int monthOfBirth = binReader.ReadInt32();
+                int dayOfBirth = binReader.ReadInt32();
+                readedRecord.DateOfBirth = new DateTime(yearOfBirth, monthOfBirth, dayOfBirth);
+
+                readedRecord.Height = binReader.ReadInt16();
+
+                readedRecord.Salary = binReader.ReadDecimal();
+
+                readedRecord.Sex = binReader.ReadChar();
+            }
+
+            return readedRecord;
         }
     }
 }
