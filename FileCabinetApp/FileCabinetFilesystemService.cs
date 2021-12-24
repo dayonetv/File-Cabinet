@@ -61,7 +61,34 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public void EditRecord(int id, CreateEditParameters parameters)
         {
-            throw new NotImplementedException();
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            this.fileStream.Seek(default, SeekOrigin.Begin);
+
+            long recordToEditBeginPosition = this.FindRecordById(id);
+
+            if (recordToEditBeginPosition < 0)
+            {
+                throw new ArgumentException("record is not found", nameof(id));
+            }
+
+            FileCabinetRecord updatedRecord = new FileCabinetRecord()
+            {
+                Id = id,
+                FirstName = parameters.FirstName,
+                LastName = parameters.LastName,
+                DateOfBirth = parameters.DateOfBirth,
+                Height = parameters.Height,
+                Salary = parameters.Salary,
+                Sex = parameters.Sex,
+            };
+
+            this.fileStream.Seek(recordToEditBeginPosition, SeekOrigin.Begin);
+
+            this.WriteRecordToFile(updatedRecord);
         }
 
         /// <inheritdoc/>
@@ -165,6 +192,26 @@ namespace FileCabinetApp
             }
 
             return readedRecord;
+        }
+
+        private long FindRecordById(int id)
+        {
+            using (BinaryReader idsReader = new BinaryReader(this.fileStream, CurrentEncoding, true))
+            {
+                for (int i = 0; i < this.GetStat(); i++)
+                {
+                    int readedId = idsReader.ReadInt32();
+
+                    if (readedId == id)
+                    {
+                        return this.fileStream.Position - sizeof(int);
+                    }
+
+                    this.fileStream.Seek(RecordByteSize - sizeof(int), SeekOrigin.Current);
+                }
+            }
+
+            return -1;
         }
     }
 }
