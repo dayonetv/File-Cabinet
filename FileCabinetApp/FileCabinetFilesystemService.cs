@@ -15,6 +15,9 @@ namespace FileCabinetApp
     {
         private const int RecordByteSize = 275;
         private const int NameByteSize = 120;
+        private const int FirstNameOffset = 4;
+        private const int LastNameOffset = 124;
+        private const int DateOfBirthOffset = 244;
 
         private static readonly Encoding CurrentEncoding = Encoding.Default;
 
@@ -52,6 +55,8 @@ namespace FileCabinetApp
                 Salary = parameters.Salary,
                 Sex = parameters.Sex,
             };
+
+            this.fileStream.Seek(RecordByteSize * this.GetStat(), SeekOrigin.Begin);
 
             this.WriteRecordToFile(record);
 
@@ -94,19 +99,96 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
+
+            this.fileStream.Seek(DateOfBirthOffset, SeekOrigin.Begin);
+
+            int amountOfRecords = this.GetStat();
+            using (BinaryReader dateReader = new BinaryReader(this.fileStream, CurrentEncoding, true))
+            {
+                for (int i = 0; i < amountOfRecords; i++)
+                {
+                    DateTime readedDate = new DateTime(dateReader.ReadInt32(), dateReader.ReadInt32(), dateReader.ReadInt32());
+
+                    if (readedDate == dateOfBirth)
+                    {
+                        this.fileStream.Seek(i * RecordByteSize, SeekOrigin.Begin);
+                        findedRecords.Add(this.ReadOneRecord());
+                    }
+                    else
+                    {
+                        this.fileStream.Seek((i + 1) * RecordByteSize, SeekOrigin.Begin);
+                    }
+
+                    this.fileStream.Seek(DateOfBirthOffset, SeekOrigin.Current);
+                }
+            }
+
+            return findedRecords.Count != default ? findedRecords.AsReadOnly() : null;
         }
 
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
+
+            this.fileStream.Seek(FirstNameOffset, SeekOrigin.Begin);
+
+            int amountOfRecords = this.GetStat();
+
+            using (BinaryReader firstNameReader = new BinaryReader(this.fileStream, CurrentEncoding, true))
+            {
+                for (int i = 0; i < amountOfRecords; i++)
+                {
+                    string readedFirstName = CurrentEncoding.GetString(firstNameReader.ReadBytes(NameByteSize)).Trim('\0');
+
+                    if (readedFirstName.Equals(firstName, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        this.fileStream.Seek(i * RecordByteSize, SeekOrigin.Begin);
+                        findedRecords.Add(this.ReadOneRecord());
+                    }
+                    else
+                    {
+                        this.fileStream.Seek((i + 1) * RecordByteSize, SeekOrigin.Begin);
+                    }
+
+                    this.fileStream.Seek(FirstNameOffset, SeekOrigin.Current);
+                }
+            }
+
+            return findedRecords.Count != default ? findedRecords.AsReadOnly() : null;
         }
 
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
+
+            this.fileStream.Seek(LastNameOffset, SeekOrigin.Begin);
+
+            int amountOfRecords = this.GetStat();
+
+            using (BinaryReader lastNameReader = new BinaryReader(this.fileStream, CurrentEncoding, true))
+            {
+                for (int i = 0; i < amountOfRecords; i++)
+                {
+                    string readedLastName = CurrentEncoding.GetString(lastNameReader.ReadBytes(NameByteSize)).Trim('\0');
+
+                    if (readedLastName.Equals(lastName, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        this.fileStream.Seek(i * RecordByteSize, SeekOrigin.Begin);
+                        findedRecords.Add(this.ReadOneRecord());
+                    }
+                    else
+                    {
+                        this.fileStream.Seek((i + 1) * RecordByteSize, SeekOrigin.Begin);
+                    }
+
+                    this.fileStream.Seek(LastNameOffset, SeekOrigin.Current);
+                }
+            }
+
+            return findedRecords.Count != default ? findedRecords.AsReadOnly() : null;
         }
 
         /// <inheritdoc/>

@@ -365,7 +365,7 @@ namespace FileCabinetApp
 
                         fileCabinetService.EditRecord(id, updatedParams);
 
-                        Console.WriteLine($"\nRecord #{id} is updated.");
+                        Console.WriteLine($"Record #{id} is updated.");
 
                         isValid = true;
                     }
