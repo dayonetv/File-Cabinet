@@ -66,5 +66,11 @@ namespace FileCabinetApp
                 throw new ArgumentException($"Height can not be less than {MinHeight} or more than {MaxHeight}", parameters.Height.ToString(Culture));
             }
         }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return "default validation";
+        }
     }
 }
