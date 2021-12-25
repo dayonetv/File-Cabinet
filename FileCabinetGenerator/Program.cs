@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
 
 namespace FileCabinetGenerator
 {
@@ -56,6 +57,7 @@ namespace FileCabinetGenerator
         };
 
         private static StreamWriter csvWriter;
+        private static FileStream xmlStream;
         private static FileInfo targetFile;
 
         /// <summary>
@@ -234,7 +236,14 @@ namespace FileCabinetGenerator
 
         private static void WriteToXml(List<FileCabinetRecord> recordsToWrite)
         {
-            throw new NotImplementedException();
+            xmlStream ??= new FileStream(targetFile.FullName, FileMode.Create);
+
+            FileCabinetRecord[] records = recordsToWrite.ToArray();
+
+            XmlSerializer xmlSerializer = new XmlSerializer(records.GetType());
+            xmlSerializer.Serialize(xmlStream, records);
+
+            xmlStream.Close();
         }
 
         private static List<FileCabinetRecord> GenerateRandomRecords(int startId, int recordsAmount)

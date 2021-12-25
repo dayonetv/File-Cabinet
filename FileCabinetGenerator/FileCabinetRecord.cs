@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace FileCabinetGenerator
 {
     /// <summary>
     /// Provides properties of the record.
     /// </summary>
+    [Serializable]
+    [XmlType("record")]
     public class FileCabinetRecord
     {
         /// <summary>
         /// Gets or sets unique Identificator of the record.
         /// </summary>
         /// <value></value>
+        [XmlAttribute("id")]
         public int Id { get; set; }
 
         /// <summary>
