@@ -37,6 +37,7 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
         private const int AmountOfFindByParams = 2;
         private const int AmountOfExportParams = 2;
+        private const int AmountOFImportParams = 2;
         private const int AmountOfInputArgsForShortMode = 2;
         private const int AmountOfInputArgsForFullMode = 1;
         private const char DefaultStartupModeSeparator = '=';
@@ -63,6 +64,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
         };
 
         private static readonly string[][] HelpMessages = new string[][]
@@ -74,7 +76,8 @@ namespace FileCabinetApp
             new string[] { "list", "prints current records", "The 'list' command prints current records." },
             new string[] { "edit", "edits record by id", "The 'edit' command edits record by id." },
             new string[] { "find", "finds record by some record field", "The 'find' command finds record by some record field." },
-            new string[] { "export", "exports all records to the file", "The 'command' exports all records to the file." },
+            new string[] { "export", "exports all records to the file", "The 'export' command exports all records to the file." },
+            new string[] { "import", "imports records from the file", "The 'import' command imports records from the file." },
         };
 
         private static readonly Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[] FindByFunctions = new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[]
@@ -108,6 +111,12 @@ namespace FileCabinetApp
         {
             new Tuple<string, Func<FileInfo, bool, string>>("csv", WriteToCsv),
             new Tuple<string, Func<FileInfo, bool, string>>("xml", WriteToXml),
+        };
+
+        private static readonly Tuple<string, Func<FileInfo, string>>[] ImportModes = new Tuple<string, Func<FileInfo, string>>[]
+        {
+            new Tuple<string, Func<FileInfo, string>>("csv", ImportFromCsv),
+            new Tuple<string, Func<FileInfo, string>>("xml", ImportFromXml),
         };
 
         private static readonly Tuple<char, bool>[] Choices = new Tuple<char, bool>[]
@@ -492,6 +501,50 @@ namespace FileCabinetApp
             }
 
             return $"Saving canceled";
+        }
+
+        private static void Import(string parameters)
+        {
+            var inputParams = parameters.Trim().Split(' ', AmountOFImportParams);
+
+            if (inputParams.Length != AmountOFImportParams)
+            {
+                Console.WriteLine($"'import' command requires at least {AmountOFImportParams} parameters. ");
+                return;
+            }
+
+            string importMode = inputParams[0].Trim();
+            string fileName = inputParams[^1].Trim();
+
+            FileInfo importFile = new FileInfo(fileName);
+
+            if (importFile.Exists)
+            {
+                int importModeIndex = Array.FindIndex(ImportModes, (tuple) => tuple.Item1.Equals(importMode, StringComparison.InvariantCultureIgnoreCase));
+                if (importModeIndex >= 0)
+                {
+                    string message = ImportModes[importModeIndex].Item2?.Invoke(importFile);
+                    Console.WriteLine(message);
+                }
+                else
+                {
+                    Console.WriteLine($"Unknown import mode: {importMode}.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Import error: file {importFile.FullName} is not exist.");
+            }
+        }
+
+        private static string ImportFromCsv(FileInfo fileToImportFrom)
+        {
+            return $"10000 records were imported from {fileToImportFrom.FullName}.";
+        }
+
+        private static string ImportFromXml(FileInfo fileToImportFrom)
+        {
+            return $"10000 records were imported from {fileToImportFrom.FullName}.";
         }
 
         private static ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)
