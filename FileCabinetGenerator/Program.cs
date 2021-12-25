@@ -20,6 +20,18 @@ namespace FileCabinetGenerator
         private const int RecordsAmountCommandIndex = 2;
         private const int StartIdCommandIndex = 3;
 
+        private const int MaxNameLength = 60;
+        private const int MinNameLength = 2;
+        private const int MaxSalary = 1_000_000;
+        private const short MaxHeight = 220;
+        private const short MinHeight = 120;
+        private const string Chars = "abcdefghijklmnopqrstuvw";
+
+        private static readonly char[] Genders = { 'M', 'F' };
+        private static readonly DateTime MinDateOfBirth = new (1950, 1, 1);
+
+        private static readonly Random Randomizer = new Random();
+
         private static readonly string[] StartUpFullCommands = new string[]
         {
             "--output-type",
@@ -50,13 +62,22 @@ namespace FileCabinetGenerator
         {
             if (args == null || args.Length == 0)
             {
-                Console.WriteLine($"Invalid input args");
+                Console.WriteLine($"Invalid startup arguments");
                 return;
             }
 
-            var result = ValidateInputArgs(args);
+            var configuration = ValidateInputArgs(args);
 
-            Console.WriteLine($"{result.amount} were written to {result.file.FullName}");
+            if (configuration.amount >= 0 && configuration.id >= 0 && configuration.file != null && configuration.writeToMethod != null)
+            {
+                List<FileCabinetRecord> records = GenerateRandomRecords(configuration.id, configuration.amount);
+
+                Console.WriteLine($"{configuration.amount} records were written to {configuration.file.FullName}");
+            }
+            else
+            {
+                Console.WriteLine("Wrong Startup Parameters");
+            }
         }
 
         private static (int id, int amount, FileInfo file, Action<FileCabinetRecord> writeToMethod) ValidateInputArgs(string[] args)
@@ -188,32 +209,54 @@ namespace FileCabinetGenerator
 
         private static List<FileCabinetRecord> GenerateRandomRecords(int startId, int recordsAmount)
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> generatedRecords = new List<FileCabinetRecord>();
+
+            for (int i = 0; i < recordsAmount; i++)
+            {
+                FileCabinetRecord randomRecord = new FileCabinetRecord()
+                {
+                    Id = startId++,
+                    FirstName = GetRandomString(),
+                    LastName = GetRandomString(),
+                    DateOfBirth = GetRandomDateOfBirth(),
+                    Height = GetRandomHeight(),
+                    Salary = GetRandomSalary(),
+                    Sex = GetRandomGender(),
+                };
+
+                generatedRecords.Add(randomRecord);
+            }
+
+            return generatedRecords;
         }
 
         private static string GetRandomString()
         {
-            throw new NotImplementedException();
+            int stringLength = Randomizer.Next(MinNameLength, MaxNameLength);
+            return new string(Enumerable.Repeat(Chars, stringLength).Select(s => s[Randomizer.Next(s.Length)]).ToArray());
         }
 
         private static short GetRandomHeight()
         {
-            throw new NotImplementedException();
+            return (short)Randomizer.Next(MinHeight, MaxHeight);
         }
 
         private static char GetRandomGender()
         {
-            throw new NotImplementedException();
+            return Genders[Randomizer.Next(Genders.Length)];
         }
 
         private static decimal GetRandomSalary()
         {
-            throw new NotImplementedException();
+            return Randomizer.Next(0, MaxSalary);
         }
 
         private static DateTime GetRandomDateOfBirth()
         {
-            throw new NotImplementedException();
+            int year = Randomizer.Next(MinDateOfBirth.Year, DateTime.Now.Year);
+            int month = year == DateTime.Now.Year ? Randomizer.Next(MinDateOfBirth.Month, DateTime.Now.Month) : Randomizer.Next(MinDateOfBirth.Month, DateTime.MaxValue.Month);
+            int day = year == DateTime.Now.Year && month == DateTime.Now.Month ? Randomizer.Next(MinDateOfBirth.Day, DateTime.Now.Day) : Randomizer.Next(MinDateOfBirth.Day, DateTime.DaysInMonth(year, month));
+            return new DateTime(year, month, day);
         }
     }
 }
