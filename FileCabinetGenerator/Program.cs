@@ -26,6 +26,7 @@ namespace FileCabinetGenerator
         private const short MaxHeight = 220;
         private const short MinHeight = 120;
         private const string Chars = "abcdefghijklmnopqrstuvw";
+        private const string DateFormat = "d";
 
         private static readonly char[] Genders = { 'M', 'F' };
         private static readonly DateTime MinDateOfBirth = new (1950, 1, 1);
@@ -48,11 +49,14 @@ namespace FileCabinetGenerator
             "-i",
         };
 
-        private static readonly Tuple<string, Action<FileCabinetRecord>>[] OutputFomatTypes = new Tuple<string, Action<FileCabinetRecord>>[]
+        private static readonly Tuple<string, Action<List<FileCabinetRecord>>>[] OutputFomatTypes = new Tuple<string, Action<List<FileCabinetRecord>>>[]
         {
-            new Tuple<string, Action<FileCabinetRecord>>("csv", WriteToCsv),
-            new Tuple<string, Action<FileCabinetRecord>>("xml", WriteToXml),
+            new Tuple<string, Action<List<FileCabinetRecord>>>("csv", WriteToCsv),
+            new Tuple<string, Action<List<FileCabinetRecord>>>("xml", WriteToXml),
         };
+
+        private static StreamWriter csvWriter;
+        private static FileInfo targetFile;
 
         /// <summary>
         /// The main console-application entry point.
@@ -66,11 +70,23 @@ namespace FileCabinetGenerator
                 return;
             }
 
-            var configuration = ValidateInputArgs(args);
+            var configuration = GetConfiguration(args);
 
             if (configuration.amount >= 0 && configuration.id >= 0 && configuration.file != null && configuration.writeToMethod != null)
             {
+                targetFile = configuration.file;
+
                 List<FileCabinetRecord> records = GenerateRandomRecords(configuration.id, configuration.amount);
+
+                try
+                {
+                    configuration.writeToMethod?.Invoke(records);
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return;
+                }
 
                 Console.WriteLine($"{configuration.amount} records were written to {configuration.file.FullName}");
             }
@@ -80,9 +96,9 @@ namespace FileCabinetGenerator
             }
         }
 
-        private static (int id, int amount, FileInfo file, Action<FileCabinetRecord> writeToMethod) ValidateInputArgs(string[] args)
+        private static (int id, int amount, FileInfo file, Action<List<FileCabinetRecord>> writeToMethod) GetConfiguration(string[] args)
         {
-            Action<FileCabinetRecord> writeMethod = default;
+            Action<List<FileCabinetRecord>> writeMethod = default;
             FileInfo file = default;
             int startId = -1;
             int amountOfRecords = -1;
@@ -137,7 +153,7 @@ namespace FileCabinetGenerator
             return (startId, amountOfRecords, file, writeMethod);
         }
 
-        private static void ProcessCommand(int indexOfCommand, string parameter, ref int startId, ref FileInfo file, ref int amountOfRecords, ref Action<FileCabinetRecord> writeMethod)
+        private static void ProcessCommand(int indexOfCommand, string parameter, ref int startId, ref FileInfo file, ref int amountOfRecords, ref Action<List<FileCabinetRecord>> writeMethod)
         {
             switch (indexOfCommand)
             {
@@ -184,7 +200,7 @@ namespace FileCabinetGenerator
             return null;
         }
 
-        private static Action<FileCabinetRecord> GetWriteToMethod(string fileFormat)
+        private static Action<List<FileCabinetRecord>> GetWriteToMethod(string fileFormat)
         {
             int formatTypeIndex = Array.FindIndex(OutputFomatTypes, (tuple) => tuple.Item1.Equals(fileFormat, StringComparison.InvariantCultureIgnoreCase));
 
@@ -197,12 +213,26 @@ namespace FileCabinetGenerator
             return null;
         }
 
-        private static void WriteToCsv(FileCabinetRecord recordToWrite)
+        private static void WriteToCsv(List<FileCabinetRecord> recordsToWrite)
         {
-            throw new NotImplementedException();
+            csvWriter ??= new StreamWriter(targetFile.FullName);
+
+            foreach (var record in recordsToWrite)
+            {
+                csvWriter.Write($"{record.Id},");
+                csvWriter.Write($"{record.FirstName},");
+                csvWriter.Write($"{record.LastName},");
+                csvWriter.Write($"{record.DateOfBirth.ToString(DateFormat, CultureInfo.InvariantCulture)},");
+                csvWriter.Write($"{record.Height},");
+                csvWriter.Write($"{record.Salary},");
+                csvWriter.Write($"{record.Sex}");
+                csvWriter.WriteLine();
+            }
+
+            csvWriter.Close();
         }
 
-        private static void WriteToXml(FileCabinetRecord recordToWrite)
+        private static void WriteToXml(List<FileCabinetRecord> recordsToWrite)
         {
             throw new NotImplementedException();
         }
