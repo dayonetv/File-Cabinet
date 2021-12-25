@@ -4,6 +4,53 @@
         <name>FileCabinetGenerator</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetGenerator.FileCabinetRecord">
+            <summary>
+            Provides properties of the record.
+            </summary>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecord.Id">
+            <summary>
+            Gets or sets unique Identificator of the record.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecord.FirstName">
+            <summary>
+            Gets or sets first name of the person.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecord.LastName">
+            <summary>
+            Gets or sets last name of the person.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecord.DateOfBirth">
+            <summary>
+            Gets or sets date of birth of the person.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecord.Height">
+            <summary>
+            Gets or sets height of the person.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecord.Salary">
+            <summary>
+            Gets or sets salary of the person.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecord.Sex">
+            <summary>
+            Gets or sets gender of the person.
+            </summary>
+            <value></value>
+        </member>
         <member name="T:FileCabinetGenerator.Program">
             <summary>
             Generator of file cabinet reacords.
