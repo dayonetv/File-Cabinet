@@ -13,11 +13,14 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService
     {
-        private const int RecordByteSize = 275;
+        private const int RecordByteSize = 276;
         private const int NameByteSize = 120;
         private const int FirstNameOffset = 4;
         private const int LastNameOffset = 124;
         private const int DateOfBirthOffset = 244;
+        private const int IsDeletedOffset = 275;
+
+        private const bool IsDeletedDefaultValue = false;
 
         private static readonly Encoding CurrentEncoding = Encoding.Default;
 
@@ -113,7 +116,12 @@ namespace FileCabinetApp
                     if (readedDate == dateOfBirth)
                     {
                         this.fileStream.Seek(i * RecordByteSize, SeekOrigin.Begin);
-                        findedRecords.Add(this.ReadOneRecord());
+
+                        var record = this.ReadOneRecord();
+                        if (record != null)
+                        {
+                            findedRecords.Add(record);
+                        }
                     }
                     else
                     {
@@ -145,7 +153,12 @@ namespace FileCabinetApp
                     if (readedFirstName.Equals(firstName, StringComparison.InvariantCultureIgnoreCase))
                     {
                         this.fileStream.Seek(i * RecordByteSize, SeekOrigin.Begin);
-                        findedRecords.Add(this.ReadOneRecord());
+
+                        var record = this.ReadOneRecord();
+                        if (record != null)
+                        {
+                            findedRecords.Add(record);
+                        }
                     }
                     else
                     {
@@ -177,7 +190,12 @@ namespace FileCabinetApp
                     if (readedLastName.Equals(lastName, StringComparison.InvariantCultureIgnoreCase))
                     {
                         this.fileStream.Seek(i * RecordByteSize, SeekOrigin.Begin);
-                        findedRecords.Add(this.ReadOneRecord());
+
+                        var record = this.ReadOneRecord();
+                        if (record != null)
+                        {
+                            findedRecords.Add(record);
+                        }
                     }
                     else
                     {
@@ -200,7 +218,12 @@ namespace FileCabinetApp
 
             for (int i = 0; i < this.fileStream.Length / RecordByteSize; i++)
             {
-                readedRecords.Add(this.ReadOneRecord());
+                var record = this.ReadOneRecord();
+
+                if (record != null)
+                {
+                    readedRecords.Add(record);
+                }
             }
 
             return readedRecords.AsReadOnly();
@@ -292,7 +315,20 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public bool Remove(int id)
         {
-            throw new NotImplementedException();
+            long recordToRemovePosition = this.FindRecordById(id);
+
+            if (recordToRemovePosition < 0)
+            {
+                return false;
+            }
+
+            using (BinaryWriter binWriter = new BinaryWriter(this.fileStream, CurrentEncoding, true))
+            {
+                this.fileStream.Seek(recordToRemovePosition + IsDeletedOffset, SeekOrigin.Begin);
+                binWriter.Write(!IsDeletedDefaultValue);
+            }
+
+            return true;
         }
 
         private void WriteRecordToFile(FileCabinetRecord record)
@@ -318,12 +354,15 @@ namespace FileCabinetApp
                 binWriter.Write(record.Salary);
 
                 binWriter.Write(record.Sex);
+
+                binWriter.Write(IsDeletedDefaultValue);
             }
         }
 
         private FileCabinetRecord ReadOneRecord()
         {
             FileCabinetRecord readedRecord = new FileCabinetRecord();
+            bool isDeleted = false;
 
             using (BinaryReader binReader = new BinaryReader(this.fileStream, CurrentEncoding, true))
             {
@@ -342,9 +381,11 @@ namespace FileCabinetApp
                 readedRecord.Salary = binReader.ReadDecimal();
 
                 readedRecord.Sex = binReader.ReadChar();
+
+                isDeleted = binReader.ReadBoolean();
             }
 
-            return readedRecord;
+            return isDeleted ? null : readedRecord;
         }
 
         private long FindRecordById(int id)
@@ -355,9 +396,13 @@ namespace FileCabinetApp
 
                 for (int i = 0; i < amountOfRecords; i++)
                 {
+                    this.fileStream.Seek((i * RecordByteSize) + IsDeletedOffset, SeekOrigin.Begin);
+                    bool isDeleted = idsReader.ReadBoolean();
+                    this.fileStream.Seek(i * RecordByteSize, SeekOrigin.Begin);
+
                     int readedId = idsReader.ReadInt32();
 
-                    if (readedId == id)
+                    if (readedId == id && !isDeleted)
                     {
                         return this.fileStream.Position - sizeof(int);
                     }
