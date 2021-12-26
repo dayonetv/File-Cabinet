@@ -78,5 +78,11 @@ namespace FileCabinetApp
         /// <param name="id">Id of removing record. </param>
         /// <returns>Removing success.</returns>
         public bool Remove(int id);
+
+        /// <summary>
+        /// Defragmetate all deleted records for Filesystem Service.
+        /// </summary>
+        /// <returns>Amount of purged records. </returns>
+        public int Purge();
     }
 }

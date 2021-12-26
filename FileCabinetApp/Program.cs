@@ -66,6 +66,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
         };
 
         private static readonly string[][] HelpMessages = new string[][]
@@ -80,6 +81,7 @@ namespace FileCabinetApp
             new string[] { "export", "exports all records to the file", "The 'export' command exports all records to the file." },
             new string[] { "import", "imports records from the file", "The 'import' command imports records from the file." },
             new string[] { "remove", "removes record by its id", "The 'remove' command removes record by its id." },
+            new string[] { "purge", "defragmentates records file for Filesystem Service", "The 'purge' defragmentates records file for Filesystem Service." },
         };
 
         private static readonly Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[] FindByFunctions = new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[]
@@ -615,6 +617,20 @@ namespace FileCabinetApp
             }
 
             Console.WriteLine($"Invalid format for id: {parameters}");
+        }
+
+        private static void Purge(string parameters)
+        {
+            if (fileCabinetService is FileCabinetMemoryService)
+            {
+                Console.WriteLine($"{fileCabinetService} has nothing to purge. ");
+                return;
+            }
+
+            int recordsAmountbeforePurge = fileCabinetService.GetStat();
+            int purgedRecordsAmount = fileCabinetService.Purge();
+
+            Console.WriteLine($"Data file processing is completed: {purgedRecordsAmount} of {recordsAmountbeforePurge} records were purged.");
         }
 
         private static ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)

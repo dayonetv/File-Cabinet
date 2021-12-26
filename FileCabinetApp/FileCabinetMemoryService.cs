@@ -211,6 +211,12 @@ namespace FileCabinetApp
             return true;
         }
 
+        /// <inheritdoc/>
+        public int Purge()
+        {
+            return default;
+        }
+
         /// <summary>
         /// Searches records by First Name in curent records using special 'firstNameDictionary' dictionary.
         /// </summary>

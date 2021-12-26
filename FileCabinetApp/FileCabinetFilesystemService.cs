@@ -331,6 +331,12 @@ namespace FileCabinetApp
             return true;
         }
 
+        /// <inheritdoc/>
+        public int Purge()
+        {
+            throw new NotImplementedException();
+        }
+
         private void WriteRecordToFile(FileCabinetRecord record)
         {
             using (BinaryWriter binWriter = new (this.fileStream, CurrentEncoding, true))
