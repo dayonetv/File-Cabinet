@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace FileCabinetApp
 {
@@ -71,5 +68,18 @@ namespace FileCabinetApp
         /// <param name="snapshot">Snapshot for restoring. </param>
         /// <returns>Information about restored records. </returns>
         public string Restore(FileCabinetServiceSnapshot snapshot);
+
+        /// <summary>
+        /// Remove record by its id.
+        /// </summary>
+        /// <param name="id">Id of removing record. </param>
+        /// <returns>Removing success.</returns>
+        public bool Remove(int id);
+
+        /// <summary>
+        /// Defragmetate records file for Filesystem Service.
+        /// </summary>
+        /// <returns>Amount of purged records. </returns>
+        public int Purge();
     }
 }

@@ -65,6 +65,8 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
         };
 
         private static readonly string[][] HelpMessages = new string[][]
@@ -78,6 +80,8 @@ namespace FileCabinetApp
             new string[] { "find", "finds record by some record field", "The 'find' command finds record by some record field." },
             new string[] { "export", "exports all records to the file", "The 'export' command exports all records to the file." },
             new string[] { "import", "imports records from the file", "The 'import' command imports records from the file." },
+            new string[] { "remove", "removes record by its id", "The 'remove' command removes record by its id." },
+            new string[] { "purge", "defragmentates records file for Filesystem Service", "The 'purge' defragmentates records file for Filesystem Service." },
         };
 
         private static readonly Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[] FindByFunctions = new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[]
@@ -294,8 +298,10 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            var totalRecordsCount = Program.fileCabinetService.GetStat();
+            var deletedRecordsCount = totalRecordsCount - Program.fileCabinetService.GetRecords().Count;
+
+            Console.WriteLine($"Total: {totalRecordsCount} record(s).\nDeleted: {deletedRecordsCount} record(s).");
         }
 
         private static void Create(string parameters)
@@ -598,6 +604,35 @@ namespace FileCabinetApp
             {
                 xmlReader.Close();
             }
+        }
+
+        private static void Remove(string parameters)
+        {
+            bool parseResult = int.TryParse(parameters.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out int id);
+
+            if (parseResult)
+            {
+                bool removingResult = fileCabinetService.Remove(id);
+
+                Console.WriteLine(removingResult ? $"Record #{id} is removed." : $"Record #{id} doesn't exists.");
+                return;
+            }
+
+            Console.WriteLine($"Invalid format for id: {parameters}");
+        }
+
+        private static void Purge(string parameters)
+        {
+            if (fileCabinetService is FileCabinetMemoryService)
+            {
+                Console.WriteLine($"{fileCabinetService} has nothing to purge. ");
+                return;
+            }
+
+            int allrecordsAmount = fileCabinetService.GetStat();
+            int purgedAmount = fileCabinetService.Purge();
+
+            Console.WriteLine($"Data file processing is completed: {purgedAmount} of {allrecordsAmount} records were purged.");
         }
 
         private static ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)

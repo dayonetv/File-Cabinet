@@ -109,6 +109,12 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Purge">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
             Represents service for stroring records with the ability to add, edit and find some of them.
@@ -150,6 +156,12 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Purge">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByFirstName(System.String)">
@@ -404,6 +416,19 @@
             </summary>
             <param name="snapshot">Snapshot for restoring. </param>
             <returns>Information about restored records. </returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Remove(System.Int32)">
+            <summary>
+            Remove record by its id.
+            </summary>
+            <param name="id">Id of removing record. </param>
+            <returns>Removing success.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Purge">
+            <summary>
+            Defragmetate records file for Filesystem Service.
+            </summary>
+            <returns>Amount of purged records. </returns>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>

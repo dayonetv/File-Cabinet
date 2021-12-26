@@ -190,6 +190,33 @@ namespace FileCabinetApp
             return recordsInfo.ToString() + $"{recordsToAdd.Count} records were imported ";
         }
 
+        /// <inheritdoc/>
+        public bool Remove(int id)
+        {
+            FileCabinetRecord recordToRemove = this.list.Find((rec) => rec.Id == id);
+
+            if (recordToRemove == null)
+            {
+                return false;
+            }
+
+            this.list.Remove(recordToRemove);
+
+            this.firstNameDictionary[recordToRemove.FirstName].Remove(recordToRemove);
+            this.lastNameDictionary[recordToRemove.LastName].Remove(recordToRemove);
+            this.dateOfBirthDictionary[recordToRemove.DateOfBirth].Remove(recordToRemove);
+
+            this.RemoveEmptyDictionaryKeys(recordToRemove);
+
+            return true;
+        }
+
+        /// <inheritdoc/>
+        public int Purge()
+        {
+            return default;
+        }
+
         /// <summary>
         /// Searches records by First Name in curent records using special 'firstNameDictionary' dictionary.
         /// </summary>
@@ -246,6 +273,24 @@ namespace FileCabinetApp
             this.firstNameDictionary[recordToAdd.FirstName].Add(recordToAdd);
             this.lastNameDictionary[recordToAdd.LastName].Add(recordToAdd);
             this.dateOfBirthDictionary[recordToAdd.DateOfBirth].Add(recordToAdd);
+        }
+
+        private void RemoveEmptyDictionaryKeys(FileCabinetRecord removedRecord)
+        {
+            if (this.firstNameDictionary[removedRecord.FirstName].Count == 0)
+            {
+                this.firstNameDictionary.Remove(removedRecord.FirstName);
+            }
+
+            if (this.lastNameDictionary[removedRecord.LastName].Count == 0)
+            {
+                this.lastNameDictionary.Remove(removedRecord.LastName);
+            }
+
+            if (this.dateOfBirthDictionary[removedRecord.DateOfBirth].Count == 0)
+            {
+                this.dateOfBirthDictionary.Remove(removedRecord.DateOfBirth);
+            }
         }
     }
 }
