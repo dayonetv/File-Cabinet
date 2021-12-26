@@ -190,6 +190,12 @@ namespace FileCabinetApp
             return recordsInfo.ToString() + $"{recordsToAdd.Count} records were imported ";
         }
 
+        /// <inheritdoc/>
+        public void Remove(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Searches records by First Name in curent records using special 'firstNameDictionary' dictionary.
         /// </summary>

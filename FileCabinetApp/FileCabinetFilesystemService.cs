@@ -289,6 +289,12 @@ namespace FileCabinetApp
             return recordsInfo.ToString() + $"{recordsToAdd.Count} records were imported ";
         }
 
+        /// <inheritdoc/>
+        public void Remove(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         private void WriteRecordToFile(FileCabinetRecord record)
         {
             using (BinaryWriter binWriter = new (this.fileStream, CurrentEncoding, true))

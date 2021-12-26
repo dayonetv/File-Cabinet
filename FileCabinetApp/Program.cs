@@ -65,6 +65,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
         };
 
         private static readonly string[][] HelpMessages = new string[][]
@@ -78,6 +79,7 @@ namespace FileCabinetApp
             new string[] { "find", "finds record by some record field", "The 'find' command finds record by some record field." },
             new string[] { "export", "exports all records to the file", "The 'export' command exports all records to the file." },
             new string[] { "import", "imports records from the file", "The 'import' command imports records from the file." },
+            new string[] { "remove", "removes record by its id", "The 'remove' command removes record by its id." },
         };
 
         private static readonly Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[] FindByFunctions = new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[]
@@ -598,6 +600,21 @@ namespace FileCabinetApp
             {
                 xmlReader.Close();
             }
+        }
+
+        private static void Remove(string parameters)
+        {
+            bool parseResult = int.TryParse(parameters.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out int id);
+
+            if (parseResult)
+            {
+                fileCabinetService.Remove(id);
+
+                Console.WriteLine($"Record #{id} is removed.");
+                return;
+            }
+
+            Console.WriteLine($"Invalid format for id: {parameters}");
         }
 
         private static ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)
