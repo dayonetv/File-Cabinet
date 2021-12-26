@@ -156,7 +156,7 @@ namespace FileCabinetApp
                 case StorageMode.File: fileCabinetService = new FileCabinetFilesystemService(new FileStream(CabinetRecordsFile, FileMode.Create), chosenValidator); break;
                 default: fileCabinetService = new FileCabinetMemoryService(chosenValidator); break;
             }
-            fileCabinetService = new FileCabinetFilesystemService(new FileStream(CabinetRecordsFile, FileMode.Create), chosenValidator);
+
             Console.WriteLine($"Strorage: {fileCabinetService.ToString()}");
 
             Console.WriteLine(Program.HintMessage);
@@ -298,8 +298,10 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            var totalRecordsCount = Program.fileCabinetService.GetStat();
+            var deletedRecordsCount = totalRecordsCount - Program.fileCabinetService.GetRecords().Count;
+
+            Console.WriteLine($"Total: {totalRecordsCount} record(s).\nDeleted: {deletedRecordsCount} record(s).");
         }
 
         private static void Create(string parameters)
