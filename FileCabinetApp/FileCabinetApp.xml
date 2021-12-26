@@ -426,7 +426,7 @@
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.Purge">
             <summary>
-            Defragmetate all deleted records for Filesystem Service.
+            Defragmetate records file for Filesystem Service.
             </summary>
             <returns>Amount of purged records. </returns>
         </member>

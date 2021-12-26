@@ -334,7 +334,16 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public int Purge()
         {
-            throw new NotImplementedException();
+            int amountOfAllRecords = (int)this.fileStream.Length / RecordByteSize;
+
+            List<FileCabinetRecord> notDeletedRecords = new List<FileCabinetRecord>(this.GetRecords());
+
+            this.fileStream.SetLength(notDeletedRecords.Count * RecordByteSize);
+            this.fileStream.Seek(default, SeekOrigin.Begin);
+
+            notDeletedRecords.ForEach(this.WriteRecordToFile);
+
+            return amountOfAllRecords - notDeletedRecords.Count;
         }
 
         private void WriteRecordToFile(FileCabinetRecord record)

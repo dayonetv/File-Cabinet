@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace FileCabinetApp
 {
@@ -80,7 +77,7 @@ namespace FileCabinetApp
         public bool Remove(int id);
 
         /// <summary>
-        /// Defragmetate all deleted records for Filesystem Service.
+        /// Defragmetate records file for Filesystem Service.
         /// </summary>
         /// <returns>Amount of purged records. </returns>
         public int Purge();

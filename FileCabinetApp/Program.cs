@@ -156,7 +156,7 @@ namespace FileCabinetApp
                 case StorageMode.File: fileCabinetService = new FileCabinetFilesystemService(new FileStream(CabinetRecordsFile, FileMode.Create), chosenValidator); break;
                 default: fileCabinetService = new FileCabinetMemoryService(chosenValidator); break;
             }
-
+            fileCabinetService = new FileCabinetFilesystemService(new FileStream(CabinetRecordsFile, FileMode.Create), chosenValidator);
             Console.WriteLine($"Strorage: {fileCabinetService.ToString()}");
 
             Console.WriteLine(Program.HintMessage);
@@ -627,10 +627,10 @@ namespace FileCabinetApp
                 return;
             }
 
-            int recordsAmountbeforePurge = fileCabinetService.GetStat();
-            int purgedRecordsAmount = fileCabinetService.Purge();
+            int allrecordsAmount = fileCabinetService.GetStat();
+            int purgedAmount = fileCabinetService.Purge();
 
-            Console.WriteLine($"Data file processing is completed: {purgedRecordsAmount} of {recordsAmountbeforePurge} records were purged.");
+            Console.WriteLine($"Data file processing is completed: {purgedAmount} of {allrecordsAmount} records were purged.");
         }
 
         private static ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)
