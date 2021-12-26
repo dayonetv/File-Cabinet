@@ -224,6 +224,12 @@ namespace FileCabinetApp
             return "Filesystem service";
         }
 
+        /// <inheritdoc/>
+        public string Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            throw new NotImplementedException();
+        }
+
         private void WriteRecordToFile(FileCabinetRecord record)
         {
             using (BinaryWriter binWriter = new (this.fileStream, CurrentEncoding, true))

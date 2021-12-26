@@ -523,8 +523,15 @@ namespace FileCabinetApp
                 int importModeIndex = Array.FindIndex(ImportModes, (tuple) => tuple.Item1.Equals(importMode, StringComparison.InvariantCultureIgnoreCase));
                 if (importModeIndex >= 0)
                 {
-                    string message = ImportModes[importModeIndex].Item2?.Invoke(importFile);
-                    Console.WriteLine(message);
+                    try
+                    {
+                        string message = ImportModes[importModeIndex].Item2?.Invoke(importFile);
+                        Console.WriteLine(message);
+                    }
+                    catch (IOException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }
                 else
                 {
@@ -539,12 +546,41 @@ namespace FileCabinetApp
 
         private static string ImportFromCsv(FileInfo fileToImportFrom)
         {
-            return $"10000 records were imported from {fileToImportFrom.FullName}.";
+            StreamReader csvReader = fileToImportFrom.OpenText();
+
+            try
+            {
+                var snapshot = new FileCabinetServiceSnapshot();
+                snapshot.LoadFromScv(csvReader);
+                string restoringMessage = fileCabinetService.Restore(snapshot);
+
+                return $"{restoringMessage} from {fileToImportFrom.FullName}.";
+            }
+            catch (IOException ex)
+            {
+                return $"Import error: {ex.Message}";
+            }
+            catch (FormatException ex)
+            {
+                return $"Import error: {ex.Message}";
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return $"Import error: {ex.Message}";
+            }
+            finally
+            {
+                csvReader.Close();
+            }
         }
 
         private static string ImportFromXml(FileInfo fileToImportFrom)
         {
-            return $"10000 records were imported from {fileToImportFrom.FullName}.";
+            int currentAmountOfRecords = fileCabinetService.GetStat();
+
+            int amountOfRecordsAfterResore = fileCabinetService.GetStat();
+
+            return $"{amountOfRecordsAfterResore - currentAmountOfRecords} records were imported from {fileToImportFrom.FullName}.";
         }
 
         private static ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)

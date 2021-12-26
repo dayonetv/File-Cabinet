@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
 
 namespace FileCabinetApp
 {
@@ -115,6 +116,76 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot MakeSnapShot()
         {
             return new FileCabinetServiceSnapshot(this.GetRecords());
+        }
+
+        /// <inheritdoc/>
+        public string Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                throw new ArgumentNullException(nameof(snapshot));
+            }
+
+            StringBuilder recordsInfo = new StringBuilder();
+
+            List<FileCabinetRecord> recordsToAdd = new List<FileCabinetRecord>(snapshot.Records);
+
+            if (recordsToAdd.Count == 0)
+            {
+                return "No records imported";
+            }
+
+            List<FileCabinetRecord> invalidRecords = new List<FileCabinetRecord>();
+
+            foreach (var record in recordsToAdd)
+            {
+                try
+                {
+                    CreateEditParameters parameters = new CreateEditParameters()
+                    {
+                        FirstName = record.FirstName,
+                        LastName = record.LastName,
+                        DateOfBirth = record.DateOfBirth,
+                        Height = record.Height,
+                        Salary = record.Salary,
+                        Sex = record.Sex,
+                    };
+
+                    this.validator.ValidateParameters(parameters);
+                }
+                catch (ArgumentException ex)
+                {
+                    recordsInfo.Append($"ID {record.Id}: {ex.Message}\n");
+                    invalidRecords.Add(record);
+                }
+            }
+
+            invalidRecords.ForEach((invalidRec) => recordsToAdd.Remove(invalidRec));
+
+            if (recordsToAdd.Count == 0)
+            {
+                return recordsInfo.ToString() + "No records imported";
+            }
+
+            int recordsToAddStartId = recordsToAdd[0].Id;
+
+            var recordsToEdit = this.list.FindAll((rec) => rec.Id >= recordsToAddStartId);
+
+            if (recordsToEdit.Count != 0)
+            {
+                foreach (var record in recordsToEdit)
+                {
+                    this.firstNameDictionary[record.FirstName].Remove(record);
+                    this.lastNameDictionary[record.LastName].Remove(record);
+                    this.dateOfBirthDictionary[record.DateOfBirth].Remove(record);
+                    this.list.Remove(record);
+                }
+            }
+
+            this.list.AddRange(recordsToAdd);
+            recordsToAdd.ForEach(this.AddToDictionaries);
+
+            return recordsInfo.ToString() + $"{recordsToAdd.Count} records were imported ";
         }
 
         /// <summary>
