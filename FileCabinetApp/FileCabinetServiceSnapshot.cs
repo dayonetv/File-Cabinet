@@ -80,7 +80,9 @@ namespace FileCabinetApp
         /// <param name="reader">Stream to *.xml file.</param>
         public void LoadFromXml(FileStream reader)
         {
-            throw new NotImplementedException();
+            FileCabinetRecordXmlReader xmlReader = new FileCabinetRecordXmlReader(reader);
+
+            this.Records = xmlReader.ReadAll().AsReadOnly();
         }
     }
 }
