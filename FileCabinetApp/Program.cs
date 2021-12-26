@@ -608,9 +608,9 @@ namespace FileCabinetApp
 
             if (parseResult)
             {
-                fileCabinetService.Remove(id);
+                bool removingResult = fileCabinetService.Remove(id);
 
-                Console.WriteLine($"Record #{id} is removed.");
+                Console.WriteLine(removingResult ? $"Record #{id} is removed." : $"Record #{id} doesn't exists.");
                 return;
             }
 

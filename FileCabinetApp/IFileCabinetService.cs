@@ -76,6 +76,7 @@ namespace FileCabinetApp
         /// Remove record by its id.
         /// </summary>
         /// <param name="id">Id of removing record. </param>
-        public void Remove(int id);
+        /// <returns>Removing success.</returns>
+        public bool Remove(int id);
     }
 }

@@ -416,6 +416,7 @@
             Remove record by its id.
             </summary>
             <param name="id">Id of removing record. </param>
+            <returns>Removing success.</returns>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>

@@ -290,7 +290,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void Remove(int id)
+        public bool Remove(int id)
         {
             throw new NotImplementedException();
         }
