@@ -168,8 +168,9 @@ namespace FileCabinetApp
             }
 
             int recordsToAddStartId = recordsToAdd[0].Id;
+            int recirdsToAddEndID = recordsToAdd[^1].Id;
 
-            var recordsToEdit = this.list.FindAll((rec) => rec.Id >= recordsToAddStartId);
+            List<FileCabinetRecord> recordsToEdit = this.list.FindAll((rec) => rec.Id >= recordsToAddStartId && rec.Id <= recirdsToAddEndID);
 
             if (recordsToEdit.Count != 0)
             {
