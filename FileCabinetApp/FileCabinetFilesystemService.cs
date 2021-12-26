@@ -215,13 +215,78 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapShot()
         {
-            throw new NotImplementedException();
+            return new FileCabinetServiceSnapshot(this.GetRecords());
         }
 
         /// <inheritdoc/>
         public override string ToString()
         {
             return "Filesystem service";
+        }
+
+        /// <inheritdoc/>
+        public string Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                throw new ArgumentNullException(nameof(snapshot));
+            }
+
+            StringBuilder recordsInfo = new StringBuilder();
+
+            List<FileCabinetRecord> recordsToAdd = new List<FileCabinetRecord>(snapshot.Records);
+
+            if (recordsToAdd.Count == 0)
+            {
+                return "No records imported";
+            }
+
+            List<FileCabinetRecord> invalidRecords = new List<FileCabinetRecord>();
+
+            foreach (var record in recordsToAdd)
+            {
+                try
+                {
+                    CreateEditParameters parameters = new CreateEditParameters()
+                    {
+                        FirstName = record.FirstName,
+                        LastName = record.LastName,
+                        DateOfBirth = record.DateOfBirth,
+                        Height = record.Height,
+                        Salary = record.Salary,
+                        Sex = record.Sex,
+                    };
+
+                    this.validator.ValidateParameters(parameters);
+                }
+                catch (ArgumentException ex)
+                {
+                    recordsInfo.Append($"ID {record.Id}: {ex.Message}\n");
+                    invalidRecords.Add(record);
+                }
+            }
+
+            invalidRecords.ForEach((invalidRec) => recordsToAdd.Remove(invalidRec));
+
+            foreach (var record in recordsToAdd)
+            {
+                this.fileStream.Seek(default, SeekOrigin.Begin);
+
+                long findedRecordPosition = this.FindRecordById(record.Id);
+
+                if (findedRecordPosition >= 0)
+                {
+                    this.fileStream.Seek(findedRecordPosition, SeekOrigin.Begin);
+                }
+                else
+                {
+                    this.fileStream.Seek(this.fileStream.Length, SeekOrigin.Begin);
+                }
+
+                this.WriteRecordToFile(record);
+            }
+
+            return recordsInfo.ToString() + $"{recordsToAdd.Count} records were imported ";
         }
 
         private void WriteRecordToFile(FileCabinetRecord record)
@@ -280,7 +345,9 @@ namespace FileCabinetApp
         {
             using (BinaryReader idsReader = new BinaryReader(this.fileStream, CurrentEncoding, true))
             {
-                for (int i = 0; i < this.GetStat(); i++)
+                int amountOfRecords = this.GetStat();
+
+                for (int i = 0; i < amountOfRecords; i++)
                 {
                     int readedId = idsReader.ReadInt32();
 

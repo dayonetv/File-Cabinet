@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -20,6 +21,19 @@ namespace FileCabinetApp
         {
             this.records = records.ToArray();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
+        /// </summary>
+        public FileCabinetServiceSnapshot()
+        {
+        }
+
+        /// <summary>
+        /// Gets readed records.
+        /// </summary>
+        /// <value>Readed records. </value>
+        public ReadOnlyCollection<FileCabinetRecord> Records { get; private set; }
 
         /// <summary>
         /// Saves all records to *.scv file.
@@ -47,6 +61,28 @@ namespace FileCabinetApp
             {
                 xmlWriter.Write(this.records[i], i == 0, i == this.records.Length - 1);
             }
+        }
+
+        /// <summary>
+        /// Reads all records from *.csv file.
+        /// </summary>
+        /// <param name="reader">Stream to *.csv file.</param>
+        public void LoadFromScv(StreamReader reader)
+        {
+            FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader);
+
+            this.Records = csvReader.ReadAll().AsReadOnly();
+        }
+
+        /// <summary>
+        /// Reads all records from *.xml file.
+        /// </summary>
+        /// <param name="reader">Stream to *.xml file.</param>
+        public void LoadFromXml(FileStream reader)
+        {
+            FileCabinetRecordXmlReader xmlReader = new FileCabinetRecordXmlReader(reader);
+
+            this.Records = xmlReader.ReadAll().AsReadOnly();
         }
     }
 }
