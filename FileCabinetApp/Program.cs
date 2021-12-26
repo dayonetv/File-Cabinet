@@ -576,11 +576,28 @@ namespace FileCabinetApp
 
         private static string ImportFromXml(FileInfo fileToImportFrom)
         {
-            int currentAmountOfRecords = fileCabinetService.GetStat();
+            FileStream xmlReader = new FileStream(fileToImportFrom.FullName, FileMode.Open, FileAccess.Read, FileShare.None);
 
-            int amountOfRecordsAfterResore = fileCabinetService.GetStat();
+            try
+            {
+                var snapshot = new FileCabinetServiceSnapshot();
+                snapshot.LoadFromXml(xmlReader);
+                string restoringMessage = fileCabinetService.Restore(snapshot);
 
-            return $"{amountOfRecordsAfterResore - currentAmountOfRecords} records were imported from {fileToImportFrom.FullName}.";
+                return $"{restoringMessage} from {fileToImportFrom.FullName}.";
+            }
+            catch (IOException ex)
+            {
+                return $"Import error: {ex.Message}";
+            }
+            catch (InvalidOperationException ex)
+            {
+                return $"Import error: {ex.Message}";
+            }
+            finally
+            {
+                xmlReader.Close();
+            }
         }
 
         private static ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)

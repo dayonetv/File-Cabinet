@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -71,6 +72,15 @@ namespace FileCabinetApp
             FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader);
 
             this.Records = csvReader.ReadAll().AsReadOnly();
+        }
+
+        /// <summary>
+        /// Reads all records from *.xml file.
+        /// </summary>
+        /// <param name="reader">Stream to *.xml file.</param>
+        public void LoadFromXml(FileStream reader)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -258,6 +258,23 @@
             <param name="record">record to be saved. </param>
             <param name="isFirst">is it the first record. </param>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlReader">
+            <summary>
+            Represents class for reading records from *.xml files.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.#ctor(System.IO.FileStream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="reader">Reader to read info. </param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.ReadAll">
+            <summary>
+            Reads all records from *.xml file.
+            </summary>
+            <returns>List of readed records. </returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
             <summary>
             Represents class for saving records to *.xml files.
@@ -316,6 +333,12 @@
             Reads all records from *.csv file.
             </summary>
             <param name="reader">Stream to *.csv file.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromXml(System.IO.FileStream)">
+            <summary>
+            Reads all records from *.xml file.
+            </summary>
+            <param name="reader">Stream to *.xml file.</param>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
