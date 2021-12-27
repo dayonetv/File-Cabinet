@@ -10,17 +10,15 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     /// Handler for remove command and remove paramaters.
     /// </summary>
-    public class RemoveCommandHandler : CommandHandlerBase
+    public class RemoveCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly IFileCabinetService service;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoveCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Current service. </param>
         public RemoveCommandHandler(IFileCabinetService service)
+            : base(service)
         {
-            this.service = service;
         }
 
         /// <summary>
@@ -38,7 +36,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (parseResult)
             {
-                bool removingResult = this.service.Remove(id);
+                bool removingResult = this.Service.Remove(id);
 
                 Console.WriteLine(removingResult ? $"Record #{id} is removed." : $"Record #{id} doesn't exists.");
                 return;

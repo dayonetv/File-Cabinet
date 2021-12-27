@@ -10,7 +10,7 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     /// Handler for edit command and edit paramaters.
     /// </summary>
-    public class EditCommandHandler : CommandHandlerBase
+    public class EditCommandHandler : ServiceCommandHandlerBase
     {
         private const int DefaultMaxNameLength = 60;
         private const int CustomMaxNameLength = 100;
@@ -24,15 +24,13 @@ namespace FileCabinetApp.CommandHandlers
         private static readonly Predicate<DateTime> DefaultDateOfBirthPredicate = new ((date) => date < DateTime.Now);
         private static readonly Predicate<DateTime> CustomDateOfBirthPredicate = new ((date) => date <= DateTime.Now);
 
-        private readonly IFileCabinetService service;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="EditCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Current service. </param>
         public EditCommandHandler(IFileCabinetService service)
+            : base(service)
         {
-            this.service = service;
         }
 
         /// <summary>
@@ -179,7 +177,7 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     bool parseResult = int.TryParse(parameters, NumberStyles.Any, CultureInfo.InvariantCulture, out int id);
 
-                    FileCabinetRecord recordToEdit = parseResult ? this.service.GetRecords()?.FirstOrDefault(rec => rec.Id == id) : null;
+                    FileCabinetRecord recordToEdit = parseResult ? this.Service.GetRecords()?.FirstOrDefault(rec => rec.Id == id) : null;
 
                     if (recordToEdit == null)
                     {
@@ -189,7 +187,7 @@ namespace FileCabinetApp.CommandHandlers
                     {
                         CreateEditParameters updatedParams = EnterInfo();
 
-                        this.service.EditRecord(id, updatedParams);
+                        this.Service.EditRecord(id, updatedParams);
 
                         Console.WriteLine($"Record #{id} is updated.");
 

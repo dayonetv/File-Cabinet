@@ -10,22 +10,19 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     /// Handler for import command and import paramaters.
     /// </summary>
-    public class ImportCommandHandler : CommandHandlerBase
+    public class ImportCommandHandler : ServiceCommandHandlerBase
     {
         private const int AmountOFImportParams = 2;
 
         private readonly Tuple<string, Func<FileInfo, string>>[] importModes;
-
-        private readonly IFileCabinetService service;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImportCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Current service.</param>
         public ImportCommandHandler(IFileCabinetService service)
+            : base(service)
         {
-            this.service = service;
-
             this.importModes = new Tuple<string, Func<FileInfo, string>>[]
             {
             new Tuple<string, Func<FileInfo, string>>("csv", this.ImportFromCsv),
@@ -91,7 +88,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 var snapshot = new FileCabinetServiceSnapshot();
                 snapshot.LoadFromScv(csvReader);
-                string restoringMessage = this.service.Restore(snapshot);
+                string restoringMessage = this.Service.Restore(snapshot);
 
                 return $"{restoringMessage} from {fileToImportFrom.FullName}.";
             }
@@ -121,7 +118,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 var snapshot = new FileCabinetServiceSnapshot();
                 snapshot.LoadFromXml(xmlReader);
-                string restoringMessage = this.service.Restore(snapshot);
+                string restoringMessage = this.Service.Restore(snapshot);
 
                 return $"{restoringMessage} from {fileToImportFrom.FullName}.";
             }

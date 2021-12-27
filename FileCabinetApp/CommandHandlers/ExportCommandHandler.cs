@@ -10,7 +10,7 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     /// Handler for export command and export paramaters.
     /// </summary>
-    public class ExportCommandHandler : CommandHandlerBase
+    public class ExportCommandHandler : ServiceCommandHandlerBase
     {
         private const int AmountOfExportParams = 2;
 
@@ -22,16 +22,13 @@ namespace FileCabinetApp.CommandHandlers
 
         private readonly Tuple<string, Func<FileInfo, bool, string>>[] savingModes;
 
-        private readonly IFileCabinetService service;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Current service.</param>
         public ExportCommandHandler(IFileCabinetService service)
+            : base(service)
         {
-            this.service = service;
-
             this.savingModes = new Tuple<string, Func<FileInfo, bool, string>>[]
             {
                 new Tuple<string, Func<FileInfo, bool, string>>("csv", this.WriteToCsv),
@@ -141,7 +138,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 StreamWriter writer = fileToWriteTo.CreateText();
 
-                var snapShot = this.service.MakeSnapShot();
+                var snapShot = this.Service.MakeSnapShot();
                 snapShot.SaveToScv(writer);
 
                 writer.Close();
@@ -158,7 +155,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 StreamWriter writer = fileToWriteTo.CreateText();
 
-                var snapShot = this.service.MakeSnapShot();
+                var snapShot = this.Service.MakeSnapShot();
                 snapShot.SaveToXml(writer);
 
                 writer.Close();

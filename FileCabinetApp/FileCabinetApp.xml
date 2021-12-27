@@ -208,6 +208,23 @@
             </summary>
             <param name="request">Command and parameters to be handled.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase">
+            <summary>
+            Abstract class for command handlers that use service.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase"/> class.
+            </summary>
+            <param name="service">Current service to be used.</param>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.Service">
+            <summary>
+            Gets or sets current service.
+            </summary>
+            <value></value>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.StatCommandHandler">
             <summary>
             Handler for stat command.

@@ -11,23 +11,20 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     /// Handler for find command and find paramaters.
     /// </summary>
-    public class FindCommandHandler : CommandHandlerBase
+    public class FindCommandHandler : ServiceCommandHandlerBase
     {
         private const string DateFormat = "d";
         private const int AmountOfFindByParams = 2;
 
         private readonly Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[] findByFunctions;
 
-        private readonly IFileCabinetService service;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Current service. </param>
         public FindCommandHandler(IFileCabinetService service)
+            : base(service)
         {
-            this.service = service;
-
             this.findByFunctions = new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[]
             {
                 new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("firstname", this.FindByFirstName),
@@ -84,17 +81,17 @@ namespace FileCabinetApp.CommandHandlers
         private ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)
         {
             bool parseResult = DateTime.TryParseExact(dateToFind.Trim('"'), DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBithToFind);
-            return parseResult ? this.service.FindByDateOfBith(dateOfBithToFind) : null;
+            return parseResult ? this.Service.FindByDateOfBith(dateOfBithToFind) : null;
         }
 
         private ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            return this.service.FindByFirstName(firstName.Trim('"'));
+            return this.Service.FindByFirstName(firstName.Trim('"'));
         }
 
         private ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            return this.service.FindByLastName(lastName.Trim('"'));
+            return this.Service.FindByLastName(lastName.Trim('"'));
         }
     }
 }

@@ -10,19 +10,17 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     /// Handler for list command.
     /// </summary>
-    public class ListCommandHandler : CommandHandlerBase
+    public class ListCommandHandler : ServiceCommandHandlerBase
     {
         private const string DateFormat = "d";
-
-        private readonly IFileCabinetService service;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Current service. </param>
         public ListCommandHandler(IFileCabinetService service)
+            : base(service)
         {
-            this.service = service;
         }
 
         /// <summary>
@@ -36,7 +34,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private void List()
         {
-            foreach (var record in this.service.GetRecords())
+            foreach (var record in this.Service.GetRecords())
             {
                 Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString(DateFormat, CultureInfo.InvariantCulture)}, {record.Height}, {record.Salary}, {record.Sex}");
             }

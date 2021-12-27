@@ -10,7 +10,7 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     /// Handler for create command.
     /// </summary>
-    public class CreateCommandHandler : CommandHandlerBase
+    public class CreateCommandHandler : ServiceCommandHandlerBase
     {
         private const int DefaultMaxNameLength = 60;
         private const int CustomMaxNameLength = 100;
@@ -24,15 +24,13 @@ namespace FileCabinetApp.CommandHandlers
         private static readonly Predicate<DateTime> DefaultDateOfBirthPredicate = new ((date) => date < DateTime.Now);
         private static readonly Predicate<DateTime> CustomDateOfBirthPredicate = new ((date) => date <= DateTime.Now);
 
-        private readonly IFileCabinetService service;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Current service. </param>
         public CreateCommandHandler(IFileCabinetService service)
+            : base(service)
         {
-            this.service = service;
         }
 
         /// <summary>
@@ -179,7 +177,7 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     CreateEditParameters creationParams = EnterInfo();
 
-                    Console.WriteLine($"Record #{this.service.CreateRecord(creationParams)} is created.");
+                    Console.WriteLine($"Record #{this.Service.CreateRecord(creationParams)} is created.");
 
                     isValid = true;
                 }
