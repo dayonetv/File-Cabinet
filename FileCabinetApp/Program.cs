@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
@@ -31,6 +32,7 @@ namespace FileCabinetApp
         private const string DeveloperName = "Konstantin Karasiov";
         private const string CabinetRecordsFile = "cabinet-records.db";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
+        private const string DateFormat = "d";
 
         private const int AmountOfInputArgsForShortMode = 2;
         private const int AmountOfInputArgsForFullMode = 1;
@@ -118,18 +120,16 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandlers()
         {
-            var recordsPrinter = new DefaultRecordPrinter();
-
             var helpHandler = new HelpCommandHandler();
             var createHandler = new CreateCommandHandler(fileCabinetService);
             var statHandler = new StatCommandHandler(fileCabinetService);
-            var listHandler = new ListCommandHandler(fileCabinetService, recordsPrinter);
+            var listHandler = new ListCommandHandler(fileCabinetService, Program.DefaultRecordPrint);
             var exportHandler = new ExportCommandHandler(fileCabinetService);
             var importHandler = new ImportCommandHandler(fileCabinetService);
             var purgeHandler = new PurgeCommandHandler(fileCabinetService);
             var removeHandler = new RemoveCommandHandler(fileCabinetService);
             var exitHandler = new ExitCommandHandler((state) => isRunning = state);
-            var findHandler = new FindCommandHandler(fileCabinetService, recordsPrinter);
+            var findHandler = new FindCommandHandler(fileCabinetService, Program.DefaultRecordPrint);
             var editHandler = new EditCommandHandler(fileCabinetService);
 
             helpHandler.SetNext(createHandler);
@@ -212,6 +212,19 @@ namespace FileCabinetApp
             }
 
             return indexOfMode;
+        }
+
+        private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
+        {
+            if (records == null)
+            {
+                throw new ArgumentNullException(nameof(records));
+            }
+
+            foreach (var record in records)
+            {
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString(DateFormat, CultureInfo.InvariantCulture)}, {record.Height}, {record.Salary}, {record.Sex}");
+            }
         }
     }
 }

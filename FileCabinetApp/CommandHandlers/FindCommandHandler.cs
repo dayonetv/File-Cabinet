@@ -16,7 +16,7 @@ namespace FileCabinetApp.CommandHandlers
         private const string DateFormat = "d";
         private const int AmountOfFindByParams = 2;
 
-        private readonly IRecordPrinter printer;
+        private readonly Action<IEnumerable<FileCabinetRecord>> printer;
 
         private readonly Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[] findByFunctions;
 
@@ -25,7 +25,7 @@ namespace FileCabinetApp.CommandHandlers
         /// </summary>
         /// <param name="service">Current service. </param>
         /// <param name="printer">Printer for showing records info.</param>
-        public FindCommandHandler(IFileCabinetService service, IRecordPrinter printer)
+        public FindCommandHandler(IFileCabinetService service, Action<IEnumerable<FileCabinetRecord>> printer)
             : base(service)
         {
             this.findByFunctions = new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[]
@@ -72,7 +72,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (findedRecords != null)
             {
-                this.printer.Print(findedRecords);
+                this.printer?.Invoke(findedRecords);
             }
             else
             {
