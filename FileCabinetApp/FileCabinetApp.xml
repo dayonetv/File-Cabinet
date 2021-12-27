@@ -291,28 +291,6 @@
             </summary>
             <value></value>
         </member>
-        <member name="T:FileCabinetApp.CustomValidator">
-            <summary>
-            Represents custom record validator.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CustomValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.CustomValidator.ToString">
-            <inheritdoc/>
-        </member>
-        <member name="T:FileCabinetApp.DefaultValidator">
-            <summary>
-            Represents default validator.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.DefaultValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.DefaultValidator.ToString">
-            <inheritdoc/>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetFilesystemService">
             <summary>
             Represents service for stroring records with the ability to add, edit and find some of them using file system.
@@ -676,17 +654,6 @@
             </summary>
             <returns>Amount of purged records. </returns>
         </member>
-        <member name="T:FileCabinetApp.IRecordValidator">
-            <summary>
-            Represents methods that shoud be implemented by inheritors.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
-            <summary>
-            Checks parameters correctness.
-            </summary>
-            <param name="parameters">Parameter object to validate. </param>
-        </member>
         <member name="T:FileCabinetApp.StorageMode">
             <summary>
             Storage modes for cabinet service.
@@ -718,6 +685,39 @@
             The main console-application entry point.
             </summary>
             <param name="args">Applicattion startup parameters. </param>
+        </member>
+        <member name="T:FileCabinetApp.CustomValidator">
+            <summary>
+            Represents custom record validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.DefaultValidator">
+            <summary>
+            Represents default validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.IRecordValidator">
+            <summary>
+            Represents methods that shoud be implemented by inheritors.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+            <summary>
+            Checks parameters correctness.
+            </summary>
+            <param name="parameters">Parameter object to validate. </param>
         </member>
     </members>
 </doc>
