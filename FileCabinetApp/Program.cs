@@ -57,12 +57,7 @@ namespace FileCabinetApp
         };
 
         private static IFileCabinetService fileCabinetService;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the application is running now.
-        /// </summary>
-        /// <value></value>
-        public static bool IsRunning { get; set; } = true;
+        private static bool isRunning = true;
 
         /// <summary>
         /// Gets or sets current valitor for records.
@@ -118,7 +113,7 @@ namespace FileCabinetApp
                     Parameters = parameters,
                 });
             }
-            while (IsRunning);
+            while (isRunning);
         }
 
         private static ICommandHandler CreateCommandHandlers()
@@ -131,7 +126,7 @@ namespace FileCabinetApp
             var importHandler = new ImportCommandHandler(fileCabinetService);
             var purgeHandler = new PurgeCommandHandler(fileCabinetService);
             var removeHandler = new RemoveCommandHandler(fileCabinetService);
-            var exitHandler = new ExitCommandHandler();
+            var exitHandler = new ExitCommandHandler((state) => isRunning = state);
             var findHandler = new FindCommandHandler(fileCabinetService);
             var editHandler = new EditCommandHandler(fileCabinetService);
 

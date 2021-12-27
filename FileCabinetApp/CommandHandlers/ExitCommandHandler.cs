@@ -11,6 +11,17 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class ExitCommandHandler : CommandHandlerBase
     {
+        private readonly Action<bool> stopRunning;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExitCommandHandler"/> class.
+        /// </summary>
+        /// <param name="stopRunning">Delegate to stop running Programm.</param>
+        public ExitCommandHandler(Action<bool> stopRunning)
+        {
+            this.stopRunning = stopRunning;
+        }
+
         /// <summary>
         /// Handles 'exit' command or moves request to the next handler.
         /// </summary>
@@ -20,10 +31,10 @@ namespace FileCabinetApp.CommandHandlers
             throw new NotImplementedException();
         }
 
-        private static void Exit()
+        private void Exit()
         {
             Console.WriteLine("Exiting an application...");
-            Program.IsRunning = false;
+            this.stopRunning?.Invoke(false);
         }
     }
 }
