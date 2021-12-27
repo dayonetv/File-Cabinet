@@ -686,13 +686,29 @@
             </summary>
             <param name="args">Applicattion startup parameters. </param>
         </member>
+        <member name="T:FileCabinetApp.CompositeValidator">
+            <summary>
+            Validator that contatins list of diffenent validators to be used.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CompositeValidator.#ctor(System.Collections.Generic.IEnumerable{FileCabinetApp.IRecordValidator})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CompositeValidator"/> class.
+            </summary>
+            <param name="validators">Current validators to be used.</param>
+        </member>
+        <member name="M:FileCabinetApp.CompositeValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.CustomValidator">
             <summary>
             Represents custom record validator.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CustomValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
-            <inheritdoc/>
+        <member name="M:FileCabinetApp.CustomValidator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CustomValidator"/> class.
+            </summary>
         </member>
         <member name="M:FileCabinetApp.CustomValidator.ToString">
             <inheritdoc/>
@@ -720,8 +736,10 @@
             Represents default validator.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.DefaultValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
-            <inheritdoc/>
+        <member name="M:FileCabinetApp.DefaultValidator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.DefaultValidator"/> class.
+            </summary>
         </member>
         <member name="M:FileCabinetApp.DefaultValidator.ToString">
             <inheritdoc/>

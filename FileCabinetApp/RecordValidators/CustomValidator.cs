@@ -6,7 +6,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Represents custom record validator.
     /// </summary>
-    public class CustomValidator : IRecordValidator
+    public class CustomValidator : CompositeValidator
     {
         private const int MaxNameLength = 60;
         private const int MinNameLength = 2;
@@ -17,20 +17,20 @@ namespace FileCabinetApp
         private static readonly DateTime MinDateOfBirth = new (1940, 1, 1);
         private static readonly char[] ValidGenders = { 'M', 'F' };
 
-        /// <inheritdoc/>
-        public void ValidateParameters(CreateEditParameters parameters)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomValidator"/> class.
+        /// </summary>
+        public CustomValidator()
+            : base(new IRecordValidator[]
+                  {
+                      new FirstNameValidator(MinNameLength, MaxNameLength),
+                      new LastNameValidator(MinNameLength, MaxNameLength),
+                      new DateOfBirthValidator(MinDateOfBirth, DateTime.Now),
+                      new HeigthValidator(MinHeight, MaxHeight),
+                      new SalaryValidator(MinSalary, MaxSalary),
+                      new GenderValidator(ValidGenders),
+                  })
         {
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            new FirstNameValidator(MinNameLength, MaxNameLength).ValidateParameters(parameters);
-            new LastNameValidator(MinNameLength, MaxNameLength).ValidateParameters(parameters);
-            new DateOfBirthValidator(MinDateOfBirth, DateTime.Now).ValidateParameters(parameters);
-            new HeigthValidator(MinHeight, MaxHeight).ValidateParameters(parameters);
-            new SalaryValidator(MinSalary, MaxSalary).ValidateParameters(parameters);
-            new GenderValidator(ValidGenders).ValidateParameters(parameters);
         }
 
         /// <inheritdoc/>
