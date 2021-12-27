@@ -8,6 +8,15 @@ namespace FileCabinetApp
     /// </summary>
     public class CustomValidator : IRecordValidator
     {
+        private const int MaxNameLength = 60;
+        private const int MinNameLength = 2;
+        private const short MaxHeight = 220;
+        private const short MinHeight = 140;
+        private const int MinSalary = 0;
+        private const int MaxSalary = int.MaxValue;
+        private static readonly DateTime MinDateOfBirth = new (1940, 1, 1);
+        private static readonly char[] ValidGenders = { 'M', 'F' };
+
         /// <inheritdoc/>
         public void ValidateParameters(CreateEditParameters parameters)
         {
@@ -16,19 +25,12 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            var firstNameValidator = new CustomFirstNameValidator();
-            var lastNameValidator = new CustomLastNameValidator();
-            var dateOfBirthValidator = new CustomDateOfBirthValidator();
-            var heightValidator = new CustomHeightValidator();
-            var salaryValidator = new CustomSalaryValidator();
-            var genderValidator = new CustomGenderValidator();
-
-            firstNameValidator.ValidateParameters(parameters);
-            lastNameValidator.ValidateParameters(parameters);
-            dateOfBirthValidator.ValidateParameters(parameters);
-            heightValidator.ValidateParameters(parameters);
-            salaryValidator.ValidateParameters(parameters);
-            genderValidator.ValidateParameters(parameters);
+            new FirstNameValidator(MinNameLength, MaxNameLength).ValidateParameters(parameters);
+            new LastNameValidator(MinNameLength, MaxNameLength).ValidateParameters(parameters);
+            new DateOfBirthValidator(MinDateOfBirth, DateTime.Now).ValidateParameters(parameters);
+            new HeigthValidator(MinHeight, MaxHeight).ValidateParameters(parameters);
+            new SalaryValidator(MinSalary, MaxSalary).ValidateParameters(parameters);
+            new GenderValidator(ValidGenders).ValidateParameters(parameters);
         }
 
         /// <inheritdoc/>

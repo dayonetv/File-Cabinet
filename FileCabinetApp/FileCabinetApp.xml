@@ -697,6 +697,24 @@
         <member name="M:FileCabinetApp.CustomValidator.ToString">
             <inheritdoc/>
         </member>
+        <member name="T:FileCabinetApp.DateOfBirthValidator">
+            <summary>
+            Class for dateOfBirth property validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.DateOfBirthValidator.#ctor(System.DateTime,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.DateOfBirthValidator"/> class.
+            </summary>
+            <param name="from">DateTime start range.</param>
+            <param name="to">DateTime end range.</param>
+        </member>
+        <member name="M:FileCabinetApp.DateOfBirthValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+            <summary>
+            Validate DateTime property of the records.
+            </summary>
+            <param name="parameters">parameters to validate.</param>
+        </member>
         <member name="T:FileCabinetApp.DefaultValidator">
             <summary>
             Represents default validator.
@@ -708,6 +726,59 @@
         <member name="M:FileCabinetApp.DefaultValidator.ToString">
             <inheritdoc/>
         </member>
+        <member name="T:FileCabinetApp.FirstNameValidator">
+            <summary>
+            Class for firstname property validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FirstNameValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FirstNameValidator"/> class.
+            </summary>
+            <param name="minLength">Minimal Length of firstname of the records.</param>
+            <param name="maxLength">Maximum Length of firstname of the records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FirstNameValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+            <summary>
+            Validate Firstname property.
+            </summary>
+            <param name="parameters">Parameters to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.GenderValidator">
+            <summary>
+            Class for gender property validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.GenderValidator.#ctor(System.Char[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.GenderValidator"/> class.
+            </summary>
+            <param name="validGenders">Array of allowed genders.</param>
+        </member>
+        <member name="M:FileCabinetApp.GenderValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+            <summary>
+            Validates sex property of the record.
+            </summary>
+            <param name="parameters">Parameters to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.HeigthValidator">
+            <summary>
+            Class for height property validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.HeigthValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.HeigthValidator"/> class.
+            </summary>
+            <param name="minHeight">Minimal height.</param>
+            <param name="maxHeight">Maximum height.</param>
+        </member>
+        <member name="M:FileCabinetApp.HeigthValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+            <summary>
+            Validates height property of the record.
+            </summary>
+            <param name="parameters">Parameters to validate. </param>
+        </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
             Represents methods that shoud be implemented by inheritors.
@@ -718,6 +789,42 @@
             Checks parameters correctness.
             </summary>
             <param name="parameters">Parameter object to validate. </param>
+        </member>
+        <member name="T:FileCabinetApp.LastNameValidator">
+            <summary>
+            Class for firstname property validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.LastNameValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.LastNameValidator"/> class.
+            </summary>
+            <param name="minLength">Minimal Length of firstname of the records.</param>
+            <param name="maxLength">Maximum Length of firstname of the records.</param>
+        </member>
+        <member name="M:FileCabinetApp.LastNameValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+            <summary>
+            Validate Firstname property.
+            </summary>
+            <param name="parameters">Parameters to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.SalaryValidator">
+            <summary>
+            Class for salary validation of the record.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.SalaryValidator.#ctor(System.Decimal,System.Decimal)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.SalaryValidator"/> class.
+            </summary>
+            <param name="minSalary">Minimal salary value.</param>
+            <param name="maxSalary">Maximal salary value.</param>
+        </member>
+        <member name="M:FileCabinetApp.SalaryValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+            <summary>
+            Validate salary of the record.
+            </summary>
+            <param name="parameters">Parameters to validate.</param>
         </member>
     </members>
 </doc>
