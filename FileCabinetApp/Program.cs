@@ -30,6 +30,7 @@ namespace FileCabinetApp
     {
         private const string DeveloperName = "Konstantin Karasiov";
         private const string CabinetRecordsFile = "cabinet-records.db";
+        private const string HintMessage = "Enter your command, or enter 'help' to get help.";
 
         private const int AmountOfInputArgsForShortMode = 2;
         private const int AmountOfInputArgsForFullMode = 1;
@@ -101,7 +102,7 @@ namespace FileCabinetApp
 
             Console.WriteLine($"Strorage: {FileCabinetService}");
 
-            Console.WriteLine(CommandHandler.HintMessage);
+            Console.WriteLine(HintMessage);
             Console.WriteLine();
 
             do
@@ -126,8 +127,31 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandlers()
         {
-            var commandHandler = new CommandHandler();
-            return commandHandler;
+            var helpHandler = new HelpCommandHandler();
+            var createHandler = new CreateCommandHandler();
+            var statHandler = new StatCommandHandler();
+            var listHandler = new ListCommandHandler();
+            var exportHandler = new ExportCommandHandler();
+            var importHandler = new ImportCommandHandler();
+            var purgeHandler = new PurgeCommandHandler();
+            var removeHandler = new RemoveCommandHandler();
+            var exitHandler = new ExitCommandHandler();
+            var findHandler = new FindCommandHandler();
+            var editHandler = new EditCommandHandler();
+
+            helpHandler.SetNext(createHandler);
+            createHandler.SetNext(statHandler);
+            statHandler.SetNext(listHandler);
+            listHandler.SetNext(exportHandler);
+            exportHandler.SetNext(importHandler);
+            importHandler.SetNext(purgeHandler);
+            purgeHandler.SetNext(removeHandler);
+            removeHandler.SetNext(exitHandler);
+            exitHandler.SetNext(findHandler);
+            findHandler.SetNext(editHandler);
+            editHandler.SetNext(null);
+
+            return helpHandler;
         }
 
         private static IRecordValidator ValidatorChooser(string[] args)

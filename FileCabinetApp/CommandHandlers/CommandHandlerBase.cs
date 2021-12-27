@@ -14,7 +14,13 @@ namespace FileCabinetApp.CommandHandlers
         private ICommandHandler nextHandler;
 
         /// <inheritdoc/>
-        public abstract void Handle(AppCommandRequest request);
+        public virtual void Handle(AppCommandRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+        }
 
         /// <inheritdoc/>
         public ICommandHandler SetNext(ICommandHandler commandHandler)

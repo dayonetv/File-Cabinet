@@ -12,15 +12,15 @@ namespace FileCabinetApp.CommandHandlers
     public class AppCommandRequest
     {
         /// <summary>
-        /// Gets or sets string representaion of the command.
+        /// Gets string representaion of the command.
         /// </summary>
         /// <value></value>
-        public string Command { get; set; }
+        public string Command { get; init; }
 
         /// <summary>
-        /// Gets or sets string representation of parameters.
+        /// Gets string representation of parameters.
         /// </summary>
         /// <value></value>
-        public string Parameters { get; set; }
+        public string Parameters { get; init; }
     }
 }
