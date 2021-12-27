@@ -16,13 +16,16 @@ namespace FileCabinetApp.CommandHandlers
         private const string DateFormat = "d";
         private const int AmountOfFindByParams = 2;
 
+        private readonly IRecordPrinter printer;
+
         private readonly Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[] findByFunctions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Current service. </param>
-        public FindCommandHandler(IFileCabinetService service)
+        /// <param name="printer">Printer for showing records info.</param>
+        public FindCommandHandler(IFileCabinetService service, IRecordPrinter printer)
             : base(service)
         {
             this.findByFunctions = new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[]
@@ -31,6 +34,8 @@ namespace FileCabinetApp.CommandHandlers
                 new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("lastname", this.FindByLastName),
                 new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("dateofbirth", this.FindByDateOfBirth),
             };
+
+            this.printer = printer;
         }
 
         /// <summary>
@@ -67,10 +72,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (findedRecords != null)
             {
-                foreach (var record in findedRecords)
-                {
-                    Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString(DateFormat, CultureInfo.InvariantCulture)}");
-                }
+                this.printer.Print(findedRecords);
             }
             else
             {

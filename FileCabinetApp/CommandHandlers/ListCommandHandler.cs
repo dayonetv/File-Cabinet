@@ -12,15 +12,17 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class ListCommandHandler : ServiceCommandHandlerBase
     {
-        private const string DateFormat = "d";
+        private readonly IRecordPrinter printer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Current service. </param>
-        public ListCommandHandler(IFileCabinetService service)
+        /// <param name="printer">Printer for showing records info.</param>
+        public ListCommandHandler(IFileCabinetService service, IRecordPrinter printer)
             : base(service)
         {
+            this.printer = printer;
         }
 
         /// <summary>
@@ -34,10 +36,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private void List()
         {
-            foreach (var record in this.Service.GetRecords())
-            {
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString(DateFormat, CultureInfo.InvariantCulture)}, {record.Height}, {record.Salary}, {record.Sex}");
-            }
+             this.printer.Print(this.Service.GetRecords());
         }
     }
 }
