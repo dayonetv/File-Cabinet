@@ -13,6 +13,7 @@ namespace FileCabinetApp
         private const int MaxSalary = int.MaxValue;
         private const short MaxHeight = 220;
         private const short MinHeight = 140;
+        private const string DateFormat = "yyyy-MMM-dd";
 
         private static readonly char[] Genders = { 'M', 'F' };
         private static readonly char[] InvalidNameSymbols = { '!', '@', '#', '$', '%', '^', '&', '*', '.', ',', ':', '~' };
@@ -27,14 +28,25 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(parameters));
             }
 
+            ValidateFirstName(parameters);
+            ValidateLastName(parameters);
+            ValidateDateOfBirth(parameters);
+            ValidateHeight(parameters);
+            ValidateSalary(parameters);
+            ValidateGender(parameters);
+        }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return "custom validation";
+        }
+
+        private static void ValidateFirstName(CreateEditParameters parameters)
+        {
             if (string.IsNullOrEmpty(parameters.FirstName) || string.IsNullOrWhiteSpace(parameters.FirstName))
             {
                 throw new ArgumentNullException(parameters.FirstName);
-            }
-
-            if (string.IsNullOrEmpty(parameters.LastName) || string.IsNullOrWhiteSpace(parameters.LastName))
-            {
-                throw new ArgumentNullException(parameters.LastName);
             }
 
             if (parameters.FirstName.Length < MinNameLength || parameters.FirstName.Length > MaxNameLength)
@@ -42,46 +54,60 @@ namespace FileCabinetApp
                 throw new ArgumentException($"First Name Lenght is more than {MaxNameLength} or less than {MinNameLength}", parameters.FirstName);
             }
 
-            if (parameters.LastName.Length < MinNameLength || parameters.LastName.Length > MaxNameLength)
-            {
-                throw new ArgumentException($"Last Name Lenght is more than {MaxNameLength} or less than {MinNameLength}", parameters.FirstName);
-            }
-
             if (parameters.FirstName.IndexOfAny(InvalidNameSymbols) >= 0)
             {
                 throw new ArgumentException($"First Name consits some invalid symbols: {string.Join(' ', InvalidNameSymbols)} -", parameters.FirstName);
+            }
+        }
+
+        private static void ValidateLastName(CreateEditParameters parameters)
+        {
+            if (string.IsNullOrEmpty(parameters.LastName) || string.IsNullOrWhiteSpace(parameters.LastName))
+            {
+                throw new ArgumentNullException(parameters.LastName);
+            }
+
+            if (parameters.LastName.Length < MinNameLength || parameters.LastName.Length > MaxNameLength)
+            {
+                throw new ArgumentException($"Last Name Lenght is more than {MaxNameLength} or less than {MinNameLength}", parameters.FirstName);
             }
 
             if (parameters.LastName.IndexOfAny(InvalidNameSymbols) >= 0)
             {
                 throw new ArgumentException($"Last Name consits some invalid symbols: {string.Join(' ', InvalidNameSymbols)} -", parameters.LastName);
             }
+        }
 
+        private static void ValidateDateOfBirth(CreateEditParameters parameters)
+        {
             if (parameters.DateOfBirth > DateTime.Now || parameters.DateOfBirth < MinDateOfBirth)
             {
-                throw new ArgumentException($"Date Of Birth can not be less than {MinDateOfBirth.ToString("yyyy-MMM-dd", Culture)} or more than {DateTime.Now}", parameters.DateOfBirth.ToString("yyyy-MMM-dd", Culture));
+                throw new ArgumentException($"Date Of Birth can not be less than {MinDateOfBirth.ToString(DateFormat, Culture)} or more than {DateTime.Now}", parameters.DateOfBirth.ToString(DateFormat, Culture));
             }
+        }
 
-            if (parameters.Salary < 0 || parameters.Salary > MaxSalary)
-            {
-                throw new ArgumentException($"Salary can not be more than {MaxSalary} or less than 0", parameters.Salary.ToString(Culture));
-            }
-
-            if (Array.FindIndex(Genders, s => s.Equals(char.ToUpperInvariant(parameters.Sex))) < 0)
-            {
-                throw new ArgumentException($"Sex can be only Male or Female", parameters.Sex.ToString(Culture));
-            }
-
+        private static void ValidateHeight(CreateEditParameters parameters)
+        {
             if (parameters.Height < MinHeight || parameters.Height > MaxHeight)
             {
                 throw new ArgumentException($"Height can not be less than {MinHeight} or more than {MaxHeight}", parameters.Height.ToString(Culture));
             }
         }
 
-        /// <inheritdoc/>
-        public override string ToString()
+        private static void ValidateSalary(CreateEditParameters parameters)
         {
-            return "custom validation";
+            if (parameters.Salary < 0 || parameters.Salary > MaxSalary)
+            {
+                throw new ArgumentException($"Salary can not be more than {MaxSalary} or less than 0", parameters.Salary.ToString(Culture));
+            }
+        }
+
+        private static void ValidateGender(CreateEditParameters parameters)
+        {
+            if (Array.FindIndex(Genders, s => s.Equals(char.ToUpperInvariant(parameters.Sex))) < 0)
+            {
+                throw new ArgumentException($"Sex can be only Male or Female", parameters.Sex.ToString(Culture));
+            }
         }
     }
 }
