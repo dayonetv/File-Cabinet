@@ -4,6 +4,65 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.CommandHandlers.AppCommandRequest">
+            <summary>
+            Represents command and parameters that should be handled.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.AppCommandRequest.Command">
+            <summary>
+            Gets or sets string representaion of the command.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.AppCommandRequest.Parameters">
+            <summary>
+            Gets or sets string representation of parameters.
+            </summary>
+            <value></value>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.CommandHandler">
+            <summary>
+            fdhg.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.CommandHandlers.CommandHandler.HintMessage">
+            <summary>
+            Sartup message.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.CommandHandlerBase">
+            <summary>
+            Abstract class for base implementation of methods for Command Handlers.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SetNext(FileCabinetApp.CommandHandlers.ICommandHandler)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ICommandHandler">
+            <summary>
+            Interface for creating Command Handlers.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ICommandHandler.SetNext(FileCabinetApp.CommandHandlers.ICommandHandler)">
+            <summary>
+            Sets next command hadler that will handle request.
+            </summary>
+            <param name="commandHandler">Next command handler.</param>
+            <returns>Setted next command handler. </returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ICommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handle request.
+            </summary>
+            <param name="request">Request to be handled. </param>
+        </member>
         <member name="T:FileCabinetApp.CreateEditParameters">
             <summary>
             Parameter object for FileCabinetService.CreateRecord and FileCabinetService.EditRecord methods.
@@ -460,6 +519,24 @@
             <summary>
             Represents the main interface for user to use corresponding commands.
             </summary>
+        </member>
+        <member name="P:FileCabinetApp.Program.IsRunning">
+            <summary>
+            Gets or sets a value indicating whether the application is running now.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.Program.FileCabinetService">
+            <summary>
+            Gets or sets current service for storing records.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.Program.ChosenValidator">
+            <summary>
+            Gets or sets current valitor for records.
+            </summary>
+            <value></value>
         </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
