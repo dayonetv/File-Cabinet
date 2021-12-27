@@ -11,6 +11,17 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class PurgeCommandHandler : CommandHandlerBase
     {
+        private readonly IFileCabinetService service;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PurgeCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Current service.</param>
+        public PurgeCommandHandler(IFileCabinetService service)
+        {
+            this.service = service;
+        }
+
         /// <summary>
         /// Handles 'purge' command or moves request to the next handler.
         /// </summary>
@@ -20,16 +31,16 @@ namespace FileCabinetApp.CommandHandlers
             throw new NotImplementedException();
         }
 
-        private static void Purge()
+        private void Purge()
         {
-            if (Program.FileCabinetService is FileCabinetMemoryService)
+            if (this.service is FileCabinetMemoryService)
             {
-                Console.WriteLine($"{Program.FileCabinetService} has nothing to purge. ");
+                Console.WriteLine($"{this.service} has nothing to purge. ");
                 return;
             }
 
-            int allrecordsAmount = Program.FileCabinetService.GetStat();
-            int purgedAmount = Program.FileCabinetService.Purge();
+            int allrecordsAmount = this.service.GetStat();
+            int purgedAmount = this.service.Purge();
 
             Console.WriteLine($"Data file processing is completed: {purgedAmount} of {allrecordsAmount} records were purged.");
         }

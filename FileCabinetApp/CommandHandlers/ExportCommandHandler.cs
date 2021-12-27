@@ -14,17 +14,30 @@ namespace FileCabinetApp.CommandHandlers
     {
         private const int AmountOfExportParams = 2;
 
-        private static readonly Tuple<string, Func<FileInfo, bool, string>>[] SavingModes = new Tuple<string, Func<FileInfo, bool, string>>[]
-        {
-            new Tuple<string, Func<FileInfo, bool, string>>("csv", WriteToCsv),
-            new Tuple<string, Func<FileInfo, bool, string>>("xml", WriteToXml),
-        };
-
         private static readonly Tuple<char, bool>[] Choices = new Tuple<char, bool>[]
         {
             new Tuple<char, bool>('Y', true),
             new Tuple<char, bool>('N', false),
         };
+
+        private readonly Tuple<string, Func<FileInfo, bool, string>>[] savingModes;
+
+        private readonly IFileCabinetService service;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Current service.</param>
+        public ExportCommandHandler(IFileCabinetService service)
+        {
+            this.service = service;
+
+            this.savingModes = new Tuple<string, Func<FileInfo, bool, string>>[]
+            {
+                new Tuple<string, Func<FileInfo, bool, string>>("csv", this.WriteToCsv),
+                new Tuple<string, Func<FileInfo, bool, string>>("xml", this.WriteToXml),
+            };
+        }
 
         /// <summary>
         /// Handles 'export' command or moves request to the next handler.
@@ -33,85 +46,6 @@ namespace FileCabinetApp.CommandHandlers
         public override void Handle(AppCommandRequest request)
         {
             throw new NotImplementedException();
-        }
-
-        private static void Export(string parameters)
-        {
-            var inputParams = parameters.Trim().Split(' ', AmountOfExportParams);
-
-            if (inputParams.Length != AmountOfExportParams)
-            {
-                Console.WriteLine($"'export' command requires at least {AmountOfExportParams} parameters. ");
-                return;
-            }
-
-            string fileExtention = inputParams[0].Trim();
-            string fileName = inputParams[^1].Trim();
-
-            FileInfo exportFile = new FileInfo(fileName);
-
-            bool toRewrite = true;
-
-            if (exportFile.Exists)
-            {
-                Console.WriteLine($"File is exist - rewrite {exportFile.FullName}? [Y/n] ");
-                char inputChoice = ReadInput(CharConverter, YesNoChoiceValidator);
-
-                int choiseIndex = Array.FindIndex(Choices, choice => choice.Item1.ToString().Equals(inputChoice.ToString(), StringComparison.InvariantCultureIgnoreCase));
-                toRewrite = Choices[choiseIndex].Item2;
-            }
-
-            int saveModeIndex = Array.FindIndex(SavingModes, (mode) => mode.Item1.Equals(fileExtention, StringComparison.InvariantCultureIgnoreCase));
-
-            if (saveModeIndex >= 0)
-            {
-                try
-                {
-                    Console.WriteLine(SavingModes[saveModeIndex].Item2.Invoke(exportFile, toRewrite));
-                }
-                catch (IOException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-            else
-            {
-                Console.WriteLine($"Unknown: {fileExtention} parameter for 'export' command");
-            }
-        }
-
-        private static string WriteToCsv(FileInfo fileToWriteTo, bool rewrite)
-        {
-            if (rewrite)
-            {
-                StreamWriter writer = fileToWriteTo.CreateText();
-
-                var snapShot = Program.FileCabinetService.MakeSnapShot();
-                snapShot.SaveToScv(writer);
-
-                writer.Close();
-
-                return $"All records are exported to file {fileToWriteTo.FullName}.";
-            }
-
-            return $"Saving canceled";
-        }
-
-        private static string WriteToXml(FileInfo fileToWriteTo, bool rewrite)
-        {
-            if (rewrite)
-            {
-                StreamWriter writer = fileToWriteTo.CreateText();
-
-                var snapShot = Program.FileCabinetService.MakeSnapShot();
-                snapShot.SaveToXml(writer);
-
-                writer.Close();
-
-                return $"All records are exported to file {fileToWriteTo.FullName}.";
-            }
-
-            return $"Saving canceled";
         }
 
         private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
@@ -154,6 +88,85 @@ namespace FileCabinetApp.CommandHandlers
         {
             bool result = Array.FindIndex(Choices, choice => choice.Item1.ToString().Equals(inputChoice.ToString(), StringComparison.InvariantCultureIgnoreCase)) >= 0;
             return new Tuple<bool, string>(result, result ? "Valid" : "Choice can only be 'Y' or 'N'");
+        }
+
+        private void Export(string parameters)
+        {
+            var inputParams = parameters.Trim().Split(' ', AmountOfExportParams);
+
+            if (inputParams.Length != AmountOfExportParams)
+            {
+                Console.WriteLine($"'export' command requires at least {AmountOfExportParams} parameters. ");
+                return;
+            }
+
+            string fileExtention = inputParams[0].Trim();
+            string fileName = inputParams[^1].Trim();
+
+            FileInfo exportFile = new FileInfo(fileName);
+
+            bool toRewrite = true;
+
+            if (exportFile.Exists)
+            {
+                Console.WriteLine($"File is exist - rewrite {exportFile.FullName}? [Y/n] ");
+                char inputChoice = ReadInput(CharConverter, YesNoChoiceValidator);
+
+                int choiseIndex = Array.FindIndex(Choices, choice => choice.Item1.ToString().Equals(inputChoice.ToString(), StringComparison.InvariantCultureIgnoreCase));
+                toRewrite = Choices[choiseIndex].Item2;
+            }
+
+            int saveModeIndex = Array.FindIndex(this.savingModes, (mode) => mode.Item1.Equals(fileExtention, StringComparison.InvariantCultureIgnoreCase));
+
+            if (saveModeIndex >= 0)
+            {
+                try
+                {
+                    Console.WriteLine(this.savingModes[saveModeIndex].Item2.Invoke(exportFile, toRewrite));
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Unknown: {fileExtention} parameter for 'export' command");
+            }
+        }
+
+        private string WriteToCsv(FileInfo fileToWriteTo, bool rewrite)
+        {
+            if (rewrite)
+            {
+                StreamWriter writer = fileToWriteTo.CreateText();
+
+                var snapShot = this.service.MakeSnapShot();
+                snapShot.SaveToScv(writer);
+
+                writer.Close();
+
+                return $"All records are exported to file {fileToWriteTo.FullName}.";
+            }
+
+            return $"Saving canceled";
+        }
+
+        private string WriteToXml(FileInfo fileToWriteTo, bool rewrite)
+        {
+            if (rewrite)
+            {
+                StreamWriter writer = fileToWriteTo.CreateText();
+
+                var snapShot = this.service.MakeSnapShot();
+                snapShot.SaveToXml(writer);
+
+                writer.Close();
+
+                return $"All records are exported to file {fileToWriteTo.FullName}.";
+            }
+
+            return $"Saving canceled";
         }
     }
 }

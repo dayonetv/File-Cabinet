@@ -56,17 +56,13 @@ namespace FileCabinetApp
             new Tuple<string, StorageMode>("file", StorageMode.File),
         };
 
+        private static IFileCabinetService fileCabinetService;
+
         /// <summary>
         /// Gets or sets a value indicating whether the application is running now.
         /// </summary>
         /// <value></value>
         public static bool IsRunning { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets current service for storing records.
-        /// </summary>
-        /// <value></value>
-        public static IFileCabinetService FileCabinetService { get; set; }
 
         /// <summary>
         /// Gets or sets current valitor for records.
@@ -85,8 +81,6 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(args));
             }
 
-            var commandHandler = Program.CreateCommandHandlers();
-
             ChosenValidator = ValidatorChooser(args) ?? new DefaultValidator();
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -95,15 +89,17 @@ namespace FileCabinetApp
 
             switch (StorageChooser(args))
             {
-                case StorageMode.Memory: FileCabinetService = new FileCabinetMemoryService(ChosenValidator); break;
-                case StorageMode.File: FileCabinetService = new FileCabinetFilesystemService(new FileStream(CabinetRecordsFile, FileMode.Create), ChosenValidator); break;
-                default: FileCabinetService = new FileCabinetMemoryService(ChosenValidator); break;
+                case StorageMode.Memory: fileCabinetService = new FileCabinetMemoryService(ChosenValidator); break;
+                case StorageMode.File: fileCabinetService = new FileCabinetFilesystemService(new FileStream(CabinetRecordsFile, FileMode.Create), ChosenValidator); break;
+                default: fileCabinetService = new FileCabinetMemoryService(ChosenValidator); break;
             }
 
-            Console.WriteLine($"Strorage: {FileCabinetService}");
+            Console.WriteLine($"Strorage: {fileCabinetService}");
 
             Console.WriteLine(HintMessage);
             Console.WriteLine();
+
+            var commandHandler = Program.CreateCommandHandlers();
 
             do
             {
@@ -128,16 +124,16 @@ namespace FileCabinetApp
         private static ICommandHandler CreateCommandHandlers()
         {
             var helpHandler = new HelpCommandHandler();
-            var createHandler = new CreateCommandHandler();
-            var statHandler = new StatCommandHandler();
-            var listHandler = new ListCommandHandler();
-            var exportHandler = new ExportCommandHandler();
-            var importHandler = new ImportCommandHandler();
-            var purgeHandler = new PurgeCommandHandler();
-            var removeHandler = new RemoveCommandHandler();
+            var createHandler = new CreateCommandHandler(fileCabinetService);
+            var statHandler = new StatCommandHandler(fileCabinetService);
+            var listHandler = new ListCommandHandler(fileCabinetService);
+            var exportHandler = new ExportCommandHandler(fileCabinetService);
+            var importHandler = new ImportCommandHandler(fileCabinetService);
+            var purgeHandler = new PurgeCommandHandler(fileCabinetService);
+            var removeHandler = new RemoveCommandHandler(fileCabinetService);
             var exitHandler = new ExitCommandHandler();
-            var findHandler = new FindCommandHandler();
-            var editHandler = new EditCommandHandler();
+            var findHandler = new FindCommandHandler(fileCabinetService);
+            var editHandler = new EditCommandHandler(fileCabinetService);
 
             helpHandler.SetNext(createHandler);
             createHandler.SetNext(statHandler);

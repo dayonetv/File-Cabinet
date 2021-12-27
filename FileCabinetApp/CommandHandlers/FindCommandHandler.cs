@@ -16,12 +16,25 @@ namespace FileCabinetApp.CommandHandlers
         private const string DateFormat = "d";
         private const int AmountOfFindByParams = 2;
 
-        private static readonly Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[] FindByFunctions = new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[]
+        private readonly Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[] findByFunctions;
+
+        private readonly IFileCabinetService service;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Current service. </param>
+        public FindCommandHandler(IFileCabinetService service)
         {
-            new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("firstname", FindByFirstName),
-            new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("lastname", FindByLastName),
-            new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("dateofbirth", FindByDateOfBirth),
-        };
+            this.service = service;
+
+            this.findByFunctions = new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[]
+            {
+                new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("firstname", this.FindByFirstName),
+                new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("lastname", this.FindByLastName),
+                new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("dateofbirth", this.FindByDateOfBirth),
+            };
+        }
 
         /// <summary>
         /// Handles 'find' command or moves request to the next handler.
@@ -32,7 +45,7 @@ namespace FileCabinetApp.CommandHandlers
             throw new NotImplementedException();
         }
 
-        private static void Find(string parameters)
+        private void Find(string parameters)
         {
             var inputParams = parameters.Trim().Split(' ', AmountOfFindByParams);
 
@@ -45,7 +58,7 @@ namespace FileCabinetApp.CommandHandlers
             string findBy = inputParams[0].Trim();
             string toFind = inputParams[^1].Trim();
 
-            var findByFunc = (from func in FindByFunctions where func.Item1.Equals(findBy, StringComparison.InvariantCultureIgnoreCase) select func.Item2).FirstOrDefault();
+            var findByFunc = (from func in this.findByFunctions where func.Item1.Equals(findBy, StringComparison.InvariantCultureIgnoreCase) select func.Item2).FirstOrDefault();
 
             if (findByFunc == null)
             {
@@ -68,20 +81,20 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)
+        private ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)
         {
             bool parseResult = DateTime.TryParseExact(dateToFind.Trim('"'), DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBithToFind);
-            return parseResult ? Program.FileCabinetService.FindByDateOfBith(dateOfBithToFind) : null;
+            return parseResult ? this.service.FindByDateOfBith(dateOfBithToFind) : null;
         }
 
-        private static ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        private ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            return Program.FileCabinetService.FindByFirstName(firstName.Trim('"'));
+            return this.service.FindByFirstName(firstName.Trim('"'));
         }
 
-        private static ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        private ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            return Program.FileCabinetService.FindByLastName(lastName.Trim('"'));
+            return this.service.FindByLastName(lastName.Trim('"'));
         }
     }
 }

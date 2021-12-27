@@ -24,6 +24,17 @@ namespace FileCabinetApp.CommandHandlers
         private static readonly Predicate<DateTime> DefaultDateOfBirthPredicate = new ((date) => date < DateTime.Now);
         private static readonly Predicate<DateTime> CustomDateOfBirthPredicate = new ((date) => date <= DateTime.Now);
 
+        private readonly IFileCabinetService service;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Current service. </param>
+        public CreateCommandHandler(IFileCabinetService service)
+        {
+            this.service = service;
+        }
+
         /// <summary>
         /// Handles 'create' command or moves request to the next handler.
         /// </summary>
@@ -31,28 +42,6 @@ namespace FileCabinetApp.CommandHandlers
         public override void Handle(AppCommandRequest request)
         {
             throw new NotImplementedException();
-        }
-
-        private static void Create()
-        {
-            bool isValid;
-            do
-            {
-                try
-                {
-                    CreateEditParameters creationParams = EnterInfo();
-
-                    Console.WriteLine($"Record #{Program.FileCabinetService.CreateRecord(creationParams)} is created.");
-
-                    isValid = true;
-                }
-                catch (ArgumentException ex)
-                {
-                    isValid = false;
-                    Console.WriteLine($"\n{ex.Message}. Please try again. ");
-                }
-            }
-            while (!isValid);
         }
 
         private static CreateEditParameters EnterInfo()
@@ -179,6 +168,28 @@ namespace FileCabinetApp.CommandHandlers
         {
             bool result = Program.ChosenValidator is DefaultValidator ? DefaultGenderPredicate(sex) : CustomGenderPredicate(sex);
             return new Tuple<bool, string>(result, result ? "Valid" : "gender wrong format");
+        }
+
+        private void Create()
+        {
+            bool isValid;
+            do
+            {
+                try
+                {
+                    CreateEditParameters creationParams = EnterInfo();
+
+                    Console.WriteLine($"Record #{this.service.CreateRecord(creationParams)} is created.");
+
+                    isValid = true;
+                }
+                catch (ArgumentException ex)
+                {
+                    isValid = false;
+                    Console.WriteLine($"\n{ex.Message}. Please try again. ");
+                }
+            }
+            while (!isValid);
         }
     }
 }

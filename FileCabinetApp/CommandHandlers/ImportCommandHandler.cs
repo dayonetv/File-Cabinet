@@ -14,11 +14,24 @@ namespace FileCabinetApp.CommandHandlers
     {
         private const int AmountOFImportParams = 2;
 
-        private static readonly Tuple<string, Func<FileInfo, string>>[] ImportModes = new Tuple<string, Func<FileInfo, string>>[]
+        private readonly Tuple<string, Func<FileInfo, string>>[] importModes;
+
+        private readonly IFileCabinetService service;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImportCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Current service.</param>
+        public ImportCommandHandler(IFileCabinetService service)
         {
-            new Tuple<string, Func<FileInfo, string>>("csv", ImportFromCsv),
-            new Tuple<string, Func<FileInfo, string>>("xml", ImportFromXml),
-        };
+            this.service = service;
+
+            this.importModes = new Tuple<string, Func<FileInfo, string>>[]
+            {
+            new Tuple<string, Func<FileInfo, string>>("csv", this.ImportFromCsv),
+            new Tuple<string, Func<FileInfo, string>>("xml", this.ImportFromXml),
+            };
+        }
 
         /// <summary>
         /// Handles 'import' command or moves request to the next handler.
@@ -29,7 +42,7 @@ namespace FileCabinetApp.CommandHandlers
             throw new NotImplementedException();
         }
 
-        private static void Import(string parameters)
+        private void Import(string parameters)
         {
             var inputParams = parameters.Trim().Split(' ', AmountOFImportParams);
 
@@ -46,12 +59,12 @@ namespace FileCabinetApp.CommandHandlers
 
             if (importFile.Exists)
             {
-                int importModeIndex = Array.FindIndex(ImportModes, (tuple) => tuple.Item1.Equals(importMode, StringComparison.InvariantCultureIgnoreCase));
+                int importModeIndex = Array.FindIndex(this.importModes, (tuple) => tuple.Item1.Equals(importMode, StringComparison.InvariantCultureIgnoreCase));
                 if (importModeIndex >= 0)
                 {
                     try
                     {
-                        string message = ImportModes[importModeIndex].Item2?.Invoke(importFile);
+                        string message = this.importModes[importModeIndex].Item2?.Invoke(importFile);
                         Console.WriteLine(message);
                     }
                     catch (IOException ex)
@@ -70,7 +83,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static string ImportFromCsv(FileInfo fileToImportFrom)
+        private string ImportFromCsv(FileInfo fileToImportFrom)
         {
             StreamReader csvReader = fileToImportFrom.OpenText();
 
@@ -78,7 +91,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 var snapshot = new FileCabinetServiceSnapshot();
                 snapshot.LoadFromScv(csvReader);
-                string restoringMessage = Program.FileCabinetService.Restore(snapshot);
+                string restoringMessage = this.service.Restore(snapshot);
 
                 return $"{restoringMessage} from {fileToImportFrom.FullName}.";
             }
@@ -100,7 +113,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static string ImportFromXml(FileInfo fileToImportFrom)
+        private string ImportFromXml(FileInfo fileToImportFrom)
         {
             FileStream xmlReader = new FileStream(fileToImportFrom.FullName, FileMode.Open, FileAccess.Read, FileShare.None);
 
@@ -108,7 +121,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 var snapshot = new FileCabinetServiceSnapshot();
                 snapshot.LoadFromXml(xmlReader);
-                string restoringMessage = Program.FileCabinetService.Restore(snapshot);
+                string restoringMessage = this.service.Restore(snapshot);
 
                 return $"{restoringMessage} from {fileToImportFrom.FullName}.";
             }

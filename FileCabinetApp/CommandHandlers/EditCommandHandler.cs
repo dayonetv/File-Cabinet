@@ -24,6 +24,17 @@ namespace FileCabinetApp.CommandHandlers
         private static readonly Predicate<DateTime> DefaultDateOfBirthPredicate = new ((date) => date < DateTime.Now);
         private static readonly Predicate<DateTime> CustomDateOfBirthPredicate = new ((date) => date <= DateTime.Now);
 
+        private readonly IFileCabinetService service;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Current service. </param>
+        public EditCommandHandler(IFileCabinetService service)
+        {
+            this.service = service;
+        }
+
         /// <summary>
         /// Handles 'edit' command or moves request to the next handler.
         /// </summary>
@@ -31,41 +42,6 @@ namespace FileCabinetApp.CommandHandlers
         public override void Handle(AppCommandRequest request)
         {
             throw new NotImplementedException();
-        }
-
-        private static void Edit(string parameters)
-        {
-            bool isValid = true;
-            do
-            {
-                try
-                {
-                    bool parseResult = int.TryParse(parameters, NumberStyles.Any, CultureInfo.InvariantCulture, out int id);
-
-                    FileCabinetRecord recordToEdit = parseResult ? Program.FileCabinetService.GetRecords()?.FirstOrDefault(rec => rec.Id == id) : null;
-
-                    if (recordToEdit == null)
-                    {
-                        Console.WriteLine($"#{parameters} record is not found.");
-                    }
-                    else
-                    {
-                        CreateEditParameters updatedParams = EnterInfo();
-
-                        Program.FileCabinetService.EditRecord(id, updatedParams);
-
-                        Console.WriteLine($"Record #{id} is updated.");
-
-                        isValid = true;
-                    }
-                }
-                catch (ArgumentException ex)
-                {
-                    isValid = false;
-                    Console.WriteLine($"\n{ex.Message}. Please try again.");
-                }
-            }
-            while (!isValid);
         }
 
         private static CreateEditParameters EnterInfo()
@@ -192,6 +168,41 @@ namespace FileCabinetApp.CommandHandlers
         {
             bool result = Program.ChosenValidator is DefaultValidator ? DefaultGenderPredicate(sex) : CustomGenderPredicate(sex);
             return new Tuple<bool, string>(result, result ? "Valid" : "gender wrong format");
+        }
+
+        private void Edit(string parameters)
+        {
+            bool isValid = true;
+            do
+            {
+                try
+                {
+                    bool parseResult = int.TryParse(parameters, NumberStyles.Any, CultureInfo.InvariantCulture, out int id);
+
+                    FileCabinetRecord recordToEdit = parseResult ? this.service.GetRecords()?.FirstOrDefault(rec => rec.Id == id) : null;
+
+                    if (recordToEdit == null)
+                    {
+                        Console.WriteLine($"#{parameters} record is not found.");
+                    }
+                    else
+                    {
+                        CreateEditParameters updatedParams = EnterInfo();
+
+                        this.service.EditRecord(id, updatedParams);
+
+                        Console.WriteLine($"Record #{id} is updated.");
+
+                        isValid = true;
+                    }
+                }
+                catch (ArgumentException ex)
+                {
+                    isValid = false;
+                    Console.WriteLine($"\n{ex.Message}. Please try again.");
+                }
+            }
+            while (!isValid);
         }
     }
 }

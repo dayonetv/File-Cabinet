@@ -11,6 +11,17 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class StatCommandHandler : CommandHandlerBase
     {
+        private readonly IFileCabinetService service;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StatCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Current service.</param>
+        public StatCommandHandler(IFileCabinetService service)
+        {
+            this.service = service;
+        }
+
         /// <summary>
         /// Handles 'stat' command or moves request to the next handler.
         /// </summary>
@@ -20,10 +31,10 @@ namespace FileCabinetApp.CommandHandlers
             throw new NotImplementedException();
         }
 
-        private static void Stat()
+        private void Stat()
         {
-            var totalRecordsCount = Program.FileCabinetService.GetStat();
-            var deletedRecordsCount = totalRecordsCount - Program.FileCabinetService.GetRecords().Count;
+            var totalRecordsCount = this.service.GetStat();
+            var deletedRecordsCount = totalRecordsCount - this.service.GetRecords().Count;
 
             Console.WriteLine($"Total: {totalRecordsCount} record(s).\nDeleted: {deletedRecordsCount} record(s).");
         }
