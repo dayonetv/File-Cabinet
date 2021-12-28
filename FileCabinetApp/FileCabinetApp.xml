@@ -118,6 +118,12 @@
             <param name="sex">gender ptoperty to validate.</param>
             <returns>validation success, validation message.</returns>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.EnterInfo">
+            <summary>
+            Reads console inputs for creating records parameters.
+            </summary>
+            <returns>Parameters entered by user.</returns>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.CreateCommandHandler">
             <summary>
             Handler for create command.

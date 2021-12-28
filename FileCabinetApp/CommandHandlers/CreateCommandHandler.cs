@@ -44,31 +44,6 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static CreateEditParameters EnterInfo()
-        {
-            CreateEditParameters parameters = new ();
-
-            Console.Write("First Name: ");
-            parameters.FirstName = ReadInput(StringConverter, FirstNameValidator);
-
-            Console.Write("Last Name: ");
-            parameters.LastName = ReadInput(StringConverter, LastNameValidator);
-
-            Console.Write("Date Of Birth: ");
-            parameters.DateOfBirth = ReadInput(DateConverter, DateOfBirthValidator);
-
-            Console.Write("Height: ");
-            parameters.Height = ReadInput(ShortConverter, HeightValidator);
-
-            Console.Write("Salary: ");
-            parameters.Salary = ReadInput(DecimalConverter, SalaryValidator);
-
-            Console.Write("Sex: ");
-            parameters.Sex = ReadInput(CharConverter, GenderValidator);
-
-            return parameters;
-        }
-
         private void Create()
         {
             bool isValid;
