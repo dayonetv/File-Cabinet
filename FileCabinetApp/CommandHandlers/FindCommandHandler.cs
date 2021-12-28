@@ -13,6 +13,8 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
+        private const string CommandName = "find";
+
         private const string DateFormat = "d";
         private const int AmountOfFindByParams = 2;
 
@@ -44,7 +46,19 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="request">Command and parameters to be handled.</param>
         public override void Handle(AppCommandRequest request)
         {
-            throw new NotImplementedException();
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (request.Command.Equals(CommandName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.Find(request.Parameters);
+            }
+            else
+            {
+                base.Handle(request);
+            }
         }
 
         private void Find(string parameters)

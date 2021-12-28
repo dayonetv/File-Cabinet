@@ -11,6 +11,8 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class StatCommandHandler : ServiceCommandHandlerBase
     {
+        private const string CommandName = "stat";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="StatCommandHandler"/> class.
         /// </summary>
@@ -26,7 +28,19 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="request">Command and parameters to be handled.</param>
         public override void Handle(AppCommandRequest request)
         {
-            throw new NotImplementedException();
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (request.Command.Equals(CommandName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.Stat();
+            }
+            else
+            {
+                base.Handle(request);
+            }
         }
 
         private void Stat()

@@ -32,6 +32,92 @@
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SetNext(FileCabinetApp.CommandHandlers.ICommandHandler)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.ReadInput``1(System.Func{System.String,System.Tuple{System.Boolean,System.String,``0}},System.Func{``0,System.Tuple{System.Boolean,System.String}})">
+            <summary>
+            Reads user string inputs.
+            </summary>
+            <typeparam name="T">returnong value type.</typeparam>
+            <param name="converter">converter from string to any type.</param>
+            <param name="validator">input validator.</param>
+            <returns>Converted value from the string.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.StringConverter(System.String)">
+            <summary>
+            Converts input to string.
+            </summary>
+            <param name="input">input string to convert.</param>
+            <returns>converting success, converting message, converting result. </returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.DateConverter(System.String)">
+            <summary>
+            Converts input to DateTime.
+            </summary>
+            <param name="input">input string to convert.</param>
+            <returns>converting success, converting message, converting result. </returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.CharConverter(System.String)">
+            <summary>
+            Converts input to char.
+            </summary>
+            <param name="input">input string to convert.</param>
+            <returns>converting success, converting message, converting result. </returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.DecimalConverter(System.String)">
+            <summary>
+            Converts input to decimal value.
+            </summary>
+            <param name="input">input string to convert.</param>
+            <returns>converting success, converting message, converting result. </returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.ShortConverter(System.String)">
+            <summary>
+            Converts input to short value.
+            </summary>
+            <param name="input">input string to convert.</param>
+            <returns>converting success, converting message, converting result. </returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.FirstNameValidator(System.String)">
+            <summary>
+            Validates firstname of the record.
+            </summary>
+            <param name="firstName">firstname ptoperty to validate. </param>
+            <returns>validation success, validation message.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.LastNameValidator(System.String)">
+            <summary>
+            Validates lastname of the record.
+            </summary>
+            <param name="lastName">lastname ptoperty to validate.</param>
+            <returns>validation success, validation message.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.DateOfBirthValidator(System.DateTime)">
+            <summary>
+            Validates dateofbirth of the record.
+            </summary>
+            <param name="dateOfBirth">dateofbirth ptoperty to validate.</param>
+            <returns>validation success, validation message.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.HeightValidator(System.Int16)">
+            <summary>
+            Validates height of the record.
+            </summary>
+            <param name="height">height ptoperty to validate. </param>
+            <returns>validation success, validation message.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SalaryValidator(System.Decimal)">
+            <summary>
+            Validates salary of the record.
+            </summary>
+            <param name="salary">salary ptoperty to validate. </param>
+            <returns>validation success, validation message.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.GenderValidator(System.Char)">
+            <summary>
+            Validates gender of the record.
+            </summary>
+            <param name="sex">gender ptoperty to validate.</param>
+            <returns>validation success, validation message.</returns>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.CreateCommandHandler">
             <summary>
             Handler for create command.
@@ -669,6 +755,21 @@
             Mode for using FileCabinetFilesystemService
             </summary>
         </member>
+        <member name="T:FileCabinetApp.ValidationMode">
+            <summary>
+            Validation modes for cabinet services.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ValidationMode.Default">
+            <summary>
+            Default validation rules.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ValidationMode.Custom">
+            <summary>
+            Custom validation rules.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             Represents the main interface for user to use corresponding commands.
@@ -700,19 +801,6 @@
         <member name="M:FileCabinetApp.CompositeValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.CustomValidator">
-            <summary>
-            Represents custom record validator.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CustomValidator.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CustomValidator"/> class.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CustomValidator.ToString">
-            <inheritdoc/>
-        </member>
         <member name="T:FileCabinetApp.DateOfBirthValidator">
             <summary>
             Class for dateOfBirth property validation.
@@ -730,19 +818,6 @@
             Validate DateTime property of the records.
             </summary>
             <param name="parameters">parameters to validate.</param>
-        </member>
-        <member name="T:FileCabinetApp.DefaultValidator">
-            <summary>
-            Represents default validator.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.DefaultValidator.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.DefaultValidator"/> class.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.DefaultValidator.ToString">
-            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FirstNameValidator">
             <summary>
@@ -843,6 +918,77 @@
             Validate salary of the record.
             </summary>
             <param name="parameters">Parameters to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.ValidatorBuilder">
+            <summary>
+            Class for building validators.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ValidatorBuilder.ValidateFirstName(System.Int32,System.Int32)">
+            <summary>
+            Validate firstname property of the record.
+            </summary>
+            <param name="minLength">Minimal Length of firstname of the records.</param>
+            <param name="maxLength">Maximum Length of firstname of the records.</param>
+        </member>
+        <member name="M:FileCabinetApp.ValidatorBuilder.ValidateLastName(System.Int32,System.Int32)">
+            <summary>
+            Validate lastname property of the record.
+            </summary>
+            <param name="minLength">Minimal Length of lastname of the records.</param>
+            <param name="maxLength">Maximum Length of lastname of the records.</param>
+        </member>
+        <member name="M:FileCabinetApp.ValidatorBuilder.ValidateDateOfBirth(System.DateTime,System.DateTime)">
+            <summary>
+            Validate dateofbirth property of the record.
+            </summary>
+            <param name="from">DateTime start range.</param>
+            <param name="to">DateTime end range.</param>
+        </member>
+        <member name="M:FileCabinetApp.ValidatorBuilder.ValidateHeight(System.Int32,System.Int32)">
+            <summary>
+            Validate height property of the record.
+            </summary>
+            <param name="minHeight">Minimal height.</param>
+            <param name="maxHeight">Maximum height.</param>
+        </member>
+        <member name="M:FileCabinetApp.ValidatorBuilder.ValidateSalary(System.Decimal,System.Decimal)">
+            <summary>
+            Validate salary property of the record.
+            </summary>
+            <param name="minSalary">Minimal salary value.</param>
+            <param name="maxSalary">Maximal salary value.</param>
+        </member>
+        <member name="M:FileCabinetApp.ValidatorBuilder.ValidateGender(System.Char[])">
+            <summary>
+            Validate sex property of the record.
+            </summary>
+            <param name="validGenders">Valid gender chars.</param>
+        </member>
+        <member name="M:FileCabinetApp.ValidatorBuilder.Create">
+            <summary>
+            Creates new IRecordValidator.
+            </summary>
+            <returns>Validator.</returns>
+        </member>
+        <member name="T:FileCabinetApp.ValidatorBuilderExtensions">
+            <summary>
+            Extension methods for creating Default and Custom.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ValidatorBuilderExtensions.Default(FileCabinetApp.ValidatorBuilder)">
+            <summary>
+            Creates Default Validator.
+            </summary>
+            <param name="builder">builder instance.</param>
+            <returns>Default Validator.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ValidatorBuilderExtensions.Custom(FileCabinetApp.ValidatorBuilder)">
+            <summary>
+            Creates Custom validator.
+            </summary>
+            <param name="builder">builder instance.</param>
+            <returns>Custom Validator.</returns>
         </member>
     </members>
 </doc>

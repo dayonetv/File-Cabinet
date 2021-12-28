@@ -11,7 +11,10 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class ExitCommandHandler : CommandHandlerBase
     {
+        private const string CommandName = "exit";
+
         private readonly Action<bool> stopRunning;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExitCommandHandler"/> class.
@@ -28,7 +31,19 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="request">Command and parameters to be handled.</param>
         public override void Handle(AppCommandRequest request)
         {
-            throw new NotImplementedException();
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (request.Command.Equals(CommandName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.Exit();
+            }
+            else
+            {
+                base.Handle(request);
+            }
         }
 
         private void Exit()

@@ -12,6 +12,8 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class RemoveCommandHandler : ServiceCommandHandlerBase
     {
+        private const string CommandName = "remove";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoveCommandHandler"/> class.
         /// </summary>
@@ -27,7 +29,19 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="request">Command and parameters to be handled.</param>
         public override void Handle(AppCommandRequest request)
         {
-            throw new NotImplementedException();
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (request.Command.Equals(CommandName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.Remove(request.Parameters);
+            }
+            else
+            {
+                base.Handle(request);
+            }
         }
 
         private void Remove(string parameters)

@@ -12,6 +12,7 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class ImportCommandHandler : ServiceCommandHandlerBase
     {
+        private const string CommandName = "import";
         private const int AmountOFImportParams = 2;
 
         private readonly Tuple<string, Func<FileInfo, string>>[] importModes;
@@ -36,7 +37,19 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="request">Command and parameters to be handled.</param>
         public override void Handle(AppCommandRequest request)
         {
-            throw new NotImplementedException();
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (request.Command.Equals(CommandName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.Import(request.Parameters);
+            }
+            else
+            {
+                base.Handle(request);
+            }
         }
 
         private void Import(string parameters)

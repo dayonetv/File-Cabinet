@@ -12,6 +12,7 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
+        private const string CommandName = "export";
         private const int AmountOfExportParams = 2;
 
         private static readonly Tuple<char, bool>[] Choices = new Tuple<char, bool>[]
@@ -42,43 +43,19 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="request">Command and parameters to be handled.</param>
         public override void Handle(AppCommandRequest request)
         {
-            throw new NotImplementedException();
-        }
-
-        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
-        {
-            do
+            if (request == null)
             {
-                T value;
-
-                var input = Console.ReadLine();
-                var conversionResult = converter(input);
-
-                if (!conversionResult.Item1)
-                {
-                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
-                    continue;
-                }
-
-                value = conversionResult.Item3;
-
-                var validationResult = validator(value);
-                if (!validationResult.Item1)
-                {
-                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
-                    continue;
-                }
-
-                return value;
+                throw new ArgumentNullException(nameof(request));
             }
-            while (true);
-        }
 
-        private static Tuple<bool, string, char> CharConverter(string input)
-        {
-            input = input.Trim();
-            bool result = char.TryParse(input, out char symbol);
-            return new Tuple<bool, string, char>(result, input, symbol);
+            if (request.Command.Equals(CommandName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.Export(request.Parameters);
+            }
+            else
+            {
+                base.Handle(request);
+            }
         }
 
         private static Tuple<bool, string> YesNoChoiceValidator(char inputChoice)

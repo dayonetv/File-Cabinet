@@ -12,6 +12,7 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class ListCommandHandler : ServiceCommandHandlerBase
     {
+        private const string CommandName = "list";
         private readonly Action<IEnumerable<FileCabinetRecord>> printer;
 
         /// <summary>
@@ -31,7 +32,19 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="request">Command and parameters to be handled.</param>
         public override void Handle(AppCommandRequest request)
         {
-            throw new NotImplementedException();
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (request.Command.Equals(CommandName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.List();
+            }
+            else
+            {
+                base.Handle(request);
+            }
         }
 
         private void List()

@@ -25,6 +25,22 @@ namespace FileCabinetApp
     }
 
     /// <summary>
+    /// Validation modes for cabinet services.
+    /// </summary>
+    public enum ValidationMode
+    {
+        /// <summary>
+        /// Default validation rules.
+        /// </summary>
+        Default,
+
+        /// <summary>
+        /// Custom validation rules.
+        /// </summary>
+        Custom,
+    }
+
+    /// <summary>
     /// Represents the main interface for user to use corresponding commands.
     /// </summary>
     public static class Program
@@ -46,10 +62,10 @@ namespace FileCabinetApp
             new Tuple<string, int>("-s", AmountOfInputArgsForShortMode),
         };
 
-        private static readonly Tuple<string, IRecordValidator>[] RuleSet = new Tuple<string, IRecordValidator>[]
+        private static readonly Tuple<string, ValidationMode>[] RuleSet = new Tuple<string, ValidationMode>[]
         {
-            new Tuple<string, IRecordValidator>("default", new DefaultValidator()),
-            new Tuple<string, IRecordValidator>("custom", new CustomValidator()),
+            new Tuple<string, ValidationMode>("default", ValidationMode.Default),
+            new Tuple<string, ValidationMode>("custom", ValidationMode.Custom),
         };
 
         private static readonly Tuple<string, StorageMode>[] StorageSet = new Tuple<string, StorageMode>[]
@@ -78,11 +94,18 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(args));
             }
 
-            ChosenValidator = ValidatorChooser(args) ?? new DefaultValidator();
+            var validationMode = ValidatorChooser(args);
+
+            switch (validationMode)
+            {
+                case ValidationMode.Default: ChosenValidator = new ValidatorBuilder().Default(); break;
+                case ValidationMode.Custom: ChosenValidator = new ValidatorBuilder().Custom(); break;
+                default: ChosenValidator = new ValidatorBuilder().Default(); break;
+            }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
 
-            Console.WriteLine($"Using {ChosenValidator} rules.");
+            Console.WriteLine($"Using {validationMode} rules.");
 
             switch (StorageChooser(args))
             {
@@ -147,11 +170,11 @@ namespace FileCabinetApp
             return helpHandler;
         }
 
-        private static IRecordValidator ValidatorChooser(string[] args)
+        private static ValidationMode ValidatorChooser(string[] args)
         {
             if (args.Length == 0)
             {
-                return new DefaultValidator();
+                return ValidationMode.Default;
             }
 
             var inputs = args.Length == AmountOfInputArgsForShortMode ? args : args.First().Split(DefaultStartupModeSeparator, 2);
@@ -166,12 +189,12 @@ namespace FileCabinetApp
             }
             else
             {
-                return null;
+                return ValidationMode.Default;
             }
 
             int ruleIndex = Array.FindIndex(RuleSet, tuple => tuple.Item1.Equals(inputRule, StringComparison.InvariantCultureIgnoreCase));
 
-            return ruleIndex >= 0 ? RuleSet[ruleIndex].Item2 : null;
+            return ruleIndex >= 0 ? RuleSet[ruleIndex].Item2 : ValidationMode.Default;
         }
 
         private static StorageMode StorageChooser(string[] args)
