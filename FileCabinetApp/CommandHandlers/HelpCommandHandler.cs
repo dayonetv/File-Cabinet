@@ -42,6 +42,12 @@ namespace FileCabinetApp.CommandHandlers
                 throw new ArgumentNullException(nameof(request));
             }
 
+            if (!CheckCommand(request.Command))
+            {
+                PrintMissedCommandInfo(request.Command);
+                return;
+            }
+
             if (request.Command.Equals(CommandName, StringComparison.InvariantCultureIgnoreCase))
             {
                 PrintHelp(request.Parameters);
@@ -76,6 +82,19 @@ namespace FileCabinetApp.CommandHandlers
                 }
             }
 
+            Console.WriteLine();
+        }
+
+        private static bool CheckCommand(string command)
+        {
+            int indexOfCommand = Array.FindIndex(HelpMessages, 0, HelpMessages.Length, msg => string.Equals(msg[CommandHelpIndex], command, StringComparison.InvariantCultureIgnoreCase));
+
+            return indexOfCommand >= 0;
+        }
+
+        private static void PrintMissedCommandInfo(string command)
+        {
+            Console.WriteLine($"There is no '{command}' command.");
             Console.WriteLine();
         }
     }

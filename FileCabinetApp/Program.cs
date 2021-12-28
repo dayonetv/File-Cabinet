@@ -155,17 +155,16 @@ namespace FileCabinetApp
             var findHandler = new FindCommandHandler(fileCabinetService, Program.DefaultRecordPrint);
             var editHandler = new EditCommandHandler(fileCabinetService);
 
-            helpHandler.SetNext(createHandler);
-            createHandler.SetNext(statHandler);
-            statHandler.SetNext(listHandler);
-            listHandler.SetNext(exportHandler);
-            exportHandler.SetNext(importHandler);
-            importHandler.SetNext(purgeHandler);
-            purgeHandler.SetNext(removeHandler);
-            removeHandler.SetNext(exitHandler);
-            exitHandler.SetNext(findHandler);
-            findHandler.SetNext(editHandler);
-            editHandler.SetNext(null);
+            helpHandler.SetNext(createHandler)
+                .SetNext(statHandler)
+                .SetNext(listHandler)
+                .SetNext(exportHandler)
+                .SetNext(importHandler)
+                .SetNext(purgeHandler)
+                .SetNext(removeHandler)
+                .SetNext(exitHandler)
+                .SetNext(findHandler)
+                .SetNext(editHandler);
 
             return helpHandler;
         }

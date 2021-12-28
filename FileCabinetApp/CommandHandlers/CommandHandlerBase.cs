@@ -28,8 +28,6 @@ namespace FileCabinetApp.CommandHandlers
             {
                 this.nextHandler?.Handle(request);
             }
-
-            Console.WriteLine($"There is no explanation for '{request?.Command}' command.");
         }
 
         /// <inheritdoc/>

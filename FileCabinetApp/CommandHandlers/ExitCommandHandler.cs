@@ -15,7 +15,6 @@ namespace FileCabinetApp.CommandHandlers
 
         private readonly Action<bool> stopRunning;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ExitCommandHandler"/> class.
         /// </summary>

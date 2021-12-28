@@ -13,13 +13,13 @@
             <summary>
             Gets string representaion of the command.
             </summary>
-            <value></value>
+            <value>String command.</value>
         </member>
         <member name="P:FileCabinetApp.CommandHandlers.AppCommandRequest.Parameters">
             <summary>
             Gets string representation of parameters.
             </summary>
-            <value></value>
+            <value>String command.</value>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.CommandHandlerBase">
             <summary>
