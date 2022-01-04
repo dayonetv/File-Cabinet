@@ -60,6 +60,7 @@ namespace FileCabinetApp
             new Tuple<string, int>("-v", AmountOfInputArgsForShortMode),
             new Tuple<string, int>("--storage", AmountOfInputArgsForFullMode),
             new Tuple<string, int>("-s", AmountOfInputArgsForShortMode),
+            new Tuple<string, int>("use", AmountOfInputArgsForFullMode),
         };
 
         private static readonly Tuple<string, ValidationMode>[] RuleSet = new Tuple<string, ValidationMode>[]
@@ -74,14 +75,14 @@ namespace FileCabinetApp
             new Tuple<string, StorageMode>("file", StorageMode.File),
         };
 
-        private static IFileCabinetService fileCabinetService;
-        private static bool isRunning = true;
+        private static readonly Tuple<string, Func<IFileCabinetService>>[] UsingModes = new Tuple<string, Func<IFileCabinetService>>[]
+        {
+            new Tuple<string, Func<IFileCabinetService>>("stopwatch", SwitchOnStopWatch),
+        };
 
-        /// <summary>
-        /// Gets or sets current valitor for records.
-        /// </summary>
-        /// <value></value>
-        public static IRecordValidator ChosenValidator { get; set; }
+        private static IFileCabinetService fileCabinetService;
+        private static IRecordValidator chosenValidator;
+        private static bool isRunning = true;
 
         /// <summary>
         /// The main console-application entry point.
@@ -98,9 +99,9 @@ namespace FileCabinetApp
 
             switch (validationMode)
             {
-                case ValidationMode.Default: ChosenValidator = new ValidatorBuilder().Default(); break;
-                case ValidationMode.Custom: ChosenValidator = new ValidatorBuilder().Custom(); break;
-                default: ChosenValidator = new ValidatorBuilder().Default(); break;
+                case ValidationMode.Default: chosenValidator = new ValidatorBuilder().Default(); break;
+                case ValidationMode.Custom: chosenValidator = new ValidatorBuilder().Custom(); break;
+                default: chosenValidator = new ValidatorBuilder().Default(); break;
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -109,12 +110,14 @@ namespace FileCabinetApp
 
             switch (StorageChooser(args))
             {
-                case StorageMode.Memory: fileCabinetService = new FileCabinetMemoryService(ChosenValidator); break;
-                case StorageMode.File: fileCabinetService = new FileCabinetFilesystemService(new FileStream(CabinetRecordsFile, FileMode.Create), ChosenValidator); break;
-                default: fileCabinetService = new FileCabinetMemoryService(ChosenValidator); break;
+                case StorageMode.Memory: fileCabinetService = new FileCabinetMemoryService(chosenValidator); break;
+                case StorageMode.File: fileCabinetService = new FileCabinetFilesystemService(new FileStream(CabinetRecordsFile, FileMode.Create), chosenValidator); break;
+                default: fileCabinetService = new FileCabinetMemoryService(chosenValidator); break;
             }
 
             Console.WriteLine($"Strorage: {fileCabinetService}");
+
+            ActivateUsingModes(args);
 
             Console.WriteLine(HintMessage);
             Console.WriteLine();
@@ -184,7 +187,7 @@ namespace FileCabinetApp
 
             if (indexOfMode >= 0)
             {
-                inputRule = inputs[1];
+                inputRule = inputs[^1];
             }
             else
             {
@@ -211,7 +214,7 @@ namespace FileCabinetApp
 
             if (indexOfMode >= 0)
             {
-                inputStorage = inputs[1];
+                inputStorage = inputs[^1];
             }
             else
             {
@@ -223,15 +226,39 @@ namespace FileCabinetApp
             return storageIndex >= 0 ? StorageSet[storageIndex].Item2 : StorageMode.Memory;
         }
 
+        private static void ActivateUsingModes(string[] args)
+        {
+            if (args.Length == 0)
+            {
+                return;
+            }
+
+            var inputs = args.First().Split('-', 2);
+
+            string inputUsingMode;
+
+            int indexOfMode = GetIndexOfMode(inputs, args);
+
+            if (indexOfMode >= 0)
+            {
+                inputUsingMode = inputs[^1];
+
+                var switchOn = (from mode in UsingModes where mode.Item1.Equals(inputUsingMode, StringComparison.InvariantCultureIgnoreCase) select mode.Item2).FirstOrDefault();
+
+                fileCabinetService = switchOn?.Invoke() ?? fileCabinetService;
+            }
+        }
+
+        private static IFileCabinetService SwitchOnStopWatch()
+        {
+            return new ServiceMeter(fileCabinetService);
+        }
+
         private static int GetIndexOfMode(string[] inputs, string[] args)
         {
             string inputMode = inputs.First();
 
             int indexOfMode = Array.FindIndex(StartupModes, mode => inputMode.Equals(mode.Item1, StringComparison.InvariantCultureIgnoreCase) && args.Length == mode.Item2);
-            if (indexOfMode < 0)
-            {
-                Console.WriteLine($"Unknown strart up arguments: {string.Join(' ', args)}");
-            }
 
             return indexOfMode;
         }

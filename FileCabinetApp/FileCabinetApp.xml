@@ -742,7 +742,7 @@
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.Purge">
             <summary>
-            Defragmetate records file for Filesystem Service.
+            Defragmentate records file for Filesystem Service.
             </summary>
             <returns>Amount of purged records. </returns>
         </member>
@@ -780,12 +780,6 @@
             <summary>
             Represents the main interface for user to use corresponding commands.
             </summary>
-        </member>
-        <member name="P:FileCabinetApp.Program.ChosenValidator">
-            <summary>
-            Gets or sets current valitor for records.
-            </summary>
-            <value></value>
         </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
@@ -1070,6 +1064,50 @@
             </summary>
             <param name="builder">builder instance.</param>
             <returns>Custom Validator.</returns>
+        </member>
+        <member name="T:FileCabinetApp.ServiceMeter">
+            <summary>
+            Service that displays methods execution time.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceMeter"/> class.
+            </summary>
+            <param name="service">Service to be used.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.CreateRecord(FileCabinetApp.CreateEditParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByDateOfBith(System.DateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.MakeSnapShot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
         </member>
     </members>
 </doc>
