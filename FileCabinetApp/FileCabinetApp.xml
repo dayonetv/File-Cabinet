@@ -825,6 +825,23 @@
             </summary>
             <param name="parameters">parameters to validate.</param>
         </member>
+        <member name="T:FileCabinetApp.DateRange">
+            <summary>
+            Date range properties for validation-rules file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.DateRange.From">
+            <summary>
+            Gets minimal Date.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.DateRange.To">
+            <summary>
+            Gets maximum Date.
+            </summary>
+            <value></value>
+        </member>
         <member name="T:FileCabinetApp.FirstNameValidator">
             <summary>
             Class for firstname property validation.
@@ -907,6 +924,23 @@
             </summary>
             <param name="parameters">Parameters to validate.</param>
         </member>
+        <member name="T:FileCabinetApp.Range">
+            <summary>
+            Range Properties for validation-rules file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Range.Max">
+            <summary>
+            Gets maximum value.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.Range.Min">
+            <summary>
+            Gets minimum value.
+            </summary>
+            <value></value>
+        </member>
         <member name="T:FileCabinetApp.SalaryValidator">
             <summary>
             Class for salary validation of the record.
@@ -924,6 +958,47 @@
             Validate salary of the record.
             </summary>
             <param name="parameters">Parameters to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.ValidationRule">
+            <summary>
+            Validation rule properties for json file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.ValidationRule.FirstName">
+            <summary>
+            Gets valid firstname length range.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationRule.LastName">
+            <summary>
+            Gets valid lastname length range.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationRule.DateOfBirth">
+            <summary>
+            Gets valid date of birth range.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationRule.Salary">
+            <summary>
+            Gets valid salary range.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationRule.Height">
+            <summary>
+            Gets valid height range.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationRule.Genders">
+            <summary>
+            Gets valid gerders.
+            </summary>
+            <value></value>
         </member>
         <member name="T:FileCabinetApp.ValidatorBuilder">
             <summary>
