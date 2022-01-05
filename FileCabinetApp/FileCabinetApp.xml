@@ -760,7 +760,7 @@
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.Purge">
             <summary>
-            Defragmetate records file for Filesystem Service.
+            Defragmentate records file for Filesystem Service.
             </summary>
             <returns>Amount of purged records. </returns>
         </member>
@@ -816,12 +816,6 @@
             Represents the main interface for user to use corresponding commands.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.Program.ChosenValidator">
-            <summary>
-            Gets or sets current valitor for records.
-            </summary>
-            <value></value>
-        </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
             The main console-application entry point.
@@ -859,6 +853,23 @@
             Validate DateTime property of the records.
             </summary>
             <param name="parameters">parameters to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.DateRange">
+            <summary>
+            Date range properties for validation-rules file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.DateRange.From">
+            <summary>
+            Gets minimal Date.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.DateRange.To">
+            <summary>
+            Gets maximum Date.
+            </summary>
+            <value></value>
         </member>
         <member name="T:FileCabinetApp.FirstNameValidator">
             <summary>
@@ -942,6 +953,23 @@
             </summary>
             <param name="parameters">Parameters to validate.</param>
         </member>
+        <member name="T:FileCabinetApp.Range">
+            <summary>
+            Range Properties for validation-rules file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Range.Max">
+            <summary>
+            Gets maximum value.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.Range.Min">
+            <summary>
+            Gets minimum value.
+            </summary>
+            <value></value>
+        </member>
         <member name="T:FileCabinetApp.SalaryValidator">
             <summary>
             Class for salary validation of the record.
@@ -959,6 +987,47 @@
             Validate salary of the record.
             </summary>
             <param name="parameters">Parameters to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.ValidationRule">
+            <summary>
+            Validation rule properties for json file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.ValidationRule.FirstName">
+            <summary>
+            Gets valid firstname length range.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationRule.LastName">
+            <summary>
+            Gets valid lastname length range.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationRule.DateOfBirth">
+            <summary>
+            Gets valid date of birth range.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationRule.Salary">
+            <summary>
+            Gets valid salary range.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationRule.Height">
+            <summary>
+            Gets valid height range.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationRule.Genders">
+            <summary>
+            Gets valid gerders.
+            </summary>
+            <value></value>
         </member>
         <member name="T:FileCabinetApp.ValidatorBuilder">
             <summary>
@@ -1030,6 +1099,94 @@
             </summary>
             <param name="builder">builder instance.</param>
             <returns>Custom Validator.</returns>
+        </member>
+        <member name="T:FileCabinetApp.ServiceLogger">
+            <summary>
+            Service that saves methods execution information.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceLogger"/> class.
+            </summary>
+            <param name="service">Service to be used.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.CreateRecord(FileCabinetApp.CreateEditParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByDateOfBith(System.DateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.MakeSnapShot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.ServiceMeter">
+            <summary>
+            Service that displays methods execution time.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceMeter"/> class.
+            </summary>
+            <param name="service">Service to be used.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.CreateRecord(FileCabinetApp.CreateEditParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByDateOfBith(System.DateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.MakeSnapShot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
         </member>
     </members>
 </doc>
