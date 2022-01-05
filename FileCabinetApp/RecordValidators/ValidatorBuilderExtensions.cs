@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace FileCabinetApp
 {
@@ -11,21 +9,11 @@ namespace FileCabinetApp
     /// </summary>
     public static class ValidatorBuilderExtensions
     {
-        private const int DefaultMaxNameLength = 60;
-        private const int DefaultMinNameLength = 2;
-        private const int CustomMaxNameLength = 60;
-        private const int CustomMinNameLength = 2;
-        private const decimal DefaultMaxSalary = 1_000_000;
-        private const decimal CustomMaxSalary = int.MaxValue;
-        private const short DefaultMaxHeight = 220;
-        private const short DefaultMinHeight = 120;
-        private const short CustomMaxHeight = 220;
-        private const short CustomMinHeight = 140;
+        private const string DefaultSection = "default";
+        private const string CustomSection = "custom";
 
-        private static readonly char[] CustomValidGenders = { 'M', 'F' };
-        private static readonly char[] DefaultValidGenders = { 'M', 'F' };
-        private static readonly DateTime DefaultMinDateOfBirth = new (1950, 1, 1);
-        private static readonly DateTime CustomMinDateOfBirth = new (1940, 1, 1);
+        private static readonly FileInfo RulesFile = new FileInfo("validation-rules.json");
+        private static readonly IConfiguration ValidationConfiguration = new ConfigurationBuilder().AddJsonFile(RulesFile.FullName, true, true).Build();
 
         /// <summary>
         /// Creates Default Validator.
@@ -39,12 +27,8 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            builder.ValidateFirstName(DefaultMinNameLength, DefaultMaxNameLength);
-            builder.ValidateLastName(DefaultMinNameLength, DefaultMaxNameLength);
-            builder.ValidateDateOfBirth(DefaultMinDateOfBirth, DateTime.Now);
-            builder.ValidateHeight(DefaultMinHeight, DefaultMaxHeight);
-            builder.ValidateSalary(0, DefaultMaxSalary);
-            builder.ValidateGender(DefaultValidGenders);
+            ProcessValidationRules(builder, ValidationConfiguration.GetSection(DefaultSection));
+
             return builder.Create();
         }
 
@@ -60,13 +44,26 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            builder.ValidateFirstName(CustomMinNameLength, CustomMaxNameLength);
-            builder.ValidateLastName(CustomMinNameLength, CustomMaxNameLength);
-            builder.ValidateDateOfBirth(CustomMinDateOfBirth, DateTime.Now);
-            builder.ValidateHeight(CustomMinHeight, CustomMaxHeight);
-            builder.ValidateSalary(0, CustomMaxSalary);
-            builder.ValidateGender(CustomValidGenders);
+            ProcessValidationRules(builder, ValidationConfiguration.GetSection(CustomSection));
+
             return builder.Create();
+        }
+
+        private static void ProcessValidationRules(ValidatorBuilder builder, IConfigurationSection validationModeSection)
+        {
+            ValidationRule currentRule = validationModeSection.Get<ValidationRule>();
+
+            builder.ValidateFirstName(currentRule.FirstName.Min, currentRule.FirstName.Max);
+
+            builder.ValidateLastName(currentRule.LastName.Min, currentRule.LastName.Max);
+
+            builder.ValidateDateOfBirth(currentRule.DateOfBirth.From, currentRule.DateOfBirth.To);
+
+            builder.ValidateHeight(currentRule.Height.Min, currentRule.Height.Max);
+
+            builder.ValidateSalary(currentRule.Salary.Min, currentRule.Salary.Max);
+
+            builder.ValidateGender(currentRule.Genders.ToArray());
         }
     }
 }

@@ -77,7 +77,7 @@ namespace FileCabinetApp
         public bool Remove(int id);
 
         /// <summary>
-        /// Defragmetate records file for Filesystem Service.
+        /// Defragmentate records file for Filesystem Service.
         /// </summary>
         /// <returns>Amount of purged records. </returns>
         public int Purge();
