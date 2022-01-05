@@ -20,7 +20,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private readonly Action<IEnumerable<FileCabinetRecord>> printer;
 
-        private readonly Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[] findByFunctions;
+        private readonly Tuple<string, Func<string, IEnumerable<FileCabinetRecord>>>[] findByFunctions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
@@ -30,11 +30,11 @@ namespace FileCabinetApp.CommandHandlers
         public FindCommandHandler(IFileCabinetService service, Action<IEnumerable<FileCabinetRecord>> printer)
             : base(service)
         {
-            this.findByFunctions = new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>[]
+            this.findByFunctions = new Tuple<string, Func<string, IEnumerable<FileCabinetRecord>>>[]
             {
-                new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("firstname", this.FindByFirstName),
-                new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("lastname", this.FindByLastName),
-                new Tuple<string, Func<string, ReadOnlyCollection<FileCabinetRecord>>>("dateofbirth", this.FindByDateOfBirth),
+                new Tuple<string, Func<string, IEnumerable<FileCabinetRecord>>>("firstname", this.FindByFirstName),
+                new Tuple<string, Func<string, IEnumerable<FileCabinetRecord>>>("lastname", this.FindByLastName),
+                new Tuple<string, Func<string, IEnumerable<FileCabinetRecord>>>("dateofbirth", this.FindByDateOfBirth),
             };
 
             this.printer = printer;
@@ -61,23 +61,6 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static ReadOnlyCollection<FileCabinetRecord> IterateRecords(IRecordIterator iterator)
-        {
-            List<FileCabinetRecord> records = null;
-
-            if (iterator.HasMore())
-            {
-                records = new List<FileCabinetRecord>();
-
-                while (iterator.HasMore())
-                {
-                    records.Add(iterator.GetNext());
-                }
-            }
-
-            return records?.AsReadOnly();
-        }
-
         private void Find(string parameters)
         {
             var inputParams = parameters.Trim().Split(' ', AmountOfFindByParams);
@@ -99,9 +82,9 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            ReadOnlyCollection<FileCabinetRecord> findedRecords = findByFunc?.Invoke(toFind);
+            IEnumerable<FileCabinetRecord> findedRecords = findByFunc?.Invoke(toFind);
 
-            if (findedRecords != null)
+            if (findedRecords != null && findedRecords.Any())
             {
                 this.printer?.Invoke(findedRecords);
             }
@@ -111,22 +94,20 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)
+        private IEnumerable<FileCabinetRecord> FindByDateOfBirth(string dateToFind)
         {
             bool parseResult = DateTime.TryParseExact(dateToFind.Trim('"'), DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBithToFind);
-            return parseResult ? IterateRecords(this.Service.FindByDateOfBith(dateOfBithToFind)) : null;
+            return parseResult ? this.Service.FindByDateOfBith(dateOfBithToFind) : null;
         }
 
-        private ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        private IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            IRecordIterator iterator = this.Service.FindByFirstName(firstName.Trim('"'));
-            return IterateRecords(iterator);
+            return this.Service.FindByFirstName(firstName.Trim('"'));
         }
 
-        private ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        private IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            IRecordIterator iterator = this.Service.FindByLastName(lastName.Trim('"'));
-            return IterateRecords(iterator);
+            return this.Service.FindByLastName(lastName.Trim('"'));
         }
     }
 }

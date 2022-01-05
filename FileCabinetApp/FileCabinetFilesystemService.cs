@@ -111,21 +111,21 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByDateOfBith(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
         {
-            return new FilesystemIterator(this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth), this.fileStream);
+            return new FilesystemFindedRecords(this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth), this.fileStream);
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            return new FilesystemIterator(this.firstNameDictionary.GetValueOrDefault(firstName), this.fileStream);
+            return new FilesystemFindedRecords(this.firstNameDictionary.GetValueOrDefault(firstName), this.fileStream);
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            return new FilesystemIterator(this.lastNameDictionary.GetValueOrDefault(lastName), this.fileStream);
+            return new FilesystemFindedRecords(this.lastNameDictionary.GetValueOrDefault(lastName), this.fileStream);
         }
 
         /// <inheritdoc/>

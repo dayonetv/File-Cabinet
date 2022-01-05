@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,15 +8,17 @@ using System.Text;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Iterator for filesystem service.
+    /// Enumerator for filesystem service finded records collection.
     /// </summary>
-    public class FilesystemIterator : IRecordIterator
+    public sealed class FilesystemIterator : IEnumerator<FileCabinetRecord>
     {
         private const int NameByteSize = 120;
         private static readonly Encoding CurrentEncoding = Encoding.Default;
 
         private readonly List<long> recordsOffsets;
         private readonly FileStream fileStream;
+
+        private int position = -1;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilesystemIterator"/> class.
@@ -29,30 +32,34 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public FileCabinetRecord GetNext()
+        public FileCabinetRecord Current => this.ReadOneRecord(this.recordsOffsets[this.position]);
+
+        /// <inheritdoc/>
+        object IEnumerator.Current => this.ReadOneRecord(this.recordsOffsets[this.position]);
+
+        /// <inheritdoc/>
+        public void Dispose()
         {
-            if (this.recordsOffsets == null || this.recordsOffsets.Count == 0)
-            {
-                return null;
-            }
-
-            long recordPosition = this.recordsOffsets.First();
-
-            this.fileStream.Seek(recordPosition, SeekOrigin.Begin);
-
-            this.recordsOffsets.Remove(recordPosition);
-
-            return this.ReadOneRecord();
+            GC.SuppressFinalize(this);
         }
 
         /// <inheritdoc/>
-        public bool HasMore()
+        public bool MoveNext()
         {
-            return this.recordsOffsets != null && this.recordsOffsets.Any();
+            this.position++;
+            return this.recordsOffsets != null && this.recordsOffsets.Count != this.position;
         }
 
-        private FileCabinetRecord ReadOneRecord()
+        /// <inheritdoc/>
+        public void Reset()
         {
+            this.position = default;
+        }
+
+        private FileCabinetRecord ReadOneRecord(long recordPosition)
+        {
+            this.fileStream.Seek(recordPosition, SeekOrigin.Begin);
+
             FileCabinetRecord readedRecord = new FileCabinetRecord();
 
             using (BinaryReader binReader = new BinaryReader(this.fileStream, CurrentEncoding, true))

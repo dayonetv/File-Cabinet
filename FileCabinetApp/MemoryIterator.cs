@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,11 +8,12 @@ using System.Threading.Tasks;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Iterator for memory service.
+    /// Enumerator for memory service finded records collection.
     /// </summary>
-    public class MemoryIterator : IRecordIterator
+    public sealed class MemoryIterator : IEnumerator<FileCabinetRecord>
     {
         private readonly List<FileCabinetRecord> records;
+        private int position = -1;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryIterator"/> class.
@@ -23,23 +25,28 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public FileCabinetRecord GetNext()
+        public FileCabinetRecord Current => this.records[this.position];
+
+        /// <inheritdoc/>
+        object IEnumerator.Current => this.records[this.position];
+
+        /// <inheritdoc/>
+        public void Dispose()
         {
-            if (this.records == null || this.records.Count == 0)
-            {
-                return null;
-            }
-
-            FileCabinetRecord record = this.records.First();
-            this.records.Remove(record);
-
-            return record;
+            GC.SuppressFinalize(this);
         }
 
         /// <inheritdoc/>
-        public bool HasMore()
+        public bool MoveNext()
         {
-            return this.records != null && this.records.Any();
+            this.position++;
+            return this.records != null && this.records.Count != this.position;
+        }
+
+        /// <inheritdoc/>
+        public void Reset()
+        {
+            this.position = default;
         }
     }
 }

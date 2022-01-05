@@ -222,9 +222,9 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">First Name to search by.</param>
         /// <returns>Iterator for finded records.</returns>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            return new MemoryIterator(this.firstNameDictionary.GetValueOrDefault(firstName));
+            return new MemoryFindedRecords(this.firstNameDictionary.GetValueOrDefault(firstName));
         }
 
         /// <summary>
@@ -232,9 +232,9 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">Last Name to search by.</param>
         /// <returns>Iterator for finded records.</returns>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            return new MemoryIterator(this.lastNameDictionary.GetValueOrDefault(lastName));
+            return new MemoryFindedRecords(this.lastNameDictionary.GetValueOrDefault(lastName));
         }
 
         /// <summary>
@@ -242,9 +242,9 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">Date of Birth to search by, in format "yyyy-MMM-dd".</param>
         /// <returns>Iterator for finded records.</returns>
-        public IRecordIterator FindByDateOfBith(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
         {
-            return new MemoryIterator(this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth));
+            return new MemoryFindedRecords(this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth));
         }
 
         /// <inheritdoc/>

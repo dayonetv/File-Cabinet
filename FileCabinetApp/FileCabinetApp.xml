@@ -668,9 +668,27 @@
             </summary>
             <param name="reader">Stream to *.xml file.</param>
         </member>
+        <member name="T:FileCabinetApp.FilesystemFindedRecords">
+            <summary>
+            Collection of finded records by filesystem service.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemFindedRecords.#ctor(System.Collections.Generic.IReadOnlyCollection{System.Int64},System.IO.FileStream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FilesystemFindedRecords"/> class.
+            </summary>
+            <param name="offsets">Records offsets int the file.</param>
+            <param name="fileStream">Stream to records storing file.</param>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemFindedRecords.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemFindedRecords.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FilesystemIterator">
             <summary>
-            Iterator for filesystem service.
+            Enumerator for filesystem service finded records collection.
             </summary>
         </member>
         <member name="M:FileCabinetApp.FilesystemIterator.#ctor(System.Collections.Generic.IReadOnlyCollection{System.Int64},System.IO.FileStream)">
@@ -680,10 +698,19 @@
             <param name="offsets">Records offsets int the file.</param>
             <param name="fileStream">Stream to records storing file.</param>
         </member>
-        <member name="M:FileCabinetApp.FilesystemIterator.GetNext">
+        <member name="P:FileCabinetApp.FilesystemIterator.Current">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FilesystemIterator.HasMore">
+        <member name="P:FileCabinetApp.FilesystemIterator.System#Collections#IEnumerator#Current">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.MoveNext">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.Reset">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
@@ -722,21 +749,21 @@
             Searches records by First Name in curent records.
             </summary>
             <param name="firstName">First Name to search by.</param>
-            <returns>Iterator for finded records.</returns>
+            <returns>Collection of finded records.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.FindByLastName(System.String)">
             <summary>
             Searches a records by Last Name in curent records.
             </summary>
             <param name="lastName">Last Name to search by.</param>
-            <returns>Iterator for finded records.</returns>
+            <returns>Collection of finded records.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfBith(System.DateTime)">
             <summary>
             Searches a records by Date of birth in curent records using.
             </summary>
             <param name="dateOfBirth">Date of Birth to search by.</param>
-            <returns>Iterator for finded records.</returns>
+            <returns>Collection of finded records.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapShot">
             <summary>
@@ -764,26 +791,26 @@
             </summary>
             <returns>Amount of purged records. </returns>
         </member>
-        <member name="T:FileCabinetApp.IRecordIterator">
+        <member name="T:FileCabinetApp.MemoryFindedRecords">
             <summary>
-            Iterator for records collection.
+            Collection of finded records by memory service.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.IRecordIterator.GetNext">
+        <member name="M:FileCabinetApp.MemoryFindedRecords.#ctor(System.Collections.Generic.IReadOnlyCollection{FileCabinetApp.FileCabinetRecord})">
             <summary>
-            Gets next record.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.MemoryFindedRecords"/> class.
             </summary>
-            <returns>Next record.</returns>
+            <param name="records">Collection of finded records.</param>
         </member>
-        <member name="M:FileCabinetApp.IRecordIterator.HasMore">
-            <summary>
-            Determines whether the collection contains more records to get.
-            </summary>
-            <returns>True if the collection has more records to return, oterwise - false.</returns>
+        <member name="M:FileCabinetApp.MemoryFindedRecords.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.MemoryFindedRecords.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.MemoryIterator">
             <summary>
-            Iterator for memory service.
+            Enumerator for memory service finded records collection.
             </summary>
         </member>
         <member name="M:FileCabinetApp.MemoryIterator.#ctor(System.Collections.Generic.IReadOnlyCollection{FileCabinetApp.FileCabinetRecord})">
@@ -792,10 +819,19 @@
             </summary>
             <param name="records">Records collection to be iterated.</param>
         </member>
-        <member name="M:FileCabinetApp.MemoryIterator.GetNext">
+        <member name="P:FileCabinetApp.MemoryIterator.Current">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.MemoryIterator.HasMore">
+        <member name="P:FileCabinetApp.MemoryIterator.System#Collections#IEnumerator#Current">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.MoveNext">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.Reset">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.StorageMode">
