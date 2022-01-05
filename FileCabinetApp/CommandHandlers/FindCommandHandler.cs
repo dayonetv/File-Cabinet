@@ -61,6 +61,23 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
+        private static ReadOnlyCollection<FileCabinetRecord> IterateRecords(IRecordIterator iterator)
+        {
+            List<FileCabinetRecord> records = null;
+
+            if (iterator.HasMore())
+            {
+                records = new List<FileCabinetRecord>();
+
+                while (iterator.HasMore())
+                {
+                    records.Add(iterator.GetNext());
+                }
+            }
+
+            return records?.AsReadOnly();
+        }
+
         private void Find(string parameters)
         {
             var inputParams = parameters.Trim().Split(' ', AmountOfFindByParams);
@@ -82,7 +99,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            ReadOnlyCollection<FileCabinetRecord> findedRecords = findByFunc.Invoke(toFind);
+            ReadOnlyCollection<FileCabinetRecord> findedRecords = findByFunc?.Invoke(toFind);
 
             if (findedRecords != null)
             {
@@ -97,17 +114,19 @@ namespace FileCabinetApp.CommandHandlers
         private ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string dateToFind)
         {
             bool parseResult = DateTime.TryParseExact(dateToFind.Trim('"'), DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBithToFind);
-            return parseResult ? this.Service.FindByDateOfBith(dateOfBithToFind) : null;
+            return parseResult ? IterateRecords(this.Service.FindByDateOfBith(dateOfBithToFind)) : null;
         }
 
         private ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            return this.Service.FindByFirstName(firstName.Trim('"'));
+            IRecordIterator iterator = this.Service.FindByFirstName(firstName.Trim('"'));
+            return IterateRecords(iterator);
         }
 
         private ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            return this.Service.FindByLastName(lastName.Trim('"'));
+            IRecordIterator iterator = this.Service.FindByLastName(lastName.Trim('"'));
+            return IterateRecords(iterator);
         }
     }
 }

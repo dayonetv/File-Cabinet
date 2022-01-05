@@ -485,21 +485,21 @@
             Searches records by First Name in curent records using special 'firstNameDictionary' dictionary.
             </summary>
             <param name="firstName">First Name to search by.</param>
-            <returns>Array of finded records.</returns>
+            <returns>Iterator for finded records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByLastName(System.String)">
             <summary>
             Searches a records by Last Name in curent records using special 'lastNameDictionary' dictionary.
             </summary>
             <param name="lastName">Last Name to search by.</param>
-            <returns>Array of finded records.</returns>
+            <returns>Iterator for finded records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByDateOfBith(System.DateTime)">
             <summary>
             Searches a records by Date of birth in curent records using special 'dateOfBirthDictionary' dictionary.
             </summary>
             <param name="dateOfBirth">Date of Birth to search by, in format "yyyy-MMM-dd".</param>
-            <returns>Array of finded records.</returns>
+            <returns>Iterator for finded records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.ToString">
             <inheritdoc/>
@@ -668,6 +668,24 @@
             </summary>
             <param name="reader">Stream to *.xml file.</param>
         </member>
+        <member name="T:FileCabinetApp.FilesystemIterator">
+            <summary>
+            Iterator for filesystem service.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.#ctor(System.Collections.Generic.IReadOnlyCollection{System.Int64},System.IO.FileStream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FilesystemIterator"/> class.
+            </summary>
+            <param name="offsets">Records offsets int the file.</param>
+            <param name="fileStream">Stream to records storing file.</param>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.GetNext">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.HasMore">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
             File cabinet service main interface.
@@ -704,21 +722,21 @@
             Searches records by First Name in curent records.
             </summary>
             <param name="firstName">First Name to search by.</param>
-            <returns>Array of finded records.</returns>
+            <returns>Iterator for finded records.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.FindByLastName(System.String)">
             <summary>
             Searches a records by Last Name in curent records.
             </summary>
             <param name="lastName">Last Name to search by.</param>
-            <returns>Array of finded records.</returns>
+            <returns>Iterator for finded records.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfBith(System.DateTime)">
             <summary>
             Searches a records by Date of birth in curent records using.
             </summary>
             <param name="dateOfBirth">Date of Birth to search by.</param>
-            <returns>Array of finded records.</returns>
+            <returns>Iterator for finded records.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapShot">
             <summary>
@@ -745,6 +763,40 @@
             Defragmetate records file for Filesystem Service.
             </summary>
             <returns>Amount of purged records. </returns>
+        </member>
+        <member name="T:FileCabinetApp.IRecordIterator">
+            <summary>
+            Iterator for records collection.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordIterator.GetNext">
+            <summary>
+            Gets next record.
+            </summary>
+            <returns>Next record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IRecordIterator.HasMore">
+            <summary>
+            Determines whether the collection contains more records to get.
+            </summary>
+            <returns>True if the collection has more records to return, oterwise - false.</returns>
+        </member>
+        <member name="T:FileCabinetApp.MemoryIterator">
+            <summary>
+            Iterator for memory service.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.#ctor(System.Collections.Generic.IReadOnlyCollection{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.MemoryIterator"/> class.
+            </summary>
+            <param name="records">Records collection to be iterated.</param>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.GetNext">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.HasMore">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.StorageMode">
             <summary>
