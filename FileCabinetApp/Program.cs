@@ -78,6 +78,7 @@ namespace FileCabinetApp
         private static readonly Tuple<string, Func<IFileCabinetService>>[] UsingModes = new Tuple<string, Func<IFileCabinetService>>[]
         {
             new Tuple<string, Func<IFileCabinetService>>("stopwatch", SwitchOnStopWatch),
+            new Tuple<string, Func<IFileCabinetService>>("logger", SwitchOnLogger),
         };
 
         private static IFileCabinetService fileCabinetService;
@@ -252,6 +253,11 @@ namespace FileCabinetApp
         private static IFileCabinetService SwitchOnStopWatch()
         {
             return new ServiceMeter(fileCabinetService);
+        }
+
+        private static IFileCabinetService SwitchOnLogger()
+        {
+            return new ServiceLogger(SwitchOnStopWatch());
         }
 
         private static int GetIndexOfMode(string[] inputs, string[] args)

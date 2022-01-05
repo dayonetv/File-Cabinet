@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace FileCabinetApp
@@ -59,9 +60,12 @@ namespace FileCabinetApp
 
             StringBuilder outputText = new StringBuilder();
 
-            foreach (var rec in records)
+            if (records != null)
             {
-                outputText.Append(RecordToString(rec));
+                foreach (var rec in records)
+                {
+                    outputText.Append(RecordToString(rec));
+                }
             }
 
             this.WriteOutputs(nameof(this.FindByDateOfBith), outputText.ToString());
@@ -78,9 +82,12 @@ namespace FileCabinetApp
 
             StringBuilder outputText = new StringBuilder();
 
-            foreach (var rec in records)
+            if (records != null)
             {
-                outputText.Append(RecordToString(rec));
+                foreach (var rec in records)
+                {
+                    outputText.Append(RecordToString(rec));
+                }
             }
 
             this.WriteOutputs(nameof(this.FindByFirstName), outputText.ToString());
@@ -97,9 +104,12 @@ namespace FileCabinetApp
 
             StringBuilder outputText = new StringBuilder();
 
-            foreach (var rec in records)
+            if (records != null)
             {
-                outputText.Append(RecordToString(rec));
+                foreach (var rec in records)
+                {
+                    outputText.Append(RecordToString(rec));
+                }
             }
 
             this.WriteOutputs(nameof(this.FindByLastName), outputText.ToString());
@@ -116,9 +126,12 @@ namespace FileCabinetApp
 
             StringBuilder outputText = new StringBuilder();
 
-            foreach (var rec in records)
+            if (records != null)
             {
-                outputText.Append(RecordToString(rec));
+                foreach (var rec in records)
+                {
+                    outputText.Append(RecordToString(rec));
+                }
             }
 
             this.WriteOutputs(nameof(this.GetRecords), outputText.ToString());
@@ -217,12 +230,14 @@ namespace FileCabinetApp
 
         private void WriteInputs(string methodName, string inputParameters)
         {
-            this.logWriter.WriteLine($"{DateTime.Now.ToLongDateString()} - Calling {methodName}() with {inputParameters ?? "null"}");
+            this.logWriter.WriteLine($"{DateTime.Now.ToString("G", Culture)} - Calling {methodName}() with {inputParameters ?? "null"}");
+            this.logWriter.Flush();
         }
 
         private void WriteOutputs(string methodName, string returningParameters)
         {
-            this.logWriter.WriteLine($"{DateTime.Now.ToLongDateString()} - {methodName}() returned '{returningParameters ?? "void"}'");
+            this.logWriter.WriteLine($"{DateTime.Now.ToString("G", Culture)} - {methodName}() returned '{returningParameters ?? "void"}'");
+            this.logWriter.Flush();
         }
     }
 }
