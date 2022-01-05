@@ -221,30 +221,30 @@ namespace FileCabinetApp
         /// Searches records by First Name in curent records using special 'firstNameDictionary' dictionary.
         /// </summary>
         /// <param name="firstName">First Name to search by.</param>
-        /// <returns>Array of finded records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        /// <returns>Iterator for finded records.</returns>
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            return this.firstNameDictionary.GetValueOrDefault(firstName)?.AsReadOnly();
+            return new MemoryFindedRecords(this.firstNameDictionary.GetValueOrDefault(firstName));
         }
 
         /// <summary>
         /// Searches a records by Last Name in curent records using special 'lastNameDictionary' dictionary.
         /// </summary>
         /// <param name="lastName">Last Name to search by.</param>
-        /// <returns>Array of finded records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        /// <returns>Iterator for finded records.</returns>
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            return this.lastNameDictionary.GetValueOrDefault(lastName)?.AsReadOnly();
+            return new MemoryFindedRecords(this.lastNameDictionary.GetValueOrDefault(lastName));
         }
 
         /// <summary>
         /// Searches a records by Date of birth in curent records using special 'dateOfBirthDictionary' dictionary.
         /// </summary>
         /// <param name="dateOfBirth">Date of Birth to search by, in format "yyyy-MMM-dd".</param>
-        /// <returns>Array of finded records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
+        /// <returns>Iterator for finded records.</returns>
+        public IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
         {
-            return this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth)?.AsReadOnly();
+            return new MemoryFindedRecords(this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth));
         }
 
         /// <inheritdoc/>
