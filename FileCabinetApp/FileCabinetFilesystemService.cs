@@ -27,6 +27,10 @@ namespace FileCabinetApp
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator;
 
+        private readonly Dictionary<string, List<long>> firstNameDictionary = new Dictionary<string, List<long>>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<string, List<long>> lastNameDictionary = new Dictionary<string, List<long>>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<DateTime, List<long>> dateOfBirthDictionary = new Dictionary<DateTime, List<long>>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
@@ -59,9 +63,13 @@ namespace FileCabinetApp
                 Sex = parameters.Sex,
             };
 
-            this.fileStream.Seek(RecordByteSize * this.GetStat(), SeekOrigin.Begin);
+            long recordBeginPosition = this.fileStream.Length;
+
+            this.fileStream.Seek(recordBeginPosition, SeekOrigin.Begin);
 
             this.WriteRecordToFile(record);
+
+            this.AddToDictionaries(record, recordBeginPosition);
 
             return record.Id;
         }
@@ -427,6 +435,28 @@ namespace FileCabinetApp
             }
 
             return -1;
+        }
+
+        private void AddToDictionaries(FileCabinetRecord recordToAdd, long recordOffset)
+        {
+            if (!this.firstNameDictionary.ContainsKey(recordToAdd.FirstName))
+            {
+                this.firstNameDictionary.Add(recordToAdd.FirstName, new List<long>());
+            }
+
+            if (!this.lastNameDictionary.ContainsKey(recordToAdd.LastName))
+            {
+                this.lastNameDictionary.Add(recordToAdd.LastName, new List<long>());
+            }
+
+            if (!this.dateOfBirthDictionary.ContainsKey(recordToAdd.DateOfBirth))
+            {
+                this.dateOfBirthDictionary.Add(recordToAdd.DateOfBirth, new List<long>());
+            }
+
+            this.firstNameDictionary[recordToAdd.FirstName].Add(recordOffset);
+            this.lastNameDictionary[recordToAdd.LastName].Add(recordOffset);
+            this.dateOfBirthDictionary[recordToAdd.DateOfBirth].Add(recordOffset);
         }
     }
 }
