@@ -20,19 +20,22 @@ namespace FileCabinetApp
         /// <param name="records">Collection of finded records.</param>
         public MemoryFindedRecords(IReadOnlyCollection<FileCabinetRecord> records)
         {
-            this.records = records;
+            this.records = records ?? new List<FileCabinetRecord>();
         }
 
         /// <inheritdoc/>
         public IEnumerator<FileCabinetRecord> GetEnumerator()
         {
-            return new MemoryIterator(this.records);
+            foreach (var record in this.records)
+            {
+                yield return record;
+            }
         }
 
         /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return new MemoryIterator(this.records);
+            return this.GetEnumerator();
         }
     }
 }
