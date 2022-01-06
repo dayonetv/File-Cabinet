@@ -82,5 +82,11 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns>Amount of purged records. </returns>
         public int Purge();
+
+        /// <summary>
+        /// Insert record to the collection.
+        /// </summary>
+        /// <param name="recordToInsert">Record to insert.</param>
+        public void Insert(FileCabinetRecord recordToInsert);
     }
 }

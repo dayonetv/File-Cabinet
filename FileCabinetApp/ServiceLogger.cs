@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace FileCabinetApp
@@ -52,7 +52,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
         {
             this.WriteInputs(nameof(this.FindByDateOfBith), $"{nameof(dateOfBirth)} = {dateOfBirth.ToString(DateFormat, Culture)}");
 
@@ -74,7 +74,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             this.WriteInputs(nameof(this.FindByFirstName), $"{nameof(firstName)} = {firstName}");
 
@@ -96,7 +96,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             this.WriteInputs(nameof(this.FindByLastName), $"LastName = '{lastName}'");
 
@@ -197,6 +197,22 @@ namespace FileCabinetApp
             this.WriteOutputs(nameof(this.Restore), result);
 
             return result;
+        }
+
+        /// <inheritdoc/>
+        public void Insert(FileCabinetRecord recordToInsert)
+        {
+            if (recordToInsert == null)
+            {
+                this.WriteOutputs(nameof(this.Insert), new ArgumentNullException(nameof(recordToInsert)).Message);
+                return;
+            }
+
+            this.WriteInputs(nameof(this.Insert), RecordToString(recordToInsert));
+
+            this.service.Insert(recordToInsert);
+
+            this.WriteOutputs(nameof(this.Insert), null);
         }
 
         private static string RecordToString(FileCabinetRecord record)
