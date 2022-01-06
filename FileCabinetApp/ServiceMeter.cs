@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace FileCabinetApp
 {
@@ -145,6 +146,19 @@ namespace FileCabinetApp
 
             removingTime.Stop();
             DisplayDuration(nameof(this.service.Remove), removingTime.ElapsedTicks);
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public List<int> Delete(PropertyInfo recordProperty, object propertyValue)
+        {
+            Stopwatch deletingTime = Stopwatch.StartNew();
+
+            var result = this.service.Delete(recordProperty, propertyValue);
+
+            deletingTime.Stop();
+            DisplayDuration(nameof(this.Delete), deletingTime.ElapsedTicks);
 
             return result;
         }

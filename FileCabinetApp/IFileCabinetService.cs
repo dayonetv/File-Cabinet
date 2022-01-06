@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Reflection;
 
 namespace FileCabinetApp
 {
@@ -88,5 +89,13 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="recordToInsert">Record to insert.</param>
         public void Insert(FileCabinetRecord recordToInsert);
+
+        /// <summary>
+        /// Remove record by its property and value of this property.
+        /// </summary>
+        /// <param name="recordProperty">Property of removing record.</param>
+        /// <param name="propertyValue">Value of property.</param>
+        /// <returns>List of deleted records Id's.</returns>
+        public List<int> Delete(PropertyInfo recordProperty, object propertyValue);
     }
 }

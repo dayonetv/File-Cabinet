@@ -158,6 +158,7 @@ namespace FileCabinetApp
             var findHandler = new FindCommandHandler(fileCabinetService, Program.DefaultRecordPrint);
             var editHandler = new EditCommandHandler(fileCabinetService);
             var insertHandler = new InsertCommandHandler(fileCabinetService);
+            var deleteHandler = new DeleteCommandHandler(fileCabinetService);
 
             helpHandler.SetNext(createHandler)
                 .SetNext(statHandler)
@@ -169,7 +170,8 @@ namespace FileCabinetApp
                 .SetNext(exitHandler)
                 .SetNext(findHandler)
                 .SetNext(editHandler)
-                .SetNext(insertHandler);
+                .SetNext(insertHandler)
+                .SetNext(deleteHandler);
 
             return helpHandler;
         }

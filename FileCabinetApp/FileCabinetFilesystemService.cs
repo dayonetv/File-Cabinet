@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -253,6 +254,33 @@ namespace FileCabinetApp
             }
 
             return true;
+        }
+
+        /// <inheritdoc/>
+        public List<int> Delete(PropertyInfo recordProperty, object propertyValue)
+        {
+            if (recordProperty == null)
+            {
+                throw new ArgumentNullException(nameof(recordProperty));
+            }
+
+            if (propertyValue == null)
+            {
+                throw new ArgumentNullException(nameof(propertyValue));
+            }
+
+            List<FileCabinetRecord> findedRecords =
+                this.GetRecords().ToList().FindAll((record) => recordProperty.GetValue(record).ToString().Equals(propertyValue.ToString(), StringComparison.InvariantCultureIgnoreCase));
+
+            if (findedRecords.Count != 0)
+            {
+                foreach (var record in findedRecords)
+                {
+                    this.Remove(record.Id);
+                }
+            }
+
+            return findedRecords.Select((rec) => rec.Id).ToList();
         }
 
         /// <inheritdoc/>

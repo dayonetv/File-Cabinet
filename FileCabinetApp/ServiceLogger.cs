@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace FileCabinetApp
@@ -183,6 +184,18 @@ namespace FileCabinetApp
             var result = this.service.Remove(id);
 
             this.WriteOutputs(nameof(this.Remove), result.ToString(Culture));
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public List<int> Delete(PropertyInfo recordProperty, object propertyValue)
+        {
+            this.WriteInputs(nameof(this.Delete), $"{recordProperty?.Name} = '{propertyValue}'");
+
+            var result = this.service.Delete(recordProperty, propertyValue);
+
+            this.WriteOutputs(nameof(this.Delete), string.Join(' ', result));
 
             return result;
         }

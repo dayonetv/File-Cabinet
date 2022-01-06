@@ -141,6 +141,20 @@
             </summary>
             <param name="request">Command and parameters to be handled.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler">
+            <summary>
+            Handler for delete command and delete parameters.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler"/> class.
+            </summary>
+            <param name="service">Current service.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.EditCommandHandler">
             <summary>
             Handler for edit command and edit paramaters.
@@ -442,6 +456,9 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Remove(System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Delete(System.Reflection.PropertyInfo,System.Object)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Purge">
             <inheritdoc/>
         </member>
@@ -492,6 +509,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Delete(System.Reflection.PropertyInfo,System.Object)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Purge">
@@ -789,6 +809,14 @@
             Insert record to the collection.
             </summary>
             <param name="recordToInsert">Record to insert.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Delete(System.Reflection.PropertyInfo,System.Object)">
+            <summary>
+            Remove record by its property and value of this property.
+            </summary>
+            <param name="recordProperty">Property of removing record.</param>
+            <param name="propertyValue">Value of property.</param>
+            <returns>List of deleted records Id's.</returns>
         </member>
         <member name="T:FileCabinetApp.MemoryFindedRecords">
             <summary>
@@ -1167,6 +1195,9 @@
         <member name="M:FileCabinetApp.ServiceLogger.Remove(System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Delete(System.Reflection.PropertyInfo,System.Object)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.ServiceLogger.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
@@ -1212,6 +1243,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Delete(System.Reflection.PropertyInfo,System.Object)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">

@@ -18,6 +18,7 @@ namespace FileCabinetApp.CommandHandlers
         private const string KeyWord = "values";
         private const char Separator = ',';
         private const char ValuesTrimChar = '\'';
+        private const int SplitAmount = 2;
 
         private static readonly char[] TrimChars = new char[] { '(', ')' };
 
@@ -94,9 +95,11 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
+            parameters = parameters.Replace(KeyWord, KeyWord, StringComparison.InvariantCultureIgnoreCase);
+
             var inputs = parameters.Split(KeyWord, StringSplitOptions.TrimEntries);
 
-            if (inputs.Length != 2)
+            if (inputs.Length != SplitAmount)
             {
                 Console.WriteLine($"'insert' command can have only one '{KeyWord}' word.");
                 return;
