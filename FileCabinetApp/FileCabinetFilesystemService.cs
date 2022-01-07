@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -235,24 +236,30 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public bool Remove(int id)
+        public List<int> Delete(PropertyInfo recordProperty, object propertyValue)
         {
-            long recordToRemovePosition = this.FindRecordById(id);
-
-            if (recordToRemovePosition < 0)
+            if (recordProperty == null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(recordProperty));
             }
 
-            this.RemoveFromDictionaries(recordToRemovePosition);
-
-            using (BinaryWriter binWriter = new BinaryWriter(this.fileStream, CurrentEncoding, true))
+            if (propertyValue == null)
             {
-                this.fileStream.Seek(recordToRemovePosition + IsDeletedOffset, SeekOrigin.Begin);
-                binWriter.Write(!IsDeletedDefaultValue);
+                throw new ArgumentNullException(nameof(propertyValue));
             }
 
-            return true;
+            List<FileCabinetRecord> findedRecords =
+                this.GetRecords().ToList().FindAll((record) => recordProperty.GetValue(record).ToString().Equals(propertyValue.ToString(), StringComparison.InvariantCultureIgnoreCase));
+
+            if (findedRecords.Count != 0)
+            {
+                foreach (var record in findedRecords)
+                {
+                    this.Remove(record.Id);
+                }
+            }
+
+            return findedRecords.Select((rec) => rec.Id).ToList();
         }
 
         /// <inheritdoc/>
@@ -279,6 +286,76 @@ namespace FileCabinetApp
             }
 
             return amountOfAllRecords - notDeletedRecords.Count;
+        }
+
+        /// <inheritdoc/>
+        public void Insert(FileCabinetRecord recordToInsert)
+        {
+            if (recordToInsert == null)
+            {
+                throw new ArgumentNullException(nameof(recordToInsert));
+            }
+
+            if (recordToInsert.Id <= 0)
+            {
+                throw new ArgumentException("Id should be more than 0.", nameof(recordToInsert));
+            }
+
+            this.validator.ValidateParameters(RecordToParameters(recordToInsert));
+
+            long findedRecordPosition = this.FindRecordById(recordToInsert.Id);
+
+            if (findedRecordPosition >= 0)
+            {
+                this.RemoveFromDictionaries(findedRecordPosition);
+
+                this.fileStream.Seek(findedRecordPosition, SeekOrigin.Begin);
+                this.WriteRecordToFile(recordToInsert);
+
+                this.AddToDictionaries(recordToInsert, findedRecordPosition);
+            }
+            else
+            {
+                long recordToInsertPosition = this.fileStream.Length;
+
+                this.fileStream.Seek(recordToInsertPosition, SeekOrigin.Begin);
+                this.WriteRecordToFile(recordToInsert);
+
+                this.AddToDictionaries(recordToInsert, recordToInsertPosition);
+            }
+        }
+
+        private static CreateEditParameters RecordToParameters(FileCabinetRecord record)
+        {
+            CreateEditParameters parameters = new CreateEditParameters()
+            {
+                FirstName = record.FirstName,
+                LastName = record.LastName,
+                DateOfBirth = record.DateOfBirth,
+                Height = record.Height,
+                Salary = record.Salary,
+                Sex = record.Sex,
+            };
+
+            return parameters;
+        }
+
+        private void Remove(int id)
+        {
+            long recordToRemovePosition = this.FindRecordById(id);
+
+            if (recordToRemovePosition < 0)
+            {
+                return;
+            }
+
+            this.RemoveFromDictionaries(recordToRemovePosition);
+
+            using (BinaryWriter binWriter = new BinaryWriter(this.fileStream, CurrentEncoding, true))
+            {
+                this.fileStream.Seek(recordToRemovePosition + IsDeletedOffset, SeekOrigin.Begin);
+                binWriter.Write(!IsDeletedDefaultValue);
+            }
         }
 
         private void WriteRecordToFile(FileCabinetRecord record)

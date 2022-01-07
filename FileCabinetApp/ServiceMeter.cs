@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace FileCabinetApp
 {
@@ -49,7 +47,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
         {
             Stopwatch findingTime = Stopwatch.StartNew();
 
@@ -62,7 +60,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             Stopwatch findingTime = Stopwatch.StartNew();
 
@@ -75,7 +73,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             Stopwatch findingTime = Stopwatch.StartNew();
 
@@ -140,14 +138,14 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public bool Remove(int id)
+        public List<int> Delete(PropertyInfo recordProperty, object propertyValue)
         {
-            Stopwatch removingTime = Stopwatch.StartNew();
+            Stopwatch deletingTime = Stopwatch.StartNew();
 
-            var result = this.service.Remove(id);
+            var result = this.service.Delete(recordProperty, propertyValue);
 
-            removingTime.Stop();
-            DisplayDuration(nameof(this.service.Remove), removingTime.ElapsedTicks);
+            deletingTime.Stop();
+            DisplayDuration(nameof(this.Delete), deletingTime.ElapsedTicks);
 
             return result;
         }
@@ -163,6 +161,17 @@ namespace FileCabinetApp
             DisplayDuration(nameof(this.service.Restore), restoringTime.ElapsedTicks);
 
             return result;
+        }
+
+        /// <inheritdoc/>
+        public void Insert(FileCabinetRecord recordToInsert)
+        {
+            Stopwatch insertingTime = Stopwatch.StartNew();
+
+            this.service.Insert(recordToInsert);
+
+            insertingTime.Stop();
+            DisplayDuration(nameof(this.service.Insert), insertingTime.ElapsedTicks);
         }
 
         private static void DisplayDuration(string methodName, long ticks)

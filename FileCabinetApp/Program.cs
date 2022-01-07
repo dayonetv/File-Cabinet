@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -154,10 +153,11 @@ namespace FileCabinetApp
             var exportHandler = new ExportCommandHandler(fileCabinetService);
             var importHandler = new ImportCommandHandler(fileCabinetService);
             var purgeHandler = new PurgeCommandHandler(fileCabinetService);
-            var removeHandler = new RemoveCommandHandler(fileCabinetService);
             var exitHandler = new ExitCommandHandler((state) => isRunning = state);
             var findHandler = new FindCommandHandler(fileCabinetService, Program.DefaultRecordPrint);
-            var editHandler = new EditCommandHandler(fileCabinetService);
+            var insertHandler = new InsertCommandHandler(fileCabinetService);
+            var deleteHandler = new DeleteCommandHandler(fileCabinetService);
+            var updateHandler = new UpdateCommandHandler(fileCabinetService);
 
             helpHandler.SetNext(createHandler)
                 .SetNext(statHandler)
@@ -165,10 +165,11 @@ namespace FileCabinetApp
                 .SetNext(exportHandler)
                 .SetNext(importHandler)
                 .SetNext(purgeHandler)
-                .SetNext(removeHandler)
                 .SetNext(exitHandler)
                 .SetNext(findHandler)
-                .SetNext(editHandler);
+                .SetNext(updateHandler)
+                .SetNext(insertHandler)
+                .SetNext(deleteHandler);
 
             return helpHandler;
         }

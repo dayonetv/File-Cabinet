@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace FileCabinetApp
@@ -98,9 +100,7 @@ namespace FileCabinetApp
             {
                 this.validator.ValidateParameters(parameters);
 
-                this.firstNameDictionary[recordToEdit.FirstName].Remove(recordToEdit);
-                this.lastNameDictionary[recordToEdit.LastName].Remove(recordToEdit);
-                this.dateOfBirthDictionary[recordToEdit.DateOfBirth].Remove(recordToEdit);
+                this.RemoveFromDictionaries(recordToEdit);
 
                 recordToEdit.FirstName = parameters.FirstName;
                 recordToEdit.LastName = parameters.LastName;
@@ -142,15 +142,7 @@ namespace FileCabinetApp
             {
                 try
                 {
-                    CreateEditParameters parameters = new CreateEditParameters()
-                    {
-                        FirstName = record.FirstName,
-                        LastName = record.LastName,
-                        DateOfBirth = record.DateOfBirth,
-                        Height = record.Height,
-                        Salary = record.Salary,
-                        Sex = record.Sex,
-                    };
+                    CreateEditParameters parameters = RecordToParameters(record);
 
                     this.validator.ValidateParameters(parameters);
                 }
@@ -177,9 +169,8 @@ namespace FileCabinetApp
             {
                 foreach (var record in recordsToEdit)
                 {
-                    this.firstNameDictionary[record.FirstName].Remove(record);
-                    this.lastNameDictionary[record.LastName].Remove(record);
-                    this.dateOfBirthDictionary[record.DateOfBirth].Remove(record);
+                    this.RemoveFromDictionaries(record);
+
                     this.list.Remove(record);
                 }
             }
@@ -191,24 +182,31 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public bool Remove(int id)
+        public List<int> Delete(PropertyInfo recordProperty, object propertyValue)
         {
-            FileCabinetRecord recordToRemove = this.list.Find((rec) => rec.Id == id);
-
-            if (recordToRemove == null)
+            if (recordProperty == null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(recordProperty));
             }
 
-            this.list.Remove(recordToRemove);
+            if (propertyValue == null)
+            {
+                throw new ArgumentNullException(nameof(propertyValue));
+            }
 
-            this.firstNameDictionary[recordToRemove.FirstName].Remove(recordToRemove);
-            this.lastNameDictionary[recordToRemove.LastName].Remove(recordToRemove);
-            this.dateOfBirthDictionary[recordToRemove.DateOfBirth].Remove(recordToRemove);
+            List<FileCabinetRecord> findedRecords
+                = this.list.FindAll((record) => recordProperty.GetValue(record).ToString().Equals(propertyValue.ToString(), StringComparison.InvariantCultureIgnoreCase));
 
-            this.RemoveEmptyDictionaryKeys(recordToRemove);
+            if (findedRecords.Count != 0)
+            {
+                foreach (var record in findedRecords)
+                {
+                    this.RemoveFromDictionaries(record);
+                    this.list.Remove(record);
+                }
+            }
 
-            return true;
+            return findedRecords.Select((rec) => rec.Id).ToList();
         }
 
         /// <inheritdoc/>
@@ -248,9 +246,51 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public void Insert(FileCabinetRecord recordToInsert)
+        {
+            if (recordToInsert == null)
+            {
+                throw new ArgumentNullException(nameof(recordToInsert));
+            }
+
+            if (recordToInsert.Id <= 0)
+            {
+                throw new ArgumentException("Id should be more than 0.", nameof(recordToInsert));
+            }
+
+            this.validator.ValidateParameters(RecordToParameters(recordToInsert));
+
+            FileCabinetRecord findedRecord = this.list.Find((rec) => rec.Id == recordToInsert.Id);
+
+            if (findedRecord != null)
+            {
+                this.RemoveFromDictionaries(findedRecord);
+                this.list.Remove(findedRecord);
+            }
+
+            this.list.Add(recordToInsert);
+            this.AddToDictionaries(recordToInsert);
+        }
+
+        /// <inheritdoc/>
         public override string ToString()
         {
             return "Memory service";
+        }
+
+        private static CreateEditParameters RecordToParameters(FileCabinetRecord record)
+        {
+            CreateEditParameters parameters = new CreateEditParameters()
+            {
+                FirstName = record.FirstName,
+                LastName = record.LastName,
+                DateOfBirth = record.DateOfBirth,
+                Height = record.Height,
+                Salary = record.Salary,
+                Sex = record.Sex,
+            };
+
+            return parameters;
         }
 
         private void AddToDictionaries(FileCabinetRecord recordToAdd)
@@ -291,6 +331,15 @@ namespace FileCabinetApp
             {
                 this.dateOfBirthDictionary.Remove(removedRecord.DateOfBirth);
             }
+        }
+
+        private void RemoveFromDictionaries(FileCabinetRecord recordToRemove)
+        {
+            this.firstNameDictionary[recordToRemove.FirstName].Remove(recordToRemove);
+            this.lastNameDictionary[recordToRemove.LastName].Remove(recordToRemove);
+            this.dateOfBirthDictionary[recordToRemove.DateOfBirth].Remove(recordToRemove);
+
+            this.RemoveEmptyDictionaryKeys(recordToRemove);
         }
     }
 }

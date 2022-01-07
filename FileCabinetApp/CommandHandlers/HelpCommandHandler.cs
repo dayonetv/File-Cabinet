@@ -23,12 +23,13 @@ namespace FileCabinetApp.CommandHandlers
             new string[] { "stat", "prints statistics", "The 'stat' command prints statistics" },
             new string[] { "create", "creates new record", "The 'create' command creates new record." },
             new string[] { "list", "prints current records", "The 'list' command prints current records." },
-            new string[] { "edit", "edits record by id", "The 'edit' command edits record by id." },
             new string[] { "find", "finds record by some record field", "The 'find' command finds record by some record field." },
             new string[] { "export", "exports all records to the file", "The 'export' command exports all records to the file." },
             new string[] { "import", "imports records from the file", "The 'import' command imports records from the file." },
-            new string[] { "remove", "removes record by its id", "The 'remove' command removes record by its id." },
             new string[] { "purge", "defragmentates records file for Filesystem Service", "The 'purge' defragmentates records file for Filesystem Service." },
+            new string[] { "insert", "inserts record to the service", "The 'insert' command inserts record to the service" },
+            new string[] { "delete", "deletes records by values of their properties", "The 'delete' command deletes records by values of their properties" },
+            new string[] { "update", "finds and updates records by values of their properties, excepting Id", "The 'update' command finds and updates records by values of their properties, excepting Id" },
         };
 
         /// <summary>
@@ -95,7 +96,77 @@ namespace FileCabinetApp.CommandHandlers
         private static void PrintMissedCommandInfo(string command)
         {
             Console.WriteLine($"There is no '{command}' command.");
+
+            DisplaySimilarCommands(command);
+
             Console.WriteLine();
+        }
+
+        private static List<string> FindSimilarCommands(string incorrectCommand)
+        {
+            List<string> suggestions = new List<string>();
+
+            foreach (var command in HelpMessages)
+            {
+                if (GetSimilarity(incorrectCommand.ToUpperInvariant(), command[0].ToUpperInvariant()) >= 0.4)
+                {
+                    suggestions.Add(command[0]);
+                }
+            }
+
+            return suggestions;
+        }
+
+        private static double GetSimilarity(string source, string target)
+        {
+            int sourceWordCount = source.Length;
+            int targetWordCount = target.Length;
+
+            int[][] distance = new int[sourceWordCount + 1][];
+
+            for (int i = 0; i < distance.GetLongLength(0); i++)
+            {
+                distance[i] = new int[targetWordCount + 1];
+            }
+
+            for (int i = 0; i <= sourceWordCount; i++)
+            {
+                distance[i][0] = i;
+            }
+
+            for (int j = 0; j <= targetWordCount; j++)
+            {
+                distance[0][j] = j;
+            }
+
+            for (int i = 1; i <= sourceWordCount; i++)
+            {
+                for (int j = 1; j <= targetWordCount; j++)
+                {
+                    int cost = (target[j - 1] == source[i - 1]) ? 0 : 1;
+
+                    distance[i][j] = Math.Min(Math.Min(distance[i - 1][j] + 1, distance[i][j - 1] + 1), distance[i - 1][j - 1] + cost);
+                }
+            }
+
+            return 1.0 - (distance[sourceWordCount][targetWordCount] / (double)Math.Max(source.Length, target.Length));
+        }
+
+        private static void DisplaySimilarCommands(string command)
+        {
+            var suggestions = FindSimilarCommands(command);
+
+            if (suggestions.Count == 0)
+            {
+                return;
+            }
+
+            Console.WriteLine($"\nThe most similar commands are:");
+
+            foreach (var similarCommand in suggestions)
+            {
+                Console.WriteLine($"\t'{similarCommand}'");
+            }
         }
     }
 }

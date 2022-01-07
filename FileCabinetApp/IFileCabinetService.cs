@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Reflection;
 
 namespace FileCabinetApp
 {
@@ -71,16 +72,23 @@ namespace FileCabinetApp
         public string Restore(FileCabinetServiceSnapshot snapshot);
 
         /// <summary>
-        /// Remove record by its id.
-        /// </summary>
-        /// <param name="id">Id of removing record. </param>
-        /// <returns>Removing success.</returns>
-        public bool Remove(int id);
-
-        /// <summary>
         /// Defragmentate records file for Filesystem Service.
         /// </summary>
         /// <returns>Amount of purged records. </returns>
         public int Purge();
+
+        /// <summary>
+        /// Insert record to the collection.
+        /// </summary>
+        /// <param name="recordToInsert">Record to insert.</param>
+        public void Insert(FileCabinetRecord recordToInsert);
+
+        /// <summary>
+        /// Remove record by its property and value of this property.
+        /// </summary>
+        /// <param name="recordProperty">Property of removing record.</param>
+        /// <param name="propertyValue">Value of property.</param>
+        /// <returns>List of deleted records identificators.</returns>
+        public List<int> Delete(PropertyInfo recordProperty, object propertyValue);
     }
 }
