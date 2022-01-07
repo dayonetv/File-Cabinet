@@ -118,12 +118,6 @@
             <param name="sex">gender ptoperty to validate.</param>
             <returns>validation success, validation message.</returns>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.EnterInfo">
-            <summary>
-            Reads console inputs for creating records parameters.
-            </summary>
-            <returns>Parameters entered by user.</returns>
-        </member>
         <member name="T:FileCabinetApp.CommandHandlers.CreateCommandHandler">
             <summary>
             Handler for create command.
@@ -141,6 +135,12 @@
             </summary>
             <param name="request">Command and parameters to be handled.</param>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.EnterInfo">
+            <summary>
+            Reads console inputs for creating records parameters.
+            </summary>
+            <returns>Parameters entered by user.</returns>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler">
             <summary>
             Handler for delete command and delete parameters.
@@ -154,23 +154,6 @@
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.EditCommandHandler">
-            <summary>
-            Handler for edit command and edit paramaters.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.EditCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.EditCommandHandler"/> class.
-            </summary>
-            <param name="service">Current service. </param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.EditCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles 'edit' command or moves request to the next handler.
-            </summary>
-            <param name="request">Command and parameters to be handled.</param>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.ExitCommandHandler">
             <summary>
@@ -319,23 +302,6 @@
             </summary>
             <param name="request">Command and parameters to be handled.</param>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.RemoveCommandHandler">
-            <summary>
-            Handler for remove command and remove paramaters.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.RemoveCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.RemoveCommandHandler"/> class.
-            </summary>
-            <param name="service">Current service. </param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.RemoveCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles 'remove' command or moves request to the next handler.
-            </summary>
-            <param name="request">Command and parameters to be handled.</param>
-        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase">
             <summary>
             Abstract class for command handlers that use service.
@@ -467,9 +433,6 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Remove(System.Int32)">
-            <inheritdoc/>
-        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Delete(System.Reflection.PropertyInfo,System.Object)">
             <inheritdoc/>
         </member>
@@ -520,9 +483,6 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.Remove(System.Int32)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Delete(System.Reflection.PropertyInfo,System.Object)">
@@ -805,13 +765,6 @@
             <param name="snapshot">Snapshot for restoring. </param>
             <returns>Information about restored records. </returns>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.Remove(System.Int32)">
-            <summary>
-            Remove record by its id.
-            </summary>
-            <param name="id">Id of removing record. </param>
-            <returns>Removing success.</returns>
-        </member>
         <member name="M:FileCabinetApp.IFileCabinetService.Purge">
             <summary>
             Defragmentate records file for Filesystem Service.
@@ -830,7 +783,7 @@
             </summary>
             <param name="recordProperty">Property of removing record.</param>
             <param name="propertyValue">Value of property.</param>
-            <returns>List of deleted records Id's.</returns>
+            <returns>List of deleted records identificators.</returns>
         </member>
         <member name="T:FileCabinetApp.MemoryFindedRecords">
             <summary>
@@ -1206,9 +1159,6 @@
         <member name="M:FileCabinetApp.ServiceLogger.Purge">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.ServiceLogger.Remove(System.Int32)">
-            <inheritdoc/>
-        </member>
         <member name="M:FileCabinetApp.ServiceLogger.Delete(System.Reflection.PropertyInfo,System.Object)">
             <inheritdoc/>
         </member>
@@ -1254,9 +1204,6 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.Purge">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.ServiceMeter.Remove(System.Int32)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.Delete(System.Reflection.PropertyInfo,System.Object)">

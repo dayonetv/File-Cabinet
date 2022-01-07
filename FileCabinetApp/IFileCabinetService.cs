@@ -72,13 +72,6 @@ namespace FileCabinetApp
         public string Restore(FileCabinetServiceSnapshot snapshot);
 
         /// <summary>
-        /// Remove record by its id.
-        /// </summary>
-        /// <param name="id">Id of removing record. </param>
-        /// <returns>Removing success.</returns>
-        public bool Remove(int id);
-
-        /// <summary>
         /// Defragmentate records file for Filesystem Service.
         /// </summary>
         /// <returns>Amount of purged records. </returns>
@@ -95,7 +88,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="recordProperty">Property of removing record.</param>
         /// <param name="propertyValue">Value of property.</param>
-        /// <returns>List of deleted records Id's.</returns>
+        /// <returns>List of deleted records identificators.</returns>
         public List<int> Delete(PropertyInfo recordProperty, object propertyValue);
     }
 }

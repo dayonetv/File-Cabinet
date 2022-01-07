@@ -177,18 +177,6 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public bool Remove(int id)
-        {
-            this.WriteInputs(nameof(this.Remove), $"{nameof(id)} = '{id}'");
-
-            var result = this.service.Remove(id);
-
-            this.WriteOutputs(nameof(this.Remove), result.ToString(Culture));
-
-            return result;
-        }
-
-        /// <inheritdoc/>
         public List<int> Delete(PropertyInfo recordProperty, object propertyValue)
         {
             this.WriteInputs(nameof(this.Delete), $"{recordProperty?.Name} = '{propertyValue}'");

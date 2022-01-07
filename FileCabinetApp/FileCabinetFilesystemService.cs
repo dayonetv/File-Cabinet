@@ -236,27 +236,6 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public bool Remove(int id)
-        {
-            long recordToRemovePosition = this.FindRecordById(id);
-
-            if (recordToRemovePosition < 0)
-            {
-                return false;
-            }
-
-            this.RemoveFromDictionaries(recordToRemovePosition);
-
-            using (BinaryWriter binWriter = new BinaryWriter(this.fileStream, CurrentEncoding, true))
-            {
-                this.fileStream.Seek(recordToRemovePosition + IsDeletedOffset, SeekOrigin.Begin);
-                binWriter.Write(!IsDeletedDefaultValue);
-            }
-
-            return true;
-        }
-
-        /// <inheritdoc/>
         public List<int> Delete(PropertyInfo recordProperty, object propertyValue)
         {
             if (recordProperty == null)
@@ -359,6 +338,24 @@ namespace FileCabinetApp
             };
 
             return parameters;
+        }
+
+        private void Remove(int id)
+        {
+            long recordToRemovePosition = this.FindRecordById(id);
+
+            if (recordToRemovePosition < 0)
+            {
+                return;
+            }
+
+            this.RemoveFromDictionaries(recordToRemovePosition);
+
+            using (BinaryWriter binWriter = new BinaryWriter(this.fileStream, CurrentEncoding, true))
+            {
+                this.fileStream.Seek(recordToRemovePosition + IsDeletedOffset, SeekOrigin.Begin);
+                binWriter.Write(!IsDeletedDefaultValue);
+            }
         }
 
         private void WriteRecordToFile(FileCabinetRecord record)

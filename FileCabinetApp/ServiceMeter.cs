@@ -138,19 +138,6 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public bool Remove(int id)
-        {
-            Stopwatch removingTime = Stopwatch.StartNew();
-
-            var result = this.service.Remove(id);
-
-            removingTime.Stop();
-            DisplayDuration(nameof(this.service.Remove), removingTime.ElapsedTicks);
-
-            return result;
-        }
-
-        /// <inheritdoc/>
         public List<int> Delete(PropertyInfo recordProperty, object propertyValue)
         {
             Stopwatch deletingTime = Stopwatch.StartNew();
