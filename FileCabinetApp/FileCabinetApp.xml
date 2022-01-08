@@ -48,75 +48,12 @@
             <param name="input">input string to convert.</param>
             <returns>converting success, converting message, converting result. </returns>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.DateConverter(System.String)">
-            <summary>
-            Converts input to DateTime.
-            </summary>
-            <param name="input">input string to convert.</param>
-            <returns>converting success, converting message, converting result. </returns>
-        </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.CharConverter(System.String)">
             <summary>
             Converts input to char.
             </summary>
             <param name="input">input string to convert.</param>
             <returns>converting success, converting message, converting result. </returns>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.DecimalConverter(System.String)">
-            <summary>
-            Converts input to decimal value.
-            </summary>
-            <param name="input">input string to convert.</param>
-            <returns>converting success, converting message, converting result. </returns>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.ShortConverter(System.String)">
-            <summary>
-            Converts input to short value.
-            </summary>
-            <param name="input">input string to convert.</param>
-            <returns>converting success, converting message, converting result. </returns>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.FirstNameValidator(System.String)">
-            <summary>
-            Validates firstname of the record.
-            </summary>
-            <param name="firstName">firstname ptoperty to validate. </param>
-            <returns>validation success, validation message.</returns>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.LastNameValidator(System.String)">
-            <summary>
-            Validates lastname of the record.
-            </summary>
-            <param name="lastName">lastname ptoperty to validate.</param>
-            <returns>validation success, validation message.</returns>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.DateOfBirthValidator(System.DateTime)">
-            <summary>
-            Validates dateofbirth of the record.
-            </summary>
-            <param name="dateOfBirth">dateofbirth ptoperty to validate.</param>
-            <returns>validation success, validation message.</returns>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.HeightValidator(System.Int16)">
-            <summary>
-            Validates height of the record.
-            </summary>
-            <param name="height">height ptoperty to validate. </param>
-            <returns>validation success, validation message.</returns>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SalaryValidator(System.Decimal)">
-            <summary>
-            Validates salary of the record.
-            </summary>
-            <param name="salary">salary ptoperty to validate. </param>
-            <returns>validation success, validation message.</returns>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.GenderValidator(System.Char)">
-            <summary>
-            Validates gender of the record.
-            </summary>
-            <param name="sex">gender ptoperty to validate.</param>
-            <returns>validation success, validation message.</returns>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.CreateCommandHandler">
             <summary>
@@ -134,6 +71,69 @@
             Handles 'create' command or moves request to the next handler.
             </summary>
             <param name="request">Command and parameters to be handled.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.DecimalConverter(System.String)">
+            <summary>
+            Converts input to decimal value.
+            </summary>
+            <param name="input">input string to convert.</param>
+            <returns>converting success, converting message, converting result. </returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.ShortConverter(System.String)">
+            <summary>
+            Converts input to short value.
+            </summary>
+            <param name="input">input string to convert.</param>
+            <returns>converting success, converting message, converting result. </returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.FirstNameValidator(System.String)">
+            <summary>
+            Validates firstname of the record.
+            </summary>
+            <param name="firstName">firstname ptoperty to validate. </param>
+            <returns>validation success, validation message.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.LastNameValidator(System.String)">
+            <summary>
+            Validates lastname of the record.
+            </summary>
+            <param name="lastName">lastname ptoperty to validate.</param>
+            <returns>validation success, validation message.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.DateOfBirthValidator(System.DateTime)">
+            <summary>
+            Validates dateofbirth of the record.
+            </summary>
+            <param name="dateOfBirth">dateofbirth ptoperty to validate.</param>
+            <returns>validation success, validation message.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.HeightValidator(System.Int16)">
+            <summary>
+            Validates height of the record.
+            </summary>
+            <param name="height">height ptoperty to validate. </param>
+            <returns>validation success, validation message.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.SalaryValidator(System.Decimal)">
+            <summary>
+            Validates salary of the record.
+            </summary>
+            <param name="salary">salary ptoperty to validate. </param>
+            <returns>validation success, validation message.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.GenderValidator(System.Char)">
+            <summary>
+            Validates gender of the record.
+            </summary>
+            <param name="sex">gender ptoperty to validate.</param>
+            <returns>validation success, validation message.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.DateConverter(System.String)">
+            <summary>
+            Converts input to DateTime.
+            </summary>
+            <param name="input">input string to convert.</param>
+            <returns>converting success, converting message, converting result. </returns>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.EnterInfo">
             <summary>
@@ -186,24 +186,6 @@
         <member name="M:FileCabinetApp.CommandHandlers.ExportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
             Handles 'export' command or moves request to the next handler.
-            </summary>
-            <param name="request">Command and parameters to be handled.</param>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.FindCommandHandler">
-            <summary>
-            Handler for find command and find paramaters.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord}})">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FindCommandHandler"/> class.
-            </summary>
-            <param name="service">Current service. </param>
-            <param name="printer">Printer for showing records info.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles 'find' command or moves request to the next handler.
             </summary>
             <param name="request">Command and parameters to be handled.</param>
         </member>
@@ -266,24 +248,6 @@
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.ListCommandHandler">
-            <summary>
-            Handler for list command.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord}})">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ListCommandHandler"/> class.
-            </summary>
-            <param name="service">Current service. </param>
-            <param name="printer">Printer for showing records info.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles 'list' command or moves request to the next handler.
-            </summary>
-            <param name="request">Command and parameters to be handled.</param>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.PurgeCommandHandler">
             <summary>
@@ -443,19 +407,7 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByDateOfBith(System.DateTime)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByFirstName(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByLastName(System.String)">
-            <inheritdoc/>
-        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindRecords(System.Collections.Generic.Dictionary{System.Reflection.PropertyInfo,System.Object},FileCabinetApp.CommandHandlers.OperationType)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecords">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetStat">
@@ -497,17 +449,8 @@
             <param name="parameters">Parameter object. </param>
             <returns>The Id of created record.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetRecords">
-            <summary>
-            Gets a copy of array of current created records.
-            </summary>
-            <returns>Array of current records.</returns>
-        </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.GetStat">
-            <summary>
-            Gets the information about the amount of current existing records.
-            </summary>
-            <returns>The number of existing records.</returns>
+            <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
             <summary>
@@ -526,6 +469,15 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindRecords(System.Collections.Generic.Dictionary{System.Reflection.PropertyInfo,System.Object},FileCabinetApp.CommandHandlers.OperationType)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Insert(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.ToString">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByFirstName(System.String)">
@@ -548,15 +500,6 @@
             </summary>
             <param name="dateOfBirth">Date of Birth to search by.</param>
             <returns>Iterator for finded records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindRecords(System.Collections.Generic.Dictionary{System.Reflection.PropertyInfo,System.Object},FileCabinetApp.CommandHandlers.OperationType)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.Insert(FileCabinetApp.FileCabinetRecord)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.ToString">
-            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
@@ -722,24 +665,6 @@
             </summary>
             <param name="reader">Stream to *.xml file.</param>
         </member>
-        <member name="T:FileCabinetApp.FilesystemFindedRecords">
-            <summary>
-            Collection of finded records by filesystem service.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FilesystemFindedRecords.#ctor(System.Collections.Generic.IReadOnlyCollection{System.Int64},System.IO.FileStream)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FilesystemFindedRecords"/> class.
-            </summary>
-            <param name="offsets">Finded Records offsets in the file.</param>
-            <param name="fileStream">Stream to storing file.</param>
-        </member>
-        <member name="M:FileCabinetApp.FilesystemFindedRecords.GetEnumerator">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FilesystemFindedRecords.System#Collections#IEnumerable#GetEnumerator">
-            <inheritdoc/>
-        </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
             File cabinet service main interface.
@@ -752,17 +677,11 @@
             <param name="parameters">Parameter object. </param>
             <returns>The Id of created record.</returns>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
-            <summary>
-            Gets a copy of array of current created records.
-            </summary>
-            <returns>Array of current records.</returns>
-        </member>
         <member name="M:FileCabinetApp.IFileCabinetService.GetStat">
             <summary>
             Gets the information about the amount of current existing records.
             </summary>
-            <returns>The number of existing records.</returns>
+            <returns>The number of total and deleted records.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
             <summary>
@@ -770,27 +689,6 @@
             </summary>
             <param name="id">Record Id to edit by. </param>
             <param name="parameters">Parameter object. </param>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.FindByFirstName(System.String)">
-            <summary>
-            Searches records by First Name in curent records.
-            </summary>
-            <param name="firstName">First Name to search by.</param>
-            <returns>Collection of finded records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.FindByLastName(System.String)">
-            <summary>
-            Searches a records by Last Name in curent records.
-            </summary>
-            <param name="lastName">Last Name to search by.</param>
-            <returns>Collection of finded records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfBith(System.DateTime)">
-            <summary>
-            Searches a records by Date of birth in curent records using.
-            </summary>
-            <param name="dateOfBirth">Date of Birth to search by.</param>
-            <returns>Collection of finded records.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapShot">
             <summary>
@@ -1186,18 +1084,6 @@
         <member name="M:FileCabinetApp.ServiceLogger.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.ServiceLogger.FindByDateOfBith(System.DateTime)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.ServiceLogger.FindByFirstName(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.ServiceLogger.FindByLastName(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.ServiceLogger.GetRecords">
-            <inheritdoc/>
-        </member>
         <member name="M:FileCabinetApp.ServiceLogger.GetStat">
             <inheritdoc/>
         </member>
@@ -1234,18 +1120,6 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.ServiceMeter.FindByDateOfBith(System.DateTime)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.ServiceMeter.FindByFirstName(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.ServiceMeter.FindByLastName(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.ServiceMeter.GetRecords">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.GetStat">

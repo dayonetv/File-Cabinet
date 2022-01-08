@@ -51,10 +51,10 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            int allrecordsAmount = this.Service.GetStat();
+            int totalRecordsAmount = this.Service.GetStat().total;
             int purgedAmount = this.Service.Purge();
 
-            Console.WriteLine($"Data file processing is completed: {purgedAmount} of {allrecordsAmount} records were purged.");
+            Console.WriteLine($"Data file processing is completed: {purgedAmount} of {totalRecordsAmount} records were purged.");
         }
     }
 }

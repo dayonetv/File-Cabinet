@@ -61,22 +61,10 @@ namespace FileCabinetApp
             return record.Id;
         }
 
-        /// <summary>
-        /// Gets a copy of array of current created records.
-        /// </summary>
-        /// <returns>Array of current records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
+        /// <inheritdoc/>
+        public (int total, int deleted) GetStat()
         {
-            return this.list.AsReadOnly();
-        }
-
-        /// <summary>
-        /// Gets the information about the amount of current existing records.
-        /// </summary>
-        /// <returns>The number of existing records.</returns>
-        public int GetStat()
-        {
-            return this.list.Count;
+            return (this.list.Count, default);
         }
 
         /// <summary>
@@ -117,7 +105,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapShot()
         {
-            return new FileCabinetServiceSnapshot(this.GetRecords());
+            return new FileCabinetServiceSnapshot(this.list.AsReadOnly());
         }
 
         /// <inheritdoc/>
@@ -216,42 +204,12 @@ namespace FileCabinetApp
             return default;
         }
 
-        /// <summary>
-        /// Searches records by First Name in curent records using special 'firstNameDictionary' dictionary.
-        /// </summary>
-        /// <param name="firstName">First Name to search by.</param>
-        /// <returns>Iterator for finded records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            return new MemoryFindedRecords(this.firstNameDictionary.GetValueOrDefault(firstName));
-        }
-
-        /// <summary>
-        /// Searches a records by Last Name in curent records using special 'lastNameDictionary' dictionary.
-        /// </summary>
-        /// <param name="lastName">Last Name to search by.</param>
-        /// <returns>Iterator for finded records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            return new MemoryFindedRecords(this.lastNameDictionary.GetValueOrDefault(lastName));
-        }
-
-        /// <summary>
-        /// Searches a records by Date of birth in curent records using special 'dateOfBirthDictionary' dictionary.
-        /// </summary>
-        /// <param name="dateOfBirth">Date of Birth to search by.</param>
-        /// <returns>Iterator for finded records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
-        {
-            return new MemoryFindedRecords(this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth));
-        }
-
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindRecords(Dictionary<PropertyInfo, object> propertiesWithValues, OperationType operation)
         {
             if (propertiesWithValues == null || propertiesWithValues.Count == 0)
             {
-                return this.GetRecords();
+                return this.list.AsReadOnly();
             }
 
             List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
@@ -352,6 +310,36 @@ namespace FileCabinetApp
             };
 
             return parameters;
+        }
+
+        /// <summary>
+        /// Searches records by First Name in curent records using special 'firstNameDictionary' dictionary.
+        /// </summary>
+        /// <param name="firstName">First Name to search by.</param>
+        /// <returns>Iterator for finded records.</returns>
+        private IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
+        {
+            return new MemoryFindedRecords(this.firstNameDictionary.GetValueOrDefault(firstName));
+        }
+
+        /// <summary>
+        /// Searches a records by Last Name in curent records using special 'lastNameDictionary' dictionary.
+        /// </summary>
+        /// <param name="lastName">Last Name to search by.</param>
+        /// <returns>Iterator for finded records.</returns>
+        private IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
+        {
+            return new MemoryFindedRecords(this.lastNameDictionary.GetValueOrDefault(lastName));
+        }
+
+        /// <summary>
+        /// Searches a records by Date of birth in curent records using special 'dateOfBirthDictionary' dictionary.
+        /// </summary>
+        /// <param name="dateOfBirth">Date of Birth to search by.</param>
+        /// <returns>Iterator for finded records.</returns>
+        private IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
+        {
+            return new MemoryFindedRecords(this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth));
         }
 
         private void AddToDictionaries(FileCabinetRecord recordToAdd)

@@ -47,7 +47,6 @@ namespace FileCabinetApp
         private const string DeveloperName = "Konstantin Karasiov";
         private const string CabinetRecordsFile = "cabinet-records.db";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
-        private const string DateFormat = "d";
 
         private const int AmountOfInputArgsForShortMode = 2;
         private const int AmountOfInputArgsForFullMode = 1;
@@ -96,7 +95,7 @@ namespace FileCabinetApp
             }
 
             var validationMode = ValidatorChooser(args);
-            args = new string[] { "--storage=file" };
+
             switch (validationMode)
             {
                 case ValidationMode.Default: chosenValidator = new ValidatorBuilder().Default(); break;
@@ -149,12 +148,10 @@ namespace FileCabinetApp
             var helpHandler = new HelpCommandHandler();
             var createHandler = new CreateCommandHandler(fileCabinetService);
             var statHandler = new StatCommandHandler(fileCabinetService);
-            var listHandler = new ListCommandHandler(fileCabinetService, Program.DefaultRecordPrint);
             var exportHandler = new ExportCommandHandler(fileCabinetService);
             var importHandler = new ImportCommandHandler(fileCabinetService);
             var purgeHandler = new PurgeCommandHandler(fileCabinetService);
             var exitHandler = new ExitCommandHandler((state) => isRunning = state);
-            var findHandler = new FindCommandHandler(fileCabinetService, Program.DefaultRecordPrint);
             var insertHandler = new InsertCommandHandler(fileCabinetService);
             var deleteHandler = new DeleteCommandHandler(fileCabinetService);
             var updateHandler = new UpdateCommandHandler(fileCabinetService);
@@ -162,12 +159,10 @@ namespace FileCabinetApp
 
             helpHandler.SetNext(createHandler)
                 .SetNext(statHandler)
-                .SetNext(listHandler)
                 .SetNext(exportHandler)
                 .SetNext(importHandler)
                 .SetNext(purgeHandler)
                 .SetNext(exitHandler)
-                .SetNext(findHandler)
                 .SetNext(selectHandler)
                 .SetNext(updateHandler)
                 .SetNext(insertHandler)
@@ -270,19 +265,6 @@ namespace FileCabinetApp
             int indexOfMode = Array.FindIndex(StartupModes, mode => inputMode.Equals(mode.Item1, StringComparison.InvariantCultureIgnoreCase) && args.Length == mode.Item2);
 
             return indexOfMode;
-        }
-
-        private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
-        {
-            if (records == null)
-            {
-                throw new ArgumentNullException(nameof(records));
-            }
-
-            foreach (var record in records)
-            {
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString(DateFormat, CultureInfo.InvariantCulture)}, {record.Height}, {record.Salary}, {record.Sex}");
-            }
         }
     }
 }
