@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using FileCabinetApp.CommandHandlers;
 
 namespace FileCabinetApp
 {
@@ -214,6 +215,28 @@ namespace FileCabinetApp
             this.service.Insert(recordToInsert);
 
             this.WriteOutputs(nameof(this.Insert), null);
+        }
+
+        /// <inheritdoc/>
+        public ReadOnlyCollection<FileCabinetRecord> FindRecords(Dictionary<PropertyInfo, object> propertiesWithValues, OperationType operation)
+        {
+            this.WriteInputs(nameof(this.FindRecords), $"{string.Join(string.Empty, propertiesWithValues)}, {operation}");
+
+            var records = this.service.FindRecords(propertiesWithValues, operation);
+
+            StringBuilder outputText = new StringBuilder();
+
+            if (records != null)
+            {
+                foreach (var rec in records)
+                {
+                    outputText.Append(RecordToString(rec));
+                }
+            }
+
+            this.WriteOutputs(nameof(this.FindRecords), outputText.ToString());
+
+            return records;
         }
 
         private static string RecordToString(FileCabinetRecord record)

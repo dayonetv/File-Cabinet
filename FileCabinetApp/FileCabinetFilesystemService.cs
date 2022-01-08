@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+using FileCabinetApp.CommandHandlers;
 
 namespace FileCabinetApp
 {
@@ -127,6 +127,43 @@ namespace FileCabinetApp
         public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             return new FilesystemFindedRecords(this.lastNameDictionary.GetValueOrDefault(lastName), this.fileStream);
+        }
+
+        /// <inheritdoc/>
+        public ReadOnlyCollection<FileCabinetRecord> FindRecords(Dictionary<PropertyInfo, object> propertiesWithValues, OperationType operation)
+        {
+            List<FileCabinetRecord> allRecords = this.GetRecords().ToList();
+
+            if (propertiesWithValues == null || propertiesWithValues.Count == 0)
+            {
+                return allRecords.AsReadOnly();
+            }
+
+            List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
+
+            switch (operation)
+            {
+                case OperationType.None: case OperationType.And: findedRecords.AddRange(allRecords); break;
+            }
+
+            foreach (var propertyValue in propertiesWithValues)
+            {
+                List<FileCabinetRecord> findedRecordsByOneProperty = new List<FileCabinetRecord>();
+
+                switch (operation)
+                {
+                    case OperationType.None: case OperationType.And:
+                        findedRecords = findedRecords.FindAll((record) => propertyValue.Key.GetValue(record).ToString().Equals(propertyValue.Value.ToString(), StringComparison.InvariantCultureIgnoreCase));
+                        continue;
+                    case OperationType.Or:
+                        findedRecordsByOneProperty.AddRange(allRecords.FindAll((record) => propertyValue.Key.GetValue(record).ToString().Equals(propertyValue.Value.ToString(), StringComparison.InvariantCultureIgnoreCase)));
+                        break;
+                }
+
+                findedRecords = findedRecords.Union(findedRecordsByOneProperty).ToList();
+            }
+
+            return findedRecords.AsReadOnly();
         }
 
         /// <inheritdoc/>

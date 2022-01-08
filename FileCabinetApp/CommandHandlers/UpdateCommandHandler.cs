@@ -13,9 +13,9 @@ namespace FileCabinetApp.CommandHandlers
     {
         private const string CommandName = "update";
 
-        private const string SetKeyWord = "set";
-        private const string WhereKeyWord = "where";
-        private const string WherePartSplitSeparator = "and";
+        private const string SetKeyWord = "set ";
+        private const string WhereKeyWord = "where ";
+        private const string WherePartSplitSeparator = " and ";
         private const char SetPartSplitSeparator = ',';
 
         private const int PartsSplitCount = 2;
@@ -203,14 +203,14 @@ namespace FileCabinetApp.CommandHandlers
 
         private List<FileCabinetRecord> GetFindedRecords()
         {
-            List<FileCabinetRecord> findedrecords = new List<FileCabinetRecord>(this.Service.GetRecords());
+            List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>(this.Service.GetRecords());
 
             foreach (var propertyValue in this.wherePropertiesValues)
             {
-                findedrecords = findedrecords.FindAll((record) => propertyValue.Key.GetValue(record).ToString().Equals(propertyValue.Value.ToString(), StringComparison.InvariantCultureIgnoreCase));
+                findedRecords = findedRecords.FindAll((record) => propertyValue.Key.GetValue(record).ToString().Equals(propertyValue.Value.ToString(), StringComparison.InvariantCultureIgnoreCase));
             }
 
-            return findedrecords;
+            return findedRecords;
         }
 
         private void UpdateFindedRecords(List<FileCabinetRecord> findedRecords)

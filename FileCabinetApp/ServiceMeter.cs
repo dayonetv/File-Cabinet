@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reflection;
+using FileCabinetApp.CommandHandlers;
 
 namespace FileCabinetApp
 {
@@ -172,6 +173,19 @@ namespace FileCabinetApp
 
             insertingTime.Stop();
             DisplayDuration(nameof(this.service.Insert), insertingTime.ElapsedTicks);
+        }
+
+        /// <inheritdoc/>
+        public ReadOnlyCollection<FileCabinetRecord> FindRecords(Dictionary<PropertyInfo, object> propertiesWithValues, OperationType operation)
+        {
+            Stopwatch findingTime = Stopwatch.StartNew();
+
+            var result = this.service.FindRecords(propertiesWithValues, operation);
+
+            findingTime.Stop();
+            DisplayDuration(nameof(this.FindRecords), findingTime.ElapsedTicks);
+
+            return result;
         }
 
         private static void DisplayDuration(string methodName, long ticks)

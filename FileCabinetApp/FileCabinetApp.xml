@@ -302,6 +302,40 @@
             </summary>
             <param name="request">Command and parameters to be handled.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.OperationType">
+            <summary>
+            Operator for union searching criterias.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.CommandHandlers.OperationType.None">
+            <summary>
+            No uinion.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.CommandHandlers.OperationType.And">
+            <summary>
+            Logical 'and'.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.CommandHandlers.OperationType.Or">
+            <summary>
+            Logical 'or'.
+            </summary>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.SelectCommandHandler">
+            <summary>
+            Handler for select command and select parameters.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.SelectCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.SelectCommandHandler"/> class.
+            </summary>
+            <param name="service">Current service.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.SelectCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase">
             <summary>
             Abstract class for command handlers that use service.
@@ -418,6 +452,9 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByLastName(System.String)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindRecords(System.Collections.Generic.Dictionary{System.Reflection.PropertyInfo,System.Object},FileCabinetApp.CommandHandlers.OperationType)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecords">
             <inheritdoc/>
         </member>
@@ -509,8 +546,11 @@
             <summary>
             Searches a records by Date of birth in curent records using special 'dateOfBirthDictionary' dictionary.
             </summary>
-            <param name="dateOfBirth">Date of Birth to search by, in format "yyyy-MMM-dd".</param>
+            <param name="dateOfBirth">Date of Birth to search by.</param>
             <returns>Iterator for finded records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindRecords(System.Collections.Generic.Dictionary{System.Reflection.PropertyInfo,System.Object},FileCabinetApp.CommandHandlers.OperationType)">
+            <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Insert(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
@@ -784,6 +824,14 @@
             <param name="recordProperty">Property of removing record.</param>
             <param name="propertyValue">Value of property.</param>
             <returns>List of deleted records identificators.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindRecords(System.Collections.Generic.Dictionary{System.Reflection.PropertyInfo,System.Object},FileCabinetApp.CommandHandlers.OperationType)">
+            <summary>
+            Finds records by propety and property-value.
+            </summary>
+            <param name="propertiesWithValues">Properties and their value for finding records.</param>
+            <param name="operation">Operation type for compound searching by sevaral properties.</param>
+            <returns>Finded records.</returns>
         </member>
         <member name="T:FileCabinetApp.MemoryFindedRecords">
             <summary>
@@ -1168,6 +1216,9 @@
         <member name="M:FileCabinetApp.ServiceLogger.Insert(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindRecords(System.Collections.Generic.Dictionary{System.Reflection.PropertyInfo,System.Object},FileCabinetApp.CommandHandlers.OperationType)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.ServiceMeter">
             <summary>
             Service that displays methods execution time.
@@ -1213,6 +1264,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.Insert(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindRecords(System.Collections.Generic.Dictionary{System.Reflection.PropertyInfo,System.Object},FileCabinetApp.CommandHandlers.OperationType)">
             <inheritdoc/>
         </member>
     </members>

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Reflection;
+using FileCabinetApp.CommandHandlers;
 
 namespace FileCabinetApp
 {
@@ -90,5 +90,13 @@ namespace FileCabinetApp
         /// <param name="propertyValue">Value of property.</param>
         /// <returns>List of deleted records identificators.</returns>
         public List<int> Delete(PropertyInfo recordProperty, object propertyValue);
+
+        /// <summary>
+        /// Finds records by propety and property-value.
+        /// </summary>
+        /// <param name="propertiesWithValues">Properties and their value for finding records.</param>
+        /// <param name="operation">Operation type for compound searching by sevaral properties.</param>
+        /// <returns>Finded records.</returns>
+        public ReadOnlyCollection<FileCabinetRecord> FindRecords(Dictionary<PropertyInfo, object> propertiesWithValues, OperationType operation);
     }
 }

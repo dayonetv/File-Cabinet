@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using FileCabinetApp.CommandHandlers;
 
 namespace FileCabinetApp
 {
@@ -238,11 +239,71 @@ namespace FileCabinetApp
         /// <summary>
         /// Searches a records by Date of birth in curent records using special 'dateOfBirthDictionary' dictionary.
         /// </summary>
-        /// <param name="dateOfBirth">Date of Birth to search by, in format "yyyy-MMM-dd".</param>
+        /// <param name="dateOfBirth">Date of Birth to search by.</param>
         /// <returns>Iterator for finded records.</returns>
         public IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
         {
             return new MemoryFindedRecords(this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth));
+        }
+
+        /// <inheritdoc/>
+        public ReadOnlyCollection<FileCabinetRecord> FindRecords(Dictionary<PropertyInfo, object> propertiesWithValues, OperationType operation)
+        {
+            if (propertiesWithValues == null || propertiesWithValues.Count == 0)
+            {
+                return this.GetRecords();
+            }
+
+            List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
+
+            switch (operation)
+            {
+                case OperationType.None: case OperationType.And: findedRecords.AddRange(this.list); break;
+                case OperationType.Or: findedRecords.Clear(); break;
+                default: return findedRecords.AsReadOnly();
+            }
+
+            PropertyInfo firstnameProperty = typeof(FileCabinetRecord).GetProperty(nameof(FileCabinetRecord.FirstName));
+            PropertyInfo lastNameProperty = typeof(FileCabinetRecord).GetProperty(nameof(FileCabinetRecord.LastName));
+            PropertyInfo dateOfBirthProperty = typeof(FileCabinetRecord).GetProperty(nameof(FileCabinetRecord.DateOfBirth));
+
+            foreach (var propertyValue in propertiesWithValues)
+            {
+                List<FileCabinetRecord> findedRecordsByOneProperty = new List<FileCabinetRecord>();
+
+                if (propertyValue.Key.Equals(firstnameProperty))
+                {
+                    findedRecordsByOneProperty.AddRange(this.FindByFirstName(propertyValue.Value.ToString()));
+                }
+                else if (propertyValue.Key.Equals(lastNameProperty))
+                {
+                    findedRecordsByOneProperty.AddRange(this.FindByLastName(propertyValue.Value.ToString()));
+                }
+                else if (propertyValue.Key.Equals(dateOfBirthProperty))
+                {
+                    findedRecordsByOneProperty.AddRange(this.FindByDateOfBith((DateTime)propertyValue.Value));
+                }
+                else
+                {
+                    switch (operation)
+                    {
+                        case OperationType.None: case OperationType.And:
+                            findedRecords = findedRecords.FindAll((record) => propertyValue.Key.GetValue(record).ToString().Equals(propertyValue.Value.ToString(), StringComparison.InvariantCultureIgnoreCase));
+                            continue;
+                        case OperationType.Or:
+                            findedRecordsByOneProperty.AddRange(this.list.FindAll((record) => propertyValue.Key.GetValue(record).ToString().Equals(propertyValue.Value.ToString(), StringComparison.InvariantCultureIgnoreCase)));
+                            break;
+                    }
+                }
+
+                switch (operation)
+                {
+                    case OperationType.None: case OperationType.And: findedRecords = findedRecords.Intersect(findedRecordsByOneProperty).ToList(); break;
+                    case OperationType.Or: findedRecords = findedRecords.Union(findedRecordsByOneProperty).ToList(); break;
+                }
+            }
+
+            return findedRecords.AsReadOnly();
         }
 
         /// <inheritdoc/>

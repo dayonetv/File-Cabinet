@@ -96,7 +96,7 @@ namespace FileCabinetApp
             }
 
             var validationMode = ValidatorChooser(args);
-
+            args = new string[] { "--storage=file" };
             switch (validationMode)
             {
                 case ValidationMode.Default: chosenValidator = new ValidatorBuilder().Default(); break;
@@ -158,6 +158,7 @@ namespace FileCabinetApp
             var insertHandler = new InsertCommandHandler(fileCabinetService);
             var deleteHandler = new DeleteCommandHandler(fileCabinetService);
             var updateHandler = new UpdateCommandHandler(fileCabinetService);
+            var selectHandler = new SelectCommandHandler(fileCabinetService);
 
             helpHandler.SetNext(createHandler)
                 .SetNext(statHandler)
@@ -167,6 +168,7 @@ namespace FileCabinetApp
                 .SetNext(purgeHandler)
                 .SetNext(exitHandler)
                 .SetNext(findHandler)
+                .SetNext(selectHandler)
                 .SetNext(updateHandler)
                 .SetNext(insertHandler)
                 .SetNext(deleteHandler);
