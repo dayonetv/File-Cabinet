@@ -23,7 +23,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void ValidateParameters(CreateEditParameters parameters)
+        public void ValidateParameters(RecordParameters parameters)
         {
             foreach (var validator in this.validators)
             {

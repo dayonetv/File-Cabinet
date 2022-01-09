@@ -38,7 +38,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="parameters">Parameter object. </param>
         /// <returns>The Id of created record.</returns>
-        public int CreateRecord(CreateEditParameters parameters)
+        public int CreateRecord(RecordParameters parameters)
         {
             if (parameters == null)
             {
@@ -78,7 +78,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="id">Record Id to edit by. </param>
         /// <param name="parameters">Parameter object. </param>
-        public void EditRecord(int id, CreateEditParameters parameters)
+        public void EditRecord(int id, RecordParameters parameters)
         {
             if (parameters == null)
             {
@@ -139,7 +139,7 @@ namespace FileCabinetApp
             {
                 try
                 {
-                    CreateEditParameters parameters = RecordToParameters(record);
+                    RecordParameters parameters = (RecordParameters)record;
 
                     this.validator.ValidateParameters(parameters);
                 }
@@ -298,7 +298,7 @@ namespace FileCabinetApp
                 throw new ArgumentException("Id should be more than 0.", nameof(recordToInsert));
             }
 
-            this.validator.ValidateParameters(RecordToParameters(recordToInsert));
+            this.validator.ValidateParameters((RecordParameters)recordToInsert);
 
             this.memoizer.Clear();
 
@@ -318,21 +318,6 @@ namespace FileCabinetApp
         public override string ToString()
         {
             return "Memory service";
-        }
-
-        private static CreateEditParameters RecordToParameters(FileCabinetRecord record)
-        {
-            CreateEditParameters parameters = new CreateEditParameters()
-            {
-                FirstName = record.FirstName,
-                LastName = record.LastName,
-                DateOfBirth = record.DateOfBirth,
-                Height = record.Height,
-                Salary = record.Salary,
-                Sex = record.Sex,
-            };
-
-            return parameters;
         }
 
         /// <summary>

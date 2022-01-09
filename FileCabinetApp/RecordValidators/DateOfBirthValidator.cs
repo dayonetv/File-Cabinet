@@ -28,7 +28,7 @@ namespace FileCabinetApp
         /// Validate DateTime property of the records.
         /// </summary>
         /// <param name="parameters">parameters to validate.</param>
-        public void ValidateParameters(CreateEditParameters parameters)
+        public void ValidateParameters(RecordParameters parameters)
         {
             if (parameters == null)
             {

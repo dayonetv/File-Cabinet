@@ -315,7 +315,7 @@
             <summary>
             Gets or sets current service.
             </summary>
-            <value></value>
+            <value>Service for using.</value>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.StatCommandHandler">
             <summary>
@@ -348,47 +348,6 @@
         <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.CreateEditParameters">
-            <summary>
-            Parameter object for FileCabinetService.CreateRecord and FileCabinetService.EditRecord methods.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.CreateEditParameters.FirstName">
-            <summary>
-            Gets or sets first name parameter.
-            </summary>
-            <value></value>
-        </member>
-        <member name="P:FileCabinetApp.CreateEditParameters.LastName">
-            <summary>
-            Gets or sets last name parameter.
-            </summary>
-            <value></value>
-        </member>
-        <member name="P:FileCabinetApp.CreateEditParameters.DateOfBirth">
-            <summary>
-            Gets or sets date of birth parameter.
-            </summary>
-            <value></value>
-        </member>
-        <member name="P:FileCabinetApp.CreateEditParameters.Height">
-            <summary>
-            Gets or sets height parameter.
-            </summary>
-            <value></value>
-        </member>
-        <member name="P:FileCabinetApp.CreateEditParameters.Salary">
-            <summary>
-            Gets or sets salary parameter.
-            </summary>
-            <value></value>
-        </member>
-        <member name="P:FileCabinetApp.CreateEditParameters.Sex">
-            <summary>
-            Gets or sets gender parameter.
-            </summary>
-            <value></value>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetFilesystemService">
             <summary>
             Represents service for stroring records with the ability to add, edit and find some of them using file system.
@@ -401,10 +360,10 @@
             <param name="fileStream">Stream to binary file.</param>
             <param name="validator">Current validator to be used. </param>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.RecordParameters)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.RecordParameters)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindRecords(System.Collections.Generic.Dictionary{System.Reflection.PropertyInfo,System.Object},FileCabinetApp.CommandHandlers.OperationType)">
@@ -442,7 +401,7 @@
             </summary>
             <param name="validator">Validator to be used. </param>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(FileCabinetApp.RecordParameters)">
             <summary>
             Creates new record and adds its to the list.
             </summary>
@@ -452,7 +411,7 @@
         <member name="M:FileCabinetApp.FileCabinetMemoryService.GetStat">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.EditRecord(System.Int32,FileCabinetApp.RecordParameters)">
             <summary>
             Edits existing record by it's Id.
             </summary>
@@ -547,6 +506,13 @@
             Gets or sets gender of the person.
             </summary>
             <value></value>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.ToRecordParameters(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Converts record to record parameters.
+            </summary>
+            <param name="record">Record to be converted.</param>
+            <returns>Record parameters.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecordCsvReader">
             <summary>
@@ -670,7 +636,7 @@
             File cabinet service main interface.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.RecordParameters)">
             <summary>
             Creates new record and adds its to the list.
             </summary>
@@ -683,7 +649,7 @@
             </summary>
             <returns>The number of total and deleted records.</returns>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.RecordParameters)">
             <summary>
             Edits existing record by it's Id.
             </summary>
@@ -814,6 +780,47 @@
             </summary>
             <param name="args">Applicattion startup parameters. </param>
         </member>
+        <member name="T:FileCabinetApp.RecordParameters">
+            <summary>
+            Parameter object for FileCabinetService.CreateRecord and FileCabinetService.EditRecord methods.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.RecordParameters.FirstName">
+            <summary>
+            Gets or sets first name parameter.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParameters.LastName">
+            <summary>
+            Gets or sets last name parameter.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParameters.DateOfBirth">
+            <summary>
+            Gets or sets date of birth parameter.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParameters.Height">
+            <summary>
+            Gets or sets height parameter.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParameters.Salary">
+            <summary>
+            Gets or sets salary parameter.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParameters.Sex">
+            <summary>
+            Gets or sets gender parameter.
+            </summary>
+            <value></value>
+        </member>
         <member name="T:FileCabinetApp.CompositeValidator">
             <summary>
             Validator that contatins list of diffenent validators to be used.
@@ -825,7 +832,7 @@
             </summary>
             <param name="validators">Current validators to be used.</param>
         </member>
-        <member name="M:FileCabinetApp.CompositeValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.CompositeValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.DateOfBirthValidator">
@@ -840,7 +847,7 @@
             <param name="from">DateTime start range.</param>
             <param name="to">DateTime end range.</param>
         </member>
-        <member name="M:FileCabinetApp.DateOfBirthValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.DateOfBirthValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <summary>
             Validate DateTime property of the records.
             </summary>
@@ -875,7 +882,7 @@
             <param name="minLength">Minimal Length of firstname of the records.</param>
             <param name="maxLength">Maximum Length of firstname of the records.</param>
         </member>
-        <member name="M:FileCabinetApp.FirstNameValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.FirstNameValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <summary>
             Validate Firstname property.
             </summary>
@@ -892,7 +899,7 @@
             </summary>
             <param name="validGenders">Array of allowed genders.</param>
         </member>
-        <member name="M:FileCabinetApp.GenderValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.GenderValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <summary>
             Validates sex property of the record.
             </summary>
@@ -910,7 +917,7 @@
             <param name="minHeight">Minimal height.</param>
             <param name="maxHeight">Maximum height.</param>
         </member>
-        <member name="M:FileCabinetApp.HeigthValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.HeigthValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <summary>
             Validates height property of the record.
             </summary>
@@ -921,7 +928,7 @@
             Represents methods that shoud be implemented by inheritors.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <summary>
             Checks parameters correctness.
             </summary>
@@ -939,7 +946,7 @@
             <param name="minLength">Minimal Length of firstname of the records.</param>
             <param name="maxLength">Maximum Length of firstname of the records.</param>
         </member>
-        <member name="M:FileCabinetApp.LastNameValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.LastNameValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <summary>
             Validate Firstname property.
             </summary>
@@ -974,7 +981,7 @@
             <param name="minSalary">Minimal salary value.</param>
             <param name="maxSalary">Maximal salary value.</param>
         </member>
-        <member name="M:FileCabinetApp.SalaryValidator.ValidateParameters(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.SalaryValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <summary>
             Validate salary of the record.
             </summary>
@@ -1103,10 +1110,10 @@
             </summary>
             <param name="service">Service to be used.</param>
         </member>
-        <member name="M:FileCabinetApp.ServiceLogger.CreateRecord(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.ServiceLogger.CreateRecord(FileCabinetApp.RecordParameters)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.ServiceLogger.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.ServiceLogger.EditRecord(System.Int32,FileCabinetApp.RecordParameters)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceLogger.GetStat">
@@ -1141,10 +1148,10 @@
             </summary>
             <param name="service">Service to be used.</param>
         </member>
-        <member name="M:FileCabinetApp.ServiceMeter.CreateRecord(FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.ServiceMeter.CreateRecord(FileCabinetApp.RecordParameters)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.ServiceMeter.EditRecord(System.Int32,FileCabinetApp.CreateEditParameters)">
+        <member name="M:FileCabinetApp.ServiceMeter.EditRecord(System.Int32,FileCabinetApp.RecordParameters)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.GetStat">

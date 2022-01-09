@@ -29,7 +29,7 @@ namespace FileCabinetApp
         /// Validate Firstname property.
         /// </summary>
         /// <param name="parameters">Parameters to validate.</param>
-        public void ValidateParameters(CreateEditParameters parameters)
+        public void ValidateParameters(RecordParameters parameters)
         {
             if (parameters == null)
             {

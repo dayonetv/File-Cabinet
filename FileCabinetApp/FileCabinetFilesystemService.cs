@@ -37,7 +37,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public int CreateRecord(CreateEditParameters parameters)
+        public int CreateRecord(RecordParameters parameters)
         {
             if (parameters == null)
             {
@@ -67,7 +67,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void EditRecord(int id, CreateEditParameters parameters)
+        public void EditRecord(int id, RecordParameters parameters)
         {
             if (parameters == null)
             {
@@ -179,17 +179,7 @@ namespace FileCabinetApp
             {
                 try
                 {
-                    CreateEditParameters parameters = new CreateEditParameters()
-                    {
-                        FirstName = record.FirstName,
-                        LastName = record.LastName,
-                        DateOfBirth = record.DateOfBirth,
-                        Height = record.Height,
-                        Salary = record.Salary,
-                        Sex = record.Sex,
-                    };
-
-                    this.validator.ValidateParameters(parameters);
+                    this.validator.ValidateParameters((RecordParameters)record);
                 }
                 catch (ArgumentException ex)
                 {
@@ -282,7 +272,7 @@ namespace FileCabinetApp
                 throw new ArgumentException("Id should be more than 0.", nameof(recordToInsert));
             }
 
-            this.validator.ValidateParameters(RecordToParameters(recordToInsert));
+            this.validator.ValidateParameters((RecordParameters)recordToInsert);
 
             long findedRecordPosition = this.FindRecordById(recordToInsert.Id);
 
@@ -296,21 +286,6 @@ namespace FileCabinetApp
             }
 
             this.WriteRecordToFile(recordToInsert);
-        }
-
-        private static CreateEditParameters RecordToParameters(FileCabinetRecord record)
-        {
-            CreateEditParameters parameters = new CreateEditParameters()
-            {
-                FirstName = record.FirstName,
-                LastName = record.LastName,
-                DateOfBirth = record.DateOfBirth,
-                Height = record.Height,
-                Salary = record.Salary,
-                Sex = record.Sex,
-            };
-
-            return parameters;
         }
 
         private ReadOnlyCollection<FileCabinetRecord> GetRecords()

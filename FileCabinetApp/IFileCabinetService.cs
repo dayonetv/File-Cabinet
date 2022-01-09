@@ -16,7 +16,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="parameters">Parameter object. </param>
         /// <returns>The Id of created record.</returns>
-        public int CreateRecord(CreateEditParameters parameters);
+        public int CreateRecord(RecordParameters parameters);
 
         /// <summary>
         /// Gets the information about the amount of current existing records.
@@ -29,7 +29,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="id">Record Id to edit by. </param>
         /// <param name="parameters">Parameter object. </param>
-        public void EditRecord(int id, CreateEditParameters parameters);
+        public void EditRecord(int id, RecordParameters parameters);
 
         /// <summary>
         /// Makes snapshot of all current records.

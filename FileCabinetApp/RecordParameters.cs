@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Parameter object for FileCabinetService.CreateRecord and FileCabinetService.EditRecord methods.
     /// </summary>
-    public class CreateEditParameters
+    public class RecordParameters
     {
         /// <summary>
         /// Gets or sets first name parameter.

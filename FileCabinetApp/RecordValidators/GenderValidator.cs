@@ -23,7 +23,7 @@ namespace FileCabinetApp
         /// Validates sex property of the record.
         /// </summary>
         /// <param name="parameters">Parameters to validate.</param>
-        public void ValidateParameters(CreateEditParameters parameters)
+        public void ValidateParameters(RecordParameters parameters)
         {
             if (parameters == null)
             {

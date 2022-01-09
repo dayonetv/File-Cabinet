@@ -158,9 +158,9 @@ namespace FileCabinetApp.CommandHandlers
         /// Reads console inputs for creating records parameters.
         /// </summary>
         /// <returns>Parameters entered by user.</returns>
-        private static CreateEditParameters EnterInfo()
+        private static RecordParameters EnterInfo()
         {
-            CreateEditParameters parameters = new ();
+            RecordParameters parameters = new ();
 
             Console.Write("First Name: ");
             parameters.FirstName = ReadInput(StringConverter, FirstNameValidator);
@@ -190,7 +190,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 try
                 {
-                    CreateEditParameters creationParams = EnterInfo();
+                    RecordParameters creationParams = EnterInfo();
 
                     Console.WriteLine($"Record #{this.Service.CreateRecord(creationParams)} is created.");
 

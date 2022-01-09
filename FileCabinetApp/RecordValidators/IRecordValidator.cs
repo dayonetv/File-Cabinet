@@ -15,6 +15,6 @@ namespace FileCabinetApp
         /// Checks parameters correctness.
         /// </summary>
         /// <param name="parameters">Parameter object to validate. </param>
-        public void ValidateParameters(CreateEditParameters parameters);
+        public void ValidateParameters(RecordParameters parameters);
     }
 }

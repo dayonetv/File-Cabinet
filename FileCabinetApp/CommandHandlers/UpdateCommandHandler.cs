@@ -187,7 +187,7 @@ namespace FileCabinetApp.CommandHandlers
 
             var setInputs = setPart.Split(SetPartSplitSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-            return ProcessPartInputs(setInputs, this.setPropertiesValues, typeof(CreateEditParameters));
+            return ProcessPartInputs(setInputs, this.setPropertiesValues, typeof(RecordParameters));
         }
 
         private bool ProcessWherePart(string wherePart)
@@ -205,15 +205,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             foreach (var record in findedRecords)
             {
-                CreateEditParameters parameters = new CreateEditParameters()
-                {
-                    FirstName = record.FirstName,
-                    LastName = record.LastName,
-                    DateOfBirth = record.DateOfBirth,
-                    Height = record.Height,
-                    Salary = record.Salary,
-                    Sex = record.Sex,
-                };
+                RecordParameters parameters = (RecordParameters)record;
 
                 foreach (var propertyValue in this.setPropertiesValues)
                 {

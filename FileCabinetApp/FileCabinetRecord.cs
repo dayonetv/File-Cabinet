@@ -56,5 +56,35 @@ namespace FileCabinetApp
         /// </summary>
         /// <value></value>
         public char Sex { get; set; }
+
+        public static explicit operator RecordParameters(FileCabinetRecord record)
+        {
+            if (record == null)
+            {
+                return null;
+            }
+
+            RecordParameters parameters = new RecordParameters()
+            {
+                FirstName = record.FirstName,
+                LastName = record.LastName,
+                DateOfBirth = record.DateOfBirth,
+                Height = record.Height,
+                Salary = record.Salary,
+                Sex = record.Sex,
+            };
+
+            return parameters;
+        }
+
+        /// <summary>
+        /// Converts record to record parameters.
+        /// </summary>
+        /// <param name="record">Record to be converted.</param>
+        /// <returns>Record parameters.</returns>
+        public static RecordParameters ToRecordParameters(FileCabinetRecord record)
+        {
+            return (RecordParameters)record;
+        }
     }
 }

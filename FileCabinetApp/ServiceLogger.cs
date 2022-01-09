@@ -32,7 +32,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public int CreateRecord(CreateEditParameters parameters)
+        public int CreateRecord(RecordParameters parameters)
         {
             this.WriteInputs(nameof(this.CreateRecord), CreateEditParametersToString(parameters));
 
@@ -44,7 +44,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void EditRecord(int id, CreateEditParameters parameters)
+        public void EditRecord(int id, RecordParameters parameters)
         {
             this.WriteInputs(nameof(this.EditRecord), $"{nameof(id)} = '{id}', {CreateEditParametersToString(parameters)}");
 
@@ -166,7 +166,7 @@ namespace FileCabinetApp
             return text.ToString();
         }
 
-        private static string CreateEditParametersToString(CreateEditParameters parameters)
+        private static string CreateEditParametersToString(RecordParameters parameters)
         {
             StringBuilder text = new StringBuilder();
 
