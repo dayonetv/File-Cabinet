@@ -3,7 +3,7 @@
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Abstract class for base implementation of methods for Command Handlers.
+    /// Abstract class for the basic implementation of command handler methods.
     /// </summary>
     public abstract class CommandHandlerBase : ICommandHandler
     {

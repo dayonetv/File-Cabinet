@@ -11,7 +11,7 @@ using FileCabinetApp.RecordValidators;
 namespace FileCabinetApp.Services
 {
     /// <summary>
-    /// Represents service for stroring records with the ability to add, edit and find some of them using file system.
+    /// Represents service for stroring records using associated *.db file.
     /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService
     {
@@ -29,7 +29,7 @@ namespace FileCabinetApp.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
-        /// <param name="fileStream">Stream to binary file.</param>
+        /// <param name="fileStream">Stream to *.db file.</param>
         /// <param name="validator">Current validator to be used. </param>
         public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
@@ -37,7 +37,12 @@ namespace FileCabinetApp.Services
             this.validator = validator;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Creates new record and adds its to associated *.db file.
+        /// </summary>
+        /// <param name="parameters">Record parameters object. </param>
+        /// <returns>The Id of created record.</returns>
+        /// <exception cref="ArgumentNullException">Parameters is null.</exception>
         public int CreateRecord(RecordParameters parameters)
         {
             if (parameters == null)

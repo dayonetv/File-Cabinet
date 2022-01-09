@@ -4,7 +4,7 @@ using System.Globalization;
 namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Class for dateOfBirth property validation.
+    /// Class for DateOfBirth property validation.
     /// </summary>
     public class DateOfBirthValidator : IRecordValidator
     {
@@ -25,9 +25,11 @@ namespace FileCabinetApp.RecordValidators
         }
 
         /// <summary>
-        /// Validate DateTime property of the records.
+        /// Validate DateOfBirth property of the records.
         /// </summary>
-        /// <param name="parameters">parameters to validate.</param>
+        /// <param name="parameters">Parameters to validate.</param>
+        /// <exception cref="ArgumentNullException">Source parameters is null.</exception>
+        /// <exception cref="ArgumentException">DateOfBirth property is more than <see cref="to"/> or less than <see cref="from"/>.</exception>
         public void ValidateParameters(RecordParameters parameters)
         {
             if (parameters == null)

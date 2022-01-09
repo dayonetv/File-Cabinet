@@ -3,20 +3,20 @@
 namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Date range properties for validation-rules file.
+    ///  Represents a date range that has from and to <see cref="DateTime"/> values.
     /// </summary>
     public class DateRange
     {
         /// <summary>
-        /// Gets minimal Date.
+        /// Gets minimum DateTime.
         /// </summary>
-        /// <value></value>
+        /// <value>Minimum DateTime.</value>
         public DateTime From { get; init; }
 
         /// <summary>
-        /// Gets maximum Date.
+        /// Gets maximum DateTime.
         /// </summary>
-        /// <value></value>
+        /// <value>Maxumum DateTime.</value>
         public DateTime To { get; init; }
     }
 }

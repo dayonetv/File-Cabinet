@@ -8,7 +8,7 @@ using FileCabinetApp.CommandHandlers;
 namespace FileCabinetApp.Services
 {
     /// <summary>
-    /// Service that displays methods execution time.
+    /// Service that displays methods execution time to the console.
     /// </summary>
     public class ServiceMeter : IFileCabinetService
     {

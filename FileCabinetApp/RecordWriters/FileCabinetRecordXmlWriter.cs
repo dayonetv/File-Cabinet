@@ -5,7 +5,7 @@ using System.Xml;
 namespace FileCabinetApp.RecordWriters
 {
     /// <summary>
-    /// Represents class for saving records to *.xml files.
+    /// Represents class for saving records to *.xml file.
     /// </summary>
     public class FileCabinetRecordXmlWriter
     {
@@ -16,16 +16,16 @@ namespace FileCabinetApp.RecordWriters
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordXmlWriter"/> class.
         /// </summary>
-        /// <param name="writer">writer to save info. </param>
+        /// <param name="writer">writer to *.xml file. </param>
         public FileCabinetRecordXmlWriter(XmlWriter writer)
         {
             this.xmlWriter = writer;
         }
 
         /// <summary>
-        /// Write property-values if the record to *.xml file.
+        /// Writes properties-values if the record to *.xml file.
         /// </summary>
-        /// <param name="record">record to be saved. </param>
+        /// <param name="record">record to be writed. </param>
         /// <param name="isFirst">is it the first record. </param>
         /// <param name="isLast">is it the last record. </param>
         public void Write(FileCabinetRecord record, bool isFirst, bool isLast)

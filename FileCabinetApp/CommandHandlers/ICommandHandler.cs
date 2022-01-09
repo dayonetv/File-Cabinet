@@ -1,7 +1,9 @@
-﻿namespace FileCabinetApp.CommandHandlers
+﻿using System;
+
+namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Interface for creating Command Handlers.
+    /// Support handling of <see cref="AppCommandRequest"/>.
     /// </summary>
     public interface ICommandHandler
     {
@@ -13,9 +15,10 @@
         public ICommandHandler SetNext(ICommandHandler commandHandler);
 
         /// <summary>
-        /// Handle request.
+        /// Handle request or moves request to the next handler.
         /// </summary>
         /// <param name="request">Request to be handled. </param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public void Handle(AppCommandRequest request);
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Extension methods for creating Default and Custom.
+    /// Extension methods for creating Default and Custom validators.
     /// </summary>
     public static class ValidatorBuilderExtensions
     {
@@ -16,7 +16,7 @@ namespace FileCabinetApp.RecordValidators
         private static readonly IConfiguration ValidationConfiguration = new ConfigurationBuilder().AddJsonFile(RulesFile.FullName, true, true).Build();
 
         /// <summary>
-        /// Creates Default Validator.
+        /// Creates Default validator.
         /// </summary>
         /// <param name="builder">builder instance.</param>
         /// <returns>Default Validator.</returns>

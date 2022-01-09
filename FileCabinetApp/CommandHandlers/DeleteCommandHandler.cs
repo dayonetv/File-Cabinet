@@ -8,12 +8,12 @@ using FileCabinetApp.Services;
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Handler for delete command and delete parameters.
+    /// Handler for 'delete' command and parameters.
     /// </summary>
     public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
-        private const string CommandName = "delete";
-        private const string KeyWord = "where";
+        private const string CommandName = "delete ";
+        private const string KeyWord = "where ";
         private const char Separator = '=';
         private const char ValueTrimChar = '\'';
         private const int SplitAmount = 1;
@@ -28,7 +28,11 @@ namespace FileCabinetApp.CommandHandlers
         {
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Handles 'delete' command or moves request to the next handler.
+        /// </summary>
+        /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)
@@ -103,8 +107,8 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            string propertyName = propertyWithValue[0].Trim();
-            string propertyValue = propertyWithValue[^1].Trim(ValueTrimChar);
+            string propertyName = propertyWithValue.First().Trim();
+            string propertyValue = propertyWithValue.Last().Trim(ValueTrimChar);
 
             PropertyInfo property = GetProperty(propertyName);
 

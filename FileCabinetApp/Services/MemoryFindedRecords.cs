@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace FileCabinetApp.Services
 {
     /// <summary>
-    /// Collection of finded records by memory service.
+    /// IEnumerable collection of finded records by memory service.
     /// </summary>
     public class MemoryFindedRecords : IEnumerable<FileCabinetRecord>
     {

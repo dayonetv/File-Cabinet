@@ -5,7 +5,7 @@ using FileCabinetApp.Services;
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Handler for create command.
+    /// Handler for 'create' command.
     /// </summary>
     public class CreateCommandHandler : ServiceCommandHandlerBase
     {
@@ -31,6 +31,7 @@ namespace FileCabinetApp.CommandHandlers
         /// Handles 'create' command or moves request to the next handler.
         /// </summary>
         /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)

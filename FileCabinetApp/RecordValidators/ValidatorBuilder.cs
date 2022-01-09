@@ -72,7 +72,7 @@ namespace FileCabinetApp.RecordValidators
         /// <summary>
         /// Creates new IRecordValidator.
         /// </summary>
-        /// <returns>Validator.</returns>
+        /// <returns>Created validator.</returns>
         public IRecordValidator Create()
         {
             return new CompositeValidator(this.validators);

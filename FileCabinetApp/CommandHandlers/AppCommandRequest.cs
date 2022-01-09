@@ -1,20 +1,20 @@
 ﻿namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Represents command and parameters that should be handled.
+    /// Represents application command and parameters to be handled.
     /// </summary>
     public class AppCommandRequest
     {
         /// <summary>
         /// Gets string representaion of the command.
         /// </summary>
-        /// <value>String command.</value>
+        /// <value><see cref="string"/> command.</value>
         public string Command { get; init; }
 
         /// <summary>
-        /// Gets string representation of parameters.
+        /// Gets parameters string representation.
         /// </summary>
-        /// <value>String command.</value>
+        /// <value><see cref="string"/> parameters.</value>
         public string Parameters { get; init; }
     }
 }

@@ -8,7 +8,7 @@ using FileCabinetApp.Services;
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Handler for update command and update parameters.
+    /// Handler for 'update' command and parameters.
     /// </summary>
     public class UpdateCommandHandler : ServiceCommandHandlerBase
     {

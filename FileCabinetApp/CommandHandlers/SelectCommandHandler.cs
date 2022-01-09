@@ -8,12 +8,12 @@ using FileCabinetApp.Services;
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Operator for union searching criterias.
+    /// Logical operator for searching criteria.
     /// </summary>
     public enum OperationType
     {
         /// <summary>
-        /// No uinion.
+        /// Without operator.
         /// </summary>
         None,
 
@@ -29,7 +29,7 @@ namespace FileCabinetApp.CommandHandlers
     }
 
     /// <summary>
-    /// Handler for select command and select parameters.
+    /// Handler for 'select' command and parameters.
     /// </summary>
     public class SelectCommandHandler : ServiceCommandHandlerBase
     {
@@ -61,7 +61,11 @@ namespace FileCabinetApp.CommandHandlers
         {
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Handles 'select' command or moves request to the next handler.
+        /// </summary>
+        /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)

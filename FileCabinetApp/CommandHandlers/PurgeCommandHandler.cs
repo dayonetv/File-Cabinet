@@ -4,7 +4,7 @@ using FileCabinetApp.Services;
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Handler for purge command and purge paramaters.
+    /// Handler for 'purge' command and paramaters.
     /// </summary>
     public class PurgeCommandHandler : ServiceCommandHandlerBase
     {
@@ -23,6 +23,7 @@ namespace FileCabinetApp.CommandHandlers
         /// Handles 'purge' command or moves request to the next handler.
         /// </summary>
         /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)

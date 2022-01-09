@@ -8,7 +8,7 @@ using FileCabinetApp.CommandHandlers;
 namespace FileCabinetApp.Services
 {
     /// <summary>
-    /// Memoizer for storing results of 'FindRecords' method, which may be needed, in order to avoid recalculating them.
+    /// Memoizer for storing results of <see cref="FileCabinetMemoryService.FindRecords(Dictionary{PropertyInfo, object}, OperationType)"/> method of <see cref="FileCabinetMemoryService"/>, in order to avoid recalculating results.
     /// </summary>
     public class Memoizer
     {

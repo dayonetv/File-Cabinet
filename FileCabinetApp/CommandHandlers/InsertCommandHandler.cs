@@ -7,7 +7,7 @@ using FileCabinetApp.Services;
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Handler for insert command and insert paramaters.
+    /// Handler for 'insert' command and paramaters.
     /// </summary>
     public class InsertCommandHandler : ServiceCommandHandlerBase
     {
@@ -29,7 +29,11 @@ namespace FileCabinetApp.CommandHandlers
         {
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Handles 'insert' command or moves request to the next handler.
+        /// </summary>
+        /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)

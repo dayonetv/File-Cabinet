@@ -3,7 +3,7 @@
 namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Class for firstname property validation.
+    /// Class for FirstName property validation.
     /// </summary>
     public class FirstNameValidator : IRecordValidator
     {
@@ -22,9 +22,11 @@ namespace FileCabinetApp.RecordValidators
         }
 
         /// <summary>
-        /// Validate Firstname property.
+        /// Validates Firstname property.
         /// </summary>
-        /// <param name="parameters">Parameters to validate.</param>
+        /// <param name="parameters">Record parameters object to validate.</param>
+        /// <exception cref="ArgumentNullException">source parameters is null. FirstName property is null, empty of whitespace.</exception>
+        /// <exception cref="ArgumentException">FirtName Length is more than <see cref="maxLength"/> or less than <see cref="minLength"/>.</exception>
         public void ValidateParameters(RecordParameters parameters)
         {
             if (parameters == null)

@@ -5,7 +5,7 @@ using FileCabinetApp.Services;
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Handler for import command and import paramaters.
+    /// Handler for 'import' command and paramaters.
     /// </summary>
     public class ImportCommandHandler : ServiceCommandHandlerBase
     {
@@ -32,6 +32,7 @@ namespace FileCabinetApp.CommandHandlers
         /// Handles 'import' command or moves request to the next handler.
         /// </summary>
         /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)

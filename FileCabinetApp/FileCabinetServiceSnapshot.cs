@@ -8,7 +8,7 @@ using FileCabinetApp.RecordWriters;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Represents snapshot of current property-values of the records.
+    /// Represents snapshot of current properties-values of the records.
     /// </summary>
     public class FileCabinetServiceSnapshot
     {
@@ -17,7 +17,7 @@ namespace FileCabinetApp
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
         /// </summary>
-        /// <param name="records">array of records to be snapshoted. </param>
+        /// <param name="records">Collection of snapshoted records. </param>
         public FileCabinetServiceSnapshot(ReadOnlyCollection<FileCabinetRecord> records)
         {
             this.records = records.ToArray();
@@ -33,13 +33,13 @@ namespace FileCabinetApp
         /// <summary>
         /// Gets readed records.
         /// </summary>
-        /// <value>Readed records. </value>
+        /// <value>Collection of readed records.</value>
         public ReadOnlyCollection<FileCabinetRecord> Records { get; private set; }
 
         /// <summary>
-        /// Saves all records to *.scv file.
+        /// Saves all records to *.csv file.
         /// </summary>
-        /// <param name="writer">Stream to file.</param>
+        /// <param name="writer">Stream to *.csv file.</param>
         public void SaveToScv(StreamWriter writer)
         {
             FileCabinetRecordCsvWriter csvWriter = new FileCabinetRecordCsvWriter(writer);
@@ -53,7 +53,7 @@ namespace FileCabinetApp
         /// <summary>
         /// Saves all records to *.xml file.
         /// </summary>
-        /// <param name="writer">Stream to file.</param>
+        /// <param name="writer">Stream to *.xml file.</param>
         public void SaveToXml(StreamWriter writer)
         {
             FileCabinetRecordXmlWriter xmlWriter = new FileCabinetRecordXmlWriter(XmlWriter.Create(writer));

@@ -10,7 +10,7 @@ using FileCabinetApp.CommandHandlers;
 namespace FileCabinetApp.Services
 {
     /// <summary>
-    /// Service that saves methods execution information.
+    /// Service that saves <see cref="IFileCabinetService"/> methods execution time information.
     /// </summary>
     public class ServiceLogger : IFileCabinetService
     {

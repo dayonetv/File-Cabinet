@@ -10,7 +10,7 @@ using FileCabinetApp.RecordValidators;
 namespace FileCabinetApp.Services
 {
     /// <summary>
-    /// Represents service for stroring records with the ability to add, edit and find some of them.
+    /// Represents service for stroring records using List of <see cref="FileCabinetRecord"/>.
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
@@ -38,6 +38,7 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="parameters">Parameter object. </param>
         /// <returns>The Id of created record.</returns>
+        /// <exception cref="ArgumentNullException">Parameters is null.</exception>
         public int CreateRecord(RecordParameters parameters)
         {
             if (parameters == null)
@@ -324,7 +325,7 @@ namespace FileCabinetApp.Services
         /// Searches records by First Name in curent records using special 'firstNameDictionary' dictionary.
         /// </summary>
         /// <param name="firstName">First Name to search by.</param>
-        /// <returns>Iterator for finded records.</returns>
+        /// <returns>IEnumberable collection of finded records.</returns>
         private IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             return new MemoryFindedRecords(this.firstNameDictionary.GetValueOrDefault(firstName));
@@ -334,7 +335,7 @@ namespace FileCabinetApp.Services
         /// Searches a records by Last Name in curent records using special 'lastNameDictionary' dictionary.
         /// </summary>
         /// <param name="lastName">Last Name to search by.</param>
-        /// <returns>Iterator for finded records.</returns>
+        /// <returns>IEnumberable collection of finded records.</returns>
         private IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             return new MemoryFindedRecords(this.lastNameDictionary.GetValueOrDefault(lastName));
@@ -344,7 +345,7 @@ namespace FileCabinetApp.Services
         /// Searches a records by Date of birth in curent records using special 'dateOfBirthDictionary' dictionary.
         /// </summary>
         /// <param name="dateOfBirth">Date of Birth to search by.</param>
-        /// <returns>Iterator for finded records.</returns>
+        /// <returns>IEnumberable collection of finded records.</returns>
         private IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
         {
             return new MemoryFindedRecords(this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth));

@@ -4,7 +4,7 @@ using System.Globalization;
 namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Class for height property validation.
+    /// Class for Height property validation.
     /// </summary>
     public class HeigthValidator : IRecordValidator
     {
@@ -23,9 +23,11 @@ namespace FileCabinetApp.RecordValidators
         }
 
         /// <summary>
-        /// Validates height property of the record.
+        /// Validates Height property of the record.
         /// </summary>
-        /// <param name="parameters">Parameters to validate. </param>
+        /// <param name="parameters">Record parameters object to validate. </param>
+        /// <exception cref="ArgumentNullException">source parameters is null.</exception>
+        /// <exception cref="ArgumentException">Height is more than <see cref="maxHeight"/> or less than <see cref="minHeight"/>.</exception>
         public void ValidateParameters(RecordParameters parameters)
         {
             if (parameters == null)

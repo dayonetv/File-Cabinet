@@ -5,7 +5,7 @@ using FileCabinetApp.Services;
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Handler for export command and export paramaters.
+    /// Handler for 'export' command and paramaters.
     /// </summary>
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
@@ -38,6 +38,7 @@ namespace FileCabinetApp.CommandHandlers
         /// Handles 'export' command or moves request to the next handler.
         /// </summary>
         /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)

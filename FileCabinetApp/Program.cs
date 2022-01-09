@@ -24,7 +24,7 @@ namespace FileCabinetApp
     }
 
     /// <summary>
-    /// Validation modes for cabinet services.
+    /// Validation modes for cabinet service.
     /// </summary>
     public enum ValidationMode
     {
@@ -86,7 +86,7 @@ namespace FileCabinetApp
         /// <summary>
         /// The main console-application entry point.
         /// </summary>
-        /// <param name="args">Applicattion startup parameters. </param>
+        /// <param name="args">Application startup parameters. </param>
         public static void Main(string[] args)
         {
             if (args == null)

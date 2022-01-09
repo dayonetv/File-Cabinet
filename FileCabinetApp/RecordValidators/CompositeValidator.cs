@@ -4,7 +4,7 @@ using System.Linq;
 namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Validator that contatins list of diffenent validators to be used.
+    /// Validator that contatins list of several validators to be used.
     /// </summary>
     public class CompositeValidator : IRecordValidator
     {

@@ -2,21 +2,24 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 
 namespace FileCabinetApp.RecordReaders
 {
     /// <summary>
-    /// Represents class for reading records from *.csv files.
+    /// Represents class for reading records from *.csv file.
     /// </summary>
     public class FileCabinetRecordCsvReader
     {
+        private const char PropertiesSeparator = ',';
+
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         private readonly StreamReader reader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvReader"/> class.
         /// </summary>
-        /// <param name="reader">Reader to read info. </param>
+        /// <param name="reader">StreamReader to *.csv file.</param>
         public FileCabinetRecordCsvReader(StreamReader reader)
         {
             this.reader = reader;
@@ -44,23 +47,23 @@ namespace FileCabinetApp.RecordReaders
 
             string readedLine = this.reader.ReadLine();
 
-            var properties = readedLine.Split(',');
+            var readedPropertiesValues = readedLine.Split(PropertiesSeparator, StringSplitOptions.TrimEntries);
 
-            if (properties.Length == readedRecord.GetType().GetProperties().Length)
+            PropertyInfo[] properties = readedRecord.GetType().GetProperties();
+
+            if (readedPropertiesValues.Length == properties.Length)
             {
-                readedRecord.Id = int.Parse(properties[0], Culture);
-
-                readedRecord.FirstName = properties[1].Trim();
-
-                readedRecord.LastName = properties[2].Trim();
-
-                readedRecord.DateOfBirth = DateTime.Parse(properties[3], Culture, DateTimeStyles.None);
-
-                readedRecord.Height = short.Parse(properties[4], Culture);
-
-                readedRecord.Salary = decimal.Parse(properties[5], Culture);
-
-                readedRecord.Sex = char.Parse(properties[6]);
+                for (int i = 0; i < properties.Length; i++)
+                {
+                    try
+                    {
+                        properties[i].SetValue(readedRecord, Convert.ChangeType(readedPropertiesValues[i], properties[i].PropertyType, Culture));
+                    }
+                    catch (FormatException)
+                    {
+                        return readedRecord;
+                    }
+                }
             }
 
             return readedRecord;

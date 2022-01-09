@@ -3,7 +3,7 @@
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Handler for exit command.
+    /// Handler for 'exit' command.
     /// </summary>
     public class ExitCommandHandler : CommandHandlerBase
     {
@@ -24,6 +24,7 @@ namespace FileCabinetApp.CommandHandlers
         /// Handles 'exit' command or moves request to the next handler.
         /// </summary>
         /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)

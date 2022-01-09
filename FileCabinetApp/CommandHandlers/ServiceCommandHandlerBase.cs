@@ -19,7 +19,7 @@ namespace FileCabinetApp.CommandHandlers
         /// <summary>
         /// Gets or sets current service.
         /// </summary>
-        /// <value>Service for using.</value>
-        public IFileCabinetService Service { get; protected set; }
+        /// <value><see cref="IFileCabinetService"/> Service for using.</value>
+        protected IFileCabinetService Service { get; set; }
     }
 }
