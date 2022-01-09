@@ -15,10 +15,14 @@ namespace FileCabinetApp
     public class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+
         private readonly IRecordValidator validator;
+
+        private readonly Memoizer memoizer = new ();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class with specific validator.
@@ -42,6 +46,8 @@ namespace FileCabinetApp
             }
 
             this.validator.ValidateParameters(parameters);
+
+            this.memoizer.Clear();
 
             FileCabinetRecord record = new ()
             {
@@ -99,6 +105,8 @@ namespace FileCabinetApp
                 recordToEdit.Sex = parameters.Sex;
 
                 this.AddToDictionaries(recordToEdit);
+
+                this.memoizer.Clear();
             }
         }
 
@@ -167,6 +175,8 @@ namespace FileCabinetApp
             this.list.AddRange(recordsToAdd);
             recordsToAdd.ForEach(this.AddToDictionaries);
 
+            this.memoizer.Clear();
+
             return recordsInfo.ToString() + $"{recordsToAdd.Count} records were imported ";
         }
 
@@ -188,6 +198,8 @@ namespace FileCabinetApp
 
             if (findedRecords.Count != 0)
             {
+                this.memoizer.Clear();
+
                 foreach (var record in findedRecords)
                 {
                     this.RemoveFromDictionaries(record);
@@ -212,7 +224,14 @@ namespace FileCabinetApp
                 return this.list.AsReadOnly();
             }
 
-            List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> findedRecords;
+
+            if (this.memoizer.TryGetValue((propertiesWithValues, operation), out findedRecords))
+            {
+                return findedRecords.AsReadOnly();
+            }
+
+            findedRecords = new List<FileCabinetRecord>();
 
             switch (operation)
             {
@@ -261,6 +280,8 @@ namespace FileCabinetApp
                 }
             }
 
+            this.memoizer.Add((propertiesWithValues, operation), findedRecords);
+
             return findedRecords.AsReadOnly();
         }
 
@@ -278,6 +299,8 @@ namespace FileCabinetApp
             }
 
             this.validator.ValidateParameters(RecordToParameters(recordToInsert));
+
+            this.memoizer.Clear();
 
             FileCabinetRecord findedRecord = this.list.Find((rec) => rec.Id == recordToInsert.Id);
 

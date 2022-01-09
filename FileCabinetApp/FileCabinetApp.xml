@@ -728,8 +728,33 @@
             Finds records by propety and property-value.
             </summary>
             <param name="propertiesWithValues">Properties and their value for finding records.</param>
-            <param name="operation">Operation type for compound searching by sevaral properties.</param>
+            <param name="operation">Operation type for compound searching by several properties.</param>
             <returns>Finded records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Memoizer">
+            <summary>
+            Memoizer for storing results of 'FindRecords' method, which may be needed, in order to avoid recalculating them.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Memoizer.TryGetValue(System.ValueTuple{System.Collections.Generic.Dictionary{System.Reflection.PropertyInfo,System.Object},FileCabinetApp.CommandHandlers.OperationType},System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord}@)">
+            <summary>
+            Gets the value associated with the specified key.
+            </summary>
+            <param name="key">Dictionary of properties-values and operation type. </param>
+            <param name="findedRecords">List of records finded by the key.</param>
+            <returns>true if the memoizer contains an element with the specified key; otherwise, false.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Memoizer.Add(System.ValueTuple{System.Collections.Generic.Dictionary{System.Reflection.PropertyInfo,System.Object},FileCabinetApp.CommandHandlers.OperationType},System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Adds the key and value to the memoizer.
+            </summary>
+            <param name="key">Dictionary of properties-values and operation type.</param>
+            <param name="recordsToAdd">List of records to add by the key.</param>
+        </member>
+        <member name="M:FileCabinetApp.Memoizer.Clear">
+            <summary>
+            Removes all keys and values from memorizer.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.MemoryFindedRecords">
             <summary>
