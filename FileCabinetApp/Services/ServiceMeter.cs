@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Reflection;
 using FileCabinetApp.CommandHandlers;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// Service that displays methods execution time.

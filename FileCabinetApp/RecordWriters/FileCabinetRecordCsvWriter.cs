@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.IO;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.RecordWriters
 {
     /// <summary>
     /// Represents class for saving records to *.csv files.

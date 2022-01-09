@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
     /// Class for dateOfBirth property validation.

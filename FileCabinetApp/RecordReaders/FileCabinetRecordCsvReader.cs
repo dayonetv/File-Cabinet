@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.RecordReaders
 {
     /// <summary>
     /// Represents class for reading records from *.csv files.

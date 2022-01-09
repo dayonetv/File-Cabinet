@@ -1,4 +1,4 @@
-﻿namespace FileCabinetApp
+﻿namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
     /// Range Properties for validation-rules file.

@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using FileCabinetApp.CommandHandlers;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// Memoizer for storing results of 'FindRecords' method, which may be needed, in order to avoid recalculating them.

@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using FileCabinetApp.CommandHandlers;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// Service that saves methods execution information.
