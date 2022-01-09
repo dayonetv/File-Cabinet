@@ -16,20 +16,21 @@ namespace FileCabinetApp.CommandHandlers
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
+        private const double SimilarityMinimalRatio = 0.4;
+
         private static readonly string[][] HelpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "prints statistics", "The 'stat' command prints statistics" },
             new string[] { "create", "creates new record", "The 'create' command creates new record." },
-            new string[] { "list", "prints current records", "The 'list' command prints current records." },
-            new string[] { "find", "finds record by some record field", "The 'find' command finds record by some record field." },
             new string[] { "export", "exports all records to the file", "The 'export' command exports all records to the file." },
             new string[] { "import", "imports records from the file", "The 'import' command imports records from the file." },
             new string[] { "purge", "defragmentates records file for Filesystem Service", "The 'purge' defragmentates records file for Filesystem Service." },
             new string[] { "insert", "inserts record to the service", "The 'insert' command inserts record to the service" },
             new string[] { "delete", "deletes records by values of their properties", "The 'delete' command deletes records by values of their properties" },
-            new string[] { "update", "finds and updates records by values of their properties, excepting Id", "The 'update' command finds and updates records by values of their properties, excepting Id" },
+            new string[] { "update", "updates records by values of their properties, excepting Id", "The 'update' command updates records by values of their properties, excepting Id" },
+            new string[] { "select", "selects records by values of their properties and prints required properties of finded records", "The 'select' command selects records by values of their properties and prints required properties of finded records" },
         };
 
         /// <summary>
@@ -108,9 +109,9 @@ namespace FileCabinetApp.CommandHandlers
 
             foreach (var command in HelpMessages)
             {
-                if (GetSimilarity(incorrectCommand.ToUpperInvariant(), command[0].ToUpperInvariant()) >= 0.4)
+                if (GetSimilarity(incorrectCommand.ToUpperInvariant(), command[CommandHelpIndex].ToUpperInvariant()) >= SimilarityMinimalRatio)
                 {
-                    suggestions.Add(command[0]);
+                    suggestions.Add(command[CommandHelpIndex]);
                 }
             }
 
@@ -124,7 +125,7 @@ namespace FileCabinetApp.CommandHandlers
 
             int[][] distance = new int[sourceWordCount + 1][];
 
-            for (int i = 0; i < distance.GetLongLength(0); i++)
+            for (int i = 0; i < distance.GetLongLength(default); i++)
             {
                 distance[i] = new int[targetWordCount + 1];
             }
@@ -156,12 +157,12 @@ namespace FileCabinetApp.CommandHandlers
         {
             var suggestions = FindSimilarCommands(command);
 
-            if (suggestions.Count == 0)
+            if (!suggestions.Any())
             {
                 return;
             }
 
-            Console.WriteLine($"\nThe most similar commands are:");
+            Console.WriteLine($"The most similar commands are:");
 
             foreach (var similarCommand in suggestions)
             {

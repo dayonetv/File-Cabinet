@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using FileCabinetApp.CommandHandlers;
 
 namespace FileCabinetApp
 {
@@ -14,10 +15,14 @@ namespace FileCabinetApp
     public class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+
         private readonly IRecordValidator validator;
+
+        private readonly Memoizer memoizer = new ();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class with specific validator.
@@ -42,6 +47,8 @@ namespace FileCabinetApp
 
             this.validator.ValidateParameters(parameters);
 
+            this.memoizer.Clear();
+
             FileCabinetRecord record = new ()
             {
                 Id = this.list.Count + 1,
@@ -60,22 +67,10 @@ namespace FileCabinetApp
             return record.Id;
         }
 
-        /// <summary>
-        /// Gets a copy of array of current created records.
-        /// </summary>
-        /// <returns>Array of current records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
+        /// <inheritdoc/>
+        public (int total, int deleted) GetStat()
         {
-            return this.list.AsReadOnly();
-        }
-
-        /// <summary>
-        /// Gets the information about the amount of current existing records.
-        /// </summary>
-        /// <returns>The number of existing records.</returns>
-        public int GetStat()
-        {
-            return this.list.Count;
+            return (this.list.Count, default);
         }
 
         /// <summary>
@@ -110,13 +105,15 @@ namespace FileCabinetApp
                 recordToEdit.Sex = parameters.Sex;
 
                 this.AddToDictionaries(recordToEdit);
+
+                this.memoizer.Clear();
             }
         }
 
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapShot()
         {
-            return new FileCabinetServiceSnapshot(this.GetRecords());
+            return new FileCabinetServiceSnapshot(this.list.AsReadOnly());
         }
 
         /// <inheritdoc/>
@@ -178,6 +175,8 @@ namespace FileCabinetApp
             this.list.AddRange(recordsToAdd);
             recordsToAdd.ForEach(this.AddToDictionaries);
 
+            this.memoizer.Clear();
+
             return recordsInfo.ToString() + $"{recordsToAdd.Count} records were imported ";
         }
 
@@ -199,6 +198,8 @@ namespace FileCabinetApp
 
             if (findedRecords.Count != 0)
             {
+                this.memoizer.Clear();
+
                 foreach (var record in findedRecords)
                 {
                     this.RemoveFromDictionaries(record);
@@ -215,34 +216,73 @@ namespace FileCabinetApp
             return default;
         }
 
-        /// <summary>
-        /// Searches records by First Name in curent records using special 'firstNameDictionary' dictionary.
-        /// </summary>
-        /// <param name="firstName">First Name to search by.</param>
-        /// <returns>Iterator for finded records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
+        /// <inheritdoc/>
+        public ReadOnlyCollection<FileCabinetRecord> FindRecords(Dictionary<PropertyInfo, object> propertiesWithValues, OperationType operation)
         {
-            return new MemoryFindedRecords(this.firstNameDictionary.GetValueOrDefault(firstName));
-        }
+            if (propertiesWithValues == null || propertiesWithValues.Count == 0)
+            {
+                return this.list.AsReadOnly();
+            }
 
-        /// <summary>
-        /// Searches a records by Last Name in curent records using special 'lastNameDictionary' dictionary.
-        /// </summary>
-        /// <param name="lastName">Last Name to search by.</param>
-        /// <returns>Iterator for finded records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            return new MemoryFindedRecords(this.lastNameDictionary.GetValueOrDefault(lastName));
-        }
+            List<FileCabinetRecord> findedRecords;
 
-        /// <summary>
-        /// Searches a records by Date of birth in curent records using special 'dateOfBirthDictionary' dictionary.
-        /// </summary>
-        /// <param name="dateOfBirth">Date of Birth to search by, in format "yyyy-MMM-dd".</param>
-        /// <returns>Iterator for finded records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
-        {
-            return new MemoryFindedRecords(this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth));
+            if (this.memoizer.TryGetValue((propertiesWithValues, operation), out findedRecords))
+            {
+                return findedRecords.AsReadOnly();
+            }
+
+            findedRecords = new List<FileCabinetRecord>();
+
+            switch (operation)
+            {
+                case OperationType.None: case OperationType.And: findedRecords.AddRange(this.list); break;
+                case OperationType.Or: findedRecords.Clear(); break;
+                default: return findedRecords.AsReadOnly();
+            }
+
+            PropertyInfo firstnameProperty = typeof(FileCabinetRecord).GetProperty(nameof(FileCabinetRecord.FirstName));
+            PropertyInfo lastNameProperty = typeof(FileCabinetRecord).GetProperty(nameof(FileCabinetRecord.LastName));
+            PropertyInfo dateOfBirthProperty = typeof(FileCabinetRecord).GetProperty(nameof(FileCabinetRecord.DateOfBirth));
+
+            foreach (var propertyValue in propertiesWithValues)
+            {
+                List<FileCabinetRecord> findedRecordsByOneProperty = new List<FileCabinetRecord>();
+
+                if (propertyValue.Key.Equals(firstnameProperty))
+                {
+                    findedRecordsByOneProperty.AddRange(this.FindByFirstName(propertyValue.Value.ToString()));
+                }
+                else if (propertyValue.Key.Equals(lastNameProperty))
+                {
+                    findedRecordsByOneProperty.AddRange(this.FindByLastName(propertyValue.Value.ToString()));
+                }
+                else if (propertyValue.Key.Equals(dateOfBirthProperty))
+                {
+                    findedRecordsByOneProperty.AddRange(this.FindByDateOfBith((DateTime)propertyValue.Value));
+                }
+                else
+                {
+                    switch (operation)
+                    {
+                        case OperationType.None: case OperationType.And:
+                            findedRecords = findedRecords.FindAll((record) => propertyValue.Key.GetValue(record).ToString().Equals(propertyValue.Value.ToString(), StringComparison.InvariantCultureIgnoreCase));
+                            continue;
+                        case OperationType.Or:
+                            findedRecordsByOneProperty.AddRange(this.list.FindAll((record) => propertyValue.Key.GetValue(record).ToString().Equals(propertyValue.Value.ToString(), StringComparison.InvariantCultureIgnoreCase)));
+                            break;
+                    }
+                }
+
+                switch (operation)
+                {
+                    case OperationType.None: case OperationType.And: findedRecords = findedRecords.Intersect(findedRecordsByOneProperty).ToList(); break;
+                    case OperationType.Or: findedRecords = findedRecords.Union(findedRecordsByOneProperty).ToList(); break;
+                }
+            }
+
+            this.memoizer.Add((propertiesWithValues, operation), findedRecords);
+
+            return findedRecords.AsReadOnly();
         }
 
         /// <inheritdoc/>
@@ -259,6 +299,8 @@ namespace FileCabinetApp
             }
 
             this.validator.ValidateParameters(RecordToParameters(recordToInsert));
+
+            this.memoizer.Clear();
 
             FileCabinetRecord findedRecord = this.list.Find((rec) => rec.Id == recordToInsert.Id);
 
@@ -291,6 +333,36 @@ namespace FileCabinetApp
             };
 
             return parameters;
+        }
+
+        /// <summary>
+        /// Searches records by First Name in curent records using special 'firstNameDictionary' dictionary.
+        /// </summary>
+        /// <param name="firstName">First Name to search by.</param>
+        /// <returns>Iterator for finded records.</returns>
+        private IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
+        {
+            return new MemoryFindedRecords(this.firstNameDictionary.GetValueOrDefault(firstName));
+        }
+
+        /// <summary>
+        /// Searches a records by Last Name in curent records using special 'lastNameDictionary' dictionary.
+        /// </summary>
+        /// <param name="lastName">Last Name to search by.</param>
+        /// <returns>Iterator for finded records.</returns>
+        private IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
+        {
+            return new MemoryFindedRecords(this.lastNameDictionary.GetValueOrDefault(lastName));
+        }
+
+        /// <summary>
+        /// Searches a records by Date of birth in curent records using special 'dateOfBirthDictionary' dictionary.
+        /// </summary>
+        /// <param name="dateOfBirth">Date of Birth to search by.</param>
+        /// <returns>Iterator for finded records.</returns>
+        private IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
+        {
+            return new MemoryFindedRecords(this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth));
         }
 
         private void AddToDictionaries(FileCabinetRecord recordToAdd)

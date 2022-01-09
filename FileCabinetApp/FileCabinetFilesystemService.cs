@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+using FileCabinetApp.CommandHandlers;
 
 namespace FileCabinetApp
 {
@@ -24,10 +24,6 @@ namespace FileCabinetApp
 
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator;
-
-        private readonly Dictionary<string, List<long>> firstNameDictionary = new Dictionary<string, List<long>>(StringComparer.InvariantCultureIgnoreCase);
-        private readonly Dictionary<string, List<long>> lastNameDictionary = new Dictionary<string, List<long>>(StringComparer.InvariantCultureIgnoreCase);
-        private readonly Dictionary<DateTime, List<long>> dateOfBirthDictionary = new Dictionary<DateTime, List<long>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -67,8 +63,6 @@ namespace FileCabinetApp
 
             this.WriteRecordToFile(record);
 
-            this.AddToDictionaries(record, recordBeginPosition);
-
             return record.Id;
         }
 
@@ -91,8 +85,6 @@ namespace FileCabinetApp
 
             this.validator.ValidateParameters(parameters);
 
-            this.RemoveFromDictionaries(recordToEditBeginPosition);
-
             FileCabinetRecord updatedRecord = new FileCabinetRecord()
             {
                 Id = id,
@@ -107,52 +99,49 @@ namespace FileCabinetApp
             this.fileStream.Seek(recordToEditBeginPosition, SeekOrigin.Begin);
 
             this.WriteRecordToFile(updatedRecord);
-
-            this.AddToDictionaries(updatedRecord, recordToEditBeginPosition);
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
+        public ReadOnlyCollection<FileCabinetRecord> FindRecords(Dictionary<PropertyInfo, object> propertiesWithValues, OperationType operation)
         {
-            return new FilesystemFindedRecords(this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth), this.fileStream);
-        }
+            List<FileCabinetRecord> allRecords = this.GetRecords().ToList();
 
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            return new FilesystemFindedRecords(this.firstNameDictionary.GetValueOrDefault(firstName), this.fileStream);
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            return new FilesystemFindedRecords(this.lastNameDictionary.GetValueOrDefault(lastName), this.fileStream);
-        }
-
-        /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            this.fileStream.Seek(default, SeekOrigin.Begin);
-
-            List<FileCabinetRecord> readedRecords = new List<FileCabinetRecord>();
-
-            for (int i = 0; i < this.fileStream.Length / RecordByteSize; i++)
+            if (propertiesWithValues == null || propertiesWithValues.Count == 0)
             {
-                var record = this.ReadOneRecord();
-
-                if (record != null)
-                {
-                    readedRecords.Add(record);
-                }
+                return allRecords.AsReadOnly();
             }
 
-            return readedRecords.AsReadOnly();
+            List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
+
+            switch (operation)
+            {
+                case OperationType.None: case OperationType.And: findedRecords.AddRange(allRecords); break;
+            }
+
+            foreach (var propertyValue in propertiesWithValues)
+            {
+                List<FileCabinetRecord> findedRecordsByOneProperty = new List<FileCabinetRecord>();
+
+                switch (operation)
+                {
+                    case OperationType.None: case OperationType.And:
+                        findedRecords = findedRecords.FindAll((record) => propertyValue.Key.GetValue(record).ToString().Equals(propertyValue.Value.ToString(), StringComparison.InvariantCultureIgnoreCase));
+                        continue;
+                    case OperationType.Or:
+                        findedRecordsByOneProperty.AddRange(allRecords.FindAll((record) => propertyValue.Key.GetValue(record).ToString().Equals(propertyValue.Value.ToString(), StringComparison.InvariantCultureIgnoreCase)));
+                        break;
+                }
+
+                findedRecords = findedRecords.Union(findedRecordsByOneProperty).ToList();
+            }
+
+            return findedRecords.AsReadOnly();
         }
 
         /// <inheritdoc/>
-        public int GetStat()
+        public (int total, int deleted) GetStat()
         {
-            return (int)this.fileStream.Length / RecordByteSize;
+            return ((int)this.fileStream.Length / RecordByteSize, this.GetDeletedRecordsCount());
         }
 
         /// <inheritdoc/>
@@ -219,8 +208,6 @@ namespace FileCabinetApp
 
                 if (findedRecordPosition >= 0)
                 {
-                    this.RemoveFromDictionaries(findedRecordPosition);
-
                     this.fileStream.Seek(findedRecordPosition, SeekOrigin.Begin);
                 }
                 else
@@ -228,7 +215,6 @@ namespace FileCabinetApp
                     this.fileStream.Seek(this.fileStream.Length, SeekOrigin.Begin);
                 }
 
-                this.AddToDictionaries(record, this.fileStream.Position);
                 this.WriteRecordToFile(record);
             }
 
@@ -271,16 +257,11 @@ namespace FileCabinetApp
 
             if (notDeletedRecords.Count != amountOfAllRecords)
             {
-                this.firstNameDictionary.Clear();
-                this.lastNameDictionary.Clear();
-                this.dateOfBirthDictionary.Clear();
-
                 this.fileStream.SetLength(notDeletedRecords.Count * RecordByteSize);
                 this.fileStream.Seek(default, SeekOrigin.Begin);
 
                 foreach (var record in notDeletedRecords)
                 {
-                    this.AddToDictionaries(record, this.fileStream.Position);
                     this.WriteRecordToFile(record);
                 }
             }
@@ -307,22 +288,14 @@ namespace FileCabinetApp
 
             if (findedRecordPosition >= 0)
             {
-                this.RemoveFromDictionaries(findedRecordPosition);
-
                 this.fileStream.Seek(findedRecordPosition, SeekOrigin.Begin);
-                this.WriteRecordToFile(recordToInsert);
-
-                this.AddToDictionaries(recordToInsert, findedRecordPosition);
             }
             else
             {
-                long recordToInsertPosition = this.fileStream.Length;
-
-                this.fileStream.Seek(recordToInsertPosition, SeekOrigin.Begin);
-                this.WriteRecordToFile(recordToInsert);
-
-                this.AddToDictionaries(recordToInsert, recordToInsertPosition);
+                this.fileStream.Seek(this.fileStream.Length, SeekOrigin.Begin);
             }
+
+            this.WriteRecordToFile(recordToInsert);
         }
 
         private static CreateEditParameters RecordToParameters(FileCabinetRecord record)
@@ -340,6 +313,25 @@ namespace FileCabinetApp
             return parameters;
         }
 
+        private ReadOnlyCollection<FileCabinetRecord> GetRecords()
+        {
+            this.fileStream.Seek(default, SeekOrigin.Begin);
+
+            List<FileCabinetRecord> readedRecords = new List<FileCabinetRecord>();
+
+            for (int i = 0; i < this.fileStream.Length / RecordByteSize; i++)
+            {
+                var record = this.ReadOneRecord();
+
+                if (record != null)
+                {
+                    readedRecords.Add(record);
+                }
+            }
+
+            return readedRecords.AsReadOnly();
+        }
+
         private void Remove(int id)
         {
             long recordToRemovePosition = this.FindRecordById(id);
@@ -348,8 +340,6 @@ namespace FileCabinetApp
             {
                 return;
             }
-
-            this.RemoveFromDictionaries(recordToRemovePosition);
 
             using (BinaryWriter binWriter = new BinaryWriter(this.fileStream, CurrentEncoding, true))
             {
@@ -419,7 +409,7 @@ namespace FileCabinetApp
         {
             using (BinaryReader idsReader = new BinaryReader(this.fileStream, CurrentEncoding, true))
             {
-                int amountOfRecords = this.GetStat();
+                int amountOfRecords = (int)this.fileStream.Length / RecordByteSize;
 
                 for (int i = 0; i < amountOfRecords; i++)
                 {
@@ -441,59 +431,23 @@ namespace FileCabinetApp
             return -1;
         }
 
-        private void AddToDictionaries(FileCabinetRecord recordToAdd, long recordOffset)
+        private int GetDeletedRecordsCount()
         {
-            if (!this.firstNameDictionary.ContainsKey(recordToAdd.FirstName))
+            int amountOfRecords = (int)this.fileStream.Length / RecordByteSize;
+
+            int deletedCount = default;
+
+            using (BinaryReader reader = new BinaryReader(this.fileStream, CurrentEncoding, true))
             {
-                this.firstNameDictionary.Add(recordToAdd.FirstName, new List<long>());
+                for (int i = 0; i < amountOfRecords; i++)
+                {
+                    this.fileStream.Seek((i * RecordByteSize) + IsDeletedOffset, SeekOrigin.Begin);
+                    bool isDeleted = reader.ReadBoolean();
+                    deletedCount = isDeleted ? deletedCount + 1 : deletedCount;
+                }
             }
 
-            if (!this.lastNameDictionary.ContainsKey(recordToAdd.LastName))
-            {
-                this.lastNameDictionary.Add(recordToAdd.LastName, new List<long>());
-            }
-
-            if (!this.dateOfBirthDictionary.ContainsKey(recordToAdd.DateOfBirth))
-            {
-                this.dateOfBirthDictionary.Add(recordToAdd.DateOfBirth, new List<long>());
-            }
-
-            this.firstNameDictionary[recordToAdd.FirstName].Add(recordOffset);
-            this.lastNameDictionary[recordToAdd.LastName].Add(recordOffset);
-            this.dateOfBirthDictionary[recordToAdd.DateOfBirth].Add(recordOffset);
-        }
-
-        private void RemoveFromDictionaries(long recordOffset, FileCabinetRecord recordToRemove = null)
-        {
-            this.fileStream.Seek(recordOffset, SeekOrigin.Begin);
-
-            recordToRemove ??= this.ReadOneRecord();
-
-            if (recordToRemove == null)
-            {
-                return;
-            }
-
-            this.firstNameDictionary[recordToRemove.FirstName].Remove(recordOffset);
-
-            if (this.firstNameDictionary[recordToRemove.FirstName].Count == 0)
-            {
-                this.firstNameDictionary.Remove(recordToRemove.FirstName);
-            }
-
-            this.lastNameDictionary[recordToRemove.LastName].Remove(recordOffset);
-
-            if (this.lastNameDictionary[recordToRemove.LastName].Count == 0)
-            {
-                this.lastNameDictionary.Remove(recordToRemove.LastName);
-            }
-
-            this.dateOfBirthDictionary[recordToRemove.DateOfBirth].Remove(recordOffset);
-
-            if (this.dateOfBirthDictionary[recordToRemove.DateOfBirth].Count == 0)
-            {
-                this.dateOfBirthDictionary.Remove(recordToRemove.DateOfBirth);
-            }
+            return deletedCount;
         }
     }
 }

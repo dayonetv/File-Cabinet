@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reflection;
+using FileCabinetApp.CommandHandlers;
 
 namespace FileCabinetApp
 {
@@ -47,59 +48,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
-        {
-            Stopwatch findingTime = Stopwatch.StartNew();
-
-            var result = this.service.FindByDateOfBith(dateOfBirth);
-
-            findingTime.Stop();
-            DisplayDuration(nameof(this.service.FindByDateOfBith), findingTime.ElapsedTicks);
-
-            return result;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            Stopwatch findingTime = Stopwatch.StartNew();
-
-            var result = this.service.FindByFirstName(firstName);
-
-            findingTime.Stop();
-            DisplayDuration(nameof(this.service.FindByFirstName), findingTime.ElapsedTicks);
-
-            return result;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            Stopwatch findingTime = Stopwatch.StartNew();
-
-            var result = this.service.FindByLastName(lastName);
-
-            findingTime.Stop();
-            DisplayDuration(nameof(this.service.FindByLastName), findingTime.ElapsedTicks);
-
-            return result;
-        }
-
-        /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            Stopwatch gettingTime = Stopwatch.StartNew();
-
-            var records = this.service.GetRecords();
-
-            gettingTime.Stop();
-            DisplayDuration(nameof(this.service.GetRecords), gettingTime.ElapsedTicks);
-
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public int GetStat()
+        public (int total, int deleted) GetStat()
         {
             Stopwatch statTime = Stopwatch.StartNew();
 
@@ -172,6 +121,19 @@ namespace FileCabinetApp
 
             insertingTime.Stop();
             DisplayDuration(nameof(this.service.Insert), insertingTime.ElapsedTicks);
+        }
+
+        /// <inheritdoc/>
+        public ReadOnlyCollection<FileCabinetRecord> FindRecords(Dictionary<PropertyInfo, object> propertiesWithValues, OperationType operation)
+        {
+            Stopwatch findingTime = Stopwatch.StartNew();
+
+            var result = this.service.FindRecords(propertiesWithValues, operation);
+
+            findingTime.Stop();
+            DisplayDuration(nameof(this.FindRecords), findingTime.ElapsedTicks);
+
+            return result;
         }
 
         private static void DisplayDuration(string methodName, long ticks)

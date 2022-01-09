@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using FileCabinetApp.CommandHandlers;
 
 namespace FileCabinetApp
 {
@@ -53,101 +54,13 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
-        {
-            this.WriteInputs(nameof(this.FindByDateOfBith), $"{nameof(dateOfBirth)} = {dateOfBirth.ToString(DateFormat, Culture)}");
-
-            var records = this.service.FindByDateOfBith(dateOfBirth);
-
-            StringBuilder outputText = new StringBuilder();
-
-            if (records != null)
-            {
-                foreach (var rec in records)
-                {
-                    outputText.Append(RecordToString(rec));
-                }
-            }
-
-            this.WriteOutputs(nameof(this.FindByDateOfBith), outputText.ToString());
-
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            this.WriteInputs(nameof(this.FindByFirstName), $"{nameof(firstName)} = {firstName}");
-
-            var records = this.service.FindByFirstName(firstName);
-
-            StringBuilder outputText = new StringBuilder();
-
-            if (records != null)
-            {
-                foreach (var rec in records)
-                {
-                    outputText.Append(RecordToString(rec));
-                }
-            }
-
-            this.WriteOutputs(nameof(this.FindByFirstName), outputText.ToString());
-
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            this.WriteInputs(nameof(this.FindByLastName), $"LastName = '{lastName}'");
-
-            var records = this.service.FindByLastName(lastName);
-
-            StringBuilder outputText = new StringBuilder();
-
-            if (records != null)
-            {
-                foreach (var rec in records)
-                {
-                    outputText.Append(RecordToString(rec));
-                }
-            }
-
-            this.WriteOutputs(nameof(this.FindByLastName), outputText.ToString());
-
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            this.WriteInputs(nameof(this.GetRecords), null);
-
-            var records = this.service.GetRecords();
-
-            StringBuilder outputText = new StringBuilder();
-
-            if (records != null)
-            {
-                foreach (var rec in records)
-                {
-                    outputText.Append(RecordToString(rec));
-                }
-            }
-
-            this.WriteOutputs(nameof(this.GetRecords), outputText.ToString());
-
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public int GetStat()
+        public (int total, int deleted) GetStat()
         {
             this.WriteInputs(nameof(this.GetStat), null);
 
             var result = this.service.GetStat();
 
-            this.WriteInputs(nameof(this.GetStat), result.ToString(Culture));
+            this.WriteInputs(nameof(this.GetStat), $"Total: {result.total}, Deleted: {result.deleted}");
 
             return result;
         }
@@ -214,6 +127,28 @@ namespace FileCabinetApp
             this.service.Insert(recordToInsert);
 
             this.WriteOutputs(nameof(this.Insert), null);
+        }
+
+        /// <inheritdoc/>
+        public ReadOnlyCollection<FileCabinetRecord> FindRecords(Dictionary<PropertyInfo, object> propertiesWithValues, OperationType operation)
+        {
+            this.WriteInputs(nameof(this.FindRecords), $"{string.Join(string.Empty, propertiesWithValues)}, {operation}");
+
+            var records = this.service.FindRecords(propertiesWithValues, operation);
+
+            StringBuilder outputText = new StringBuilder();
+
+            if (records != null)
+            {
+                foreach (var rec in records)
+                {
+                    outputText.Append(RecordToString(rec));
+                }
+            }
+
+            this.WriteOutputs(nameof(this.FindRecords), outputText.ToString());
+
+            return records;
         }
 
         private static string RecordToString(FileCabinetRecord record)
