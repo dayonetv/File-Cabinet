@@ -2,10 +2,10 @@
 using System.Globalization;
 using System.IO;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.RecordWriters
 {
     /// <summary>
-    /// Represents class for saving records to *.csv files.
+    /// Represents class for saving records to *.csv file.
     /// </summary>
     public class FileCabinetRecordCsvWriter
     {
@@ -16,16 +16,16 @@ namespace FileCabinetApp
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvWriter"/> class.
         /// </summary>
-        /// <param name="writer">writer to save info. </param>
+        /// <param name="writer">writer to *.csv file. </param>
         public FileCabinetRecordCsvWriter(TextWriter writer)
         {
             this.csvWriter = writer;
         }
 
         /// <summary>
-        /// Write property-values if the record to *.csv file.
+        /// Writes properties-values of the record to *.csv file.
         /// </summary>
-        /// <param name="record">record to be saved. </param>
+        /// <param name="record">record to be writed. </param>
         /// <param name="isFirst">is it the first record. </param>
         public void Write(FileCabinetRecord record, bool isFirst)
         {
@@ -54,9 +54,9 @@ namespace FileCabinetApp
             this.csvWriter.Flush();
         }
 
-        private void WritePropertyNames(Type type)
+        private void WritePropertyNames(Type targetType)
         {
-            foreach (var property in type.GetProperties())
+            foreach (var property in targetType.GetProperties())
             {
                 this.csvWriter.Write($"{property.Name}, ");
             }

@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Handler for import command and import paramaters.
+    /// Handler for 'import' command and paramaters.
     /// </summary>
     public class ImportCommandHandler : ServiceCommandHandlerBase
     {
         private const string CommandName = "import";
-        private const int AmountOFImportParams = 2;
+        private const int AmountOfImportParameters = 2;
 
         private readonly Tuple<string, Func<FileInfo, string>>[] importModes;
 
@@ -35,6 +32,7 @@ namespace FileCabinetApp.CommandHandlers
         /// Handles 'import' command or moves request to the next handler.
         /// </summary>
         /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)
@@ -54,18 +52,18 @@ namespace FileCabinetApp.CommandHandlers
 
         private void Import(string parameters)
         {
-            var inputParams = parameters.Trim().Split(' ', AmountOFImportParams);
+            var inputParams = parameters.Trim().Split(' ', AmountOfImportParameters);
 
-            if (inputParams.Length != AmountOFImportParams)
+            if (inputParams.Length != AmountOfImportParameters)
             {
-                Console.WriteLine($"'import' command requires at least {AmountOFImportParams} parameters. ");
+                Console.WriteLine($"'{CommandName}' command requires at least {AmountOfImportParameters} parameters. ");
                 return;
             }
 
             string importMode = inputParams[0].Trim();
             string fileName = inputParams[^1].Trim();
 
-            FileInfo importFile = new FileInfo(fileName);
+            FileInfo importFile = new (fileName);
 
             if (importFile.Exists)
             {
@@ -125,7 +123,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private string ImportFromXml(FileInfo fileToImportFrom)
         {
-            FileStream xmlReader = new FileStream(fileToImportFrom.FullName, FileMode.Open, FileAccess.Read, FileShare.None);
+            FileStream xmlReader = new (fileToImportFrom.FullName, FileMode.Open, FileAccess.Read, FileShare.None);
 
             try
             {

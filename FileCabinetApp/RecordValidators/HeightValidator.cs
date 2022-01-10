@@ -1,32 +1,34 @@
 ﻿using System;
 using System.Globalization;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Class for height property validation.
+    /// Class for Height property validation.
     /// </summary>
-    public class HeigthValidator : IRecordValidator
+    public class HeightValidator : IRecordValidator
     {
         private readonly int minHeight;
         private readonly int maxHeight;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HeigthValidator"/> class.
+        /// Initializes a new instance of the <see cref="HeightValidator"/> class.
         /// </summary>
         /// <param name="minHeight">Minimal height.</param>
         /// <param name="maxHeight">Maximum height.</param>
-        public HeigthValidator(int minHeight, int maxHeight)
+        public HeightValidator(int minHeight, int maxHeight)
         {
             this.maxHeight = maxHeight;
             this.minHeight = minHeight;
         }
 
         /// <summary>
-        /// Validates height property of the record.
+        /// Validates Height property of the record.
         /// </summary>
-        /// <param name="parameters">Parameters to validate. </param>
-        public void ValidateParameters(CreateEditParameters parameters)
+        /// <param name="parameters">Record parameters object to validate. </param>
+        /// <exception cref="ArgumentNullException">source parameters is null.</exception>
+        /// <exception cref="ArgumentException">Height is more than <see cref="maxHeight"/> or less than <see cref="minHeight"/>.</exception>
+        public void ValidateParameters(RecordParameters parameters)
         {
             if (parameters == null)
             {

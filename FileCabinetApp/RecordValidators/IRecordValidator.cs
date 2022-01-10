@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FileCabinetApp
+﻿namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Represents methods that shoud be implemented by inheritors.
+    /// Main record validator interface.
     /// </summary>
     public interface IRecordValidator
     {
         /// <summary>
-        /// Checks parameters correctness.
+        /// Checks records properties correctness.
         /// </summary>
-        /// <param name="parameters">Parameter object to validate. </param>
-        public void ValidateParameters(CreateEditParameters parameters);
+        /// <param name="parameters">Record parameters object to validate.</param>
+        public void ValidateParameters(RecordParameters parameters);
     }
 }

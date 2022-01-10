@@ -1,50 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Parameter object for FileCabinetService.CreateRecord and FileCabinetService.EditRecord methods.
+    /// Parameters object of the record.
     /// </summary>
-    public class CreateEditParameters
+    public class RecordParameters
     {
         /// <summary>
         /// Gets or sets first name parameter.
         /// </summary>
-        /// <value></value>
+        /// <value><see cref="string"/> Firstname.</value>
         public string FirstName { get; set; }
 
         /// <summary>
         /// Gets or sets last name parameter.
         /// </summary>
-        /// <value></value>
+        /// <value><see cref="string"/> Lastname.</value>
         public string LastName { get; set; }
 
         /// <summary>
         /// Gets or sets date of birth parameter.
         /// </summary>
-        /// <value></value>
+        /// <value><see cref="DateTime"/> date of birth.</value>
         public DateTime DateOfBirth { get; set; }
 
         /// <summary>
         /// Gets or sets height parameter.
         /// </summary>
-        /// <value></value>
+        /// <value><see cref="short"/> height in centimeters.</value>
         public short Height { get; set; }
 
         /// <summary>
         /// Gets or sets salary parameter.
         /// </summary>
-        /// <value></value>
+        /// <value><see cref="decimal"/> salary value.</value>
         public decimal Salary { get; set; }
 
         /// <summary>
         /// Gets or sets gender parameter.
         /// </summary>
-        /// <value></value>
+        /// <value><see cref="char"/> that represents gender.</value>
         public char Sex { get; set; }
     }
 }

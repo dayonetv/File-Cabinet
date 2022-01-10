@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Handler for export command and export paramaters.
+    /// Handler for 'export' command and paramaters.
     /// </summary>
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
         private const string CommandName = "export";
-        private const int AmountOfExportParams = 2;
+
+        private const int AmountOfExportParameters = 2;
 
         private static readonly Tuple<char, bool>[] Choices = new Tuple<char, bool>[]
         {
@@ -41,6 +39,7 @@ namespace FileCabinetApp.CommandHandlers
         /// Handles 'export' command or moves request to the next handler.
         /// </summary>
         /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)
@@ -61,23 +60,24 @@ namespace FileCabinetApp.CommandHandlers
         private static Tuple<bool, string> YesNoChoiceValidator(char inputChoice)
         {
             bool result = Array.FindIndex(Choices, choice => choice.Item1.ToString().Equals(inputChoice.ToString(), StringComparison.InvariantCultureIgnoreCase)) >= 0;
+
             return new Tuple<bool, string>(result, result ? "Valid" : "Choice can only be 'Y' or 'N'");
         }
 
         private void Export(string parameters)
         {
-            var inputParams = parameters.Trim().Split(' ', AmountOfExportParams);
+            var inputParams = parameters.Trim().Split(' ', AmountOfExportParameters);
 
-            if (inputParams.Length != AmountOfExportParams)
+            if (inputParams.Length != AmountOfExportParameters)
             {
-                Console.WriteLine($"'export' command requires at least {AmountOfExportParams} parameters. ");
+                Console.WriteLine($"'{CommandName}' command requires at least {AmountOfExportParameters} parameters. ");
                 return;
             }
 
             string fileExtention = inputParams[0].Trim();
             string fileName = inputParams[^1].Trim();
 
-            FileInfo exportFile = new FileInfo(fileName);
+            FileInfo exportFile = new (fileName);
 
             bool toRewrite = true;
 
@@ -105,7 +105,7 @@ namespace FileCabinetApp.CommandHandlers
             }
             else
             {
-                Console.WriteLine($"Unknown: {fileExtention} parameter for 'export' command");
+                Console.WriteLine($"Unknown: '{fileExtention}' parameter for '{CommandName}' command");
             }
         }
 

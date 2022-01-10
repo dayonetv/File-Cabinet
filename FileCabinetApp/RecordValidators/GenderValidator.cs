@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Globalization;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Class for gender property validation.
+    /// Class for Sex property validation.
     /// </summary>
     public class GenderValidator : IRecordValidator
     {
@@ -13,17 +13,19 @@ namespace FileCabinetApp
         /// <summary>
         /// Initializes a new instance of the <see cref="GenderValidator"/> class.
         /// </summary>
-        /// <param name="validGenders">Array of allowed genders.</param>
+        /// <param name="validGenders">Array of allowed genders symbols.</param>
         public GenderValidator(char[] validGenders)
         {
             this.validGenders = validGenders;
         }
 
         /// <summary>
-        /// Validates sex property of the record.
+        /// Validates Sex property of the record.
         /// </summary>
-        /// <param name="parameters">Parameters to validate.</param>
-        public void ValidateParameters(CreateEditParameters parameters)
+        /// <param name="parameters">Record parameters object to validate.</param>
+        /// <exception cref="ArgumentNullException">source parameters is null.</exception>
+        /// <exception cref="ArgumentException">Sex contains invalid chars.</exception>
+        public void ValidateParameters(RecordParameters parameters)
         {
             if (parameters == null)
             {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -23,7 +19,7 @@ namespace FileCabinetApp.CommandHandlers
         /// <summary>
         /// Gets or sets current service.
         /// </summary>
-        /// <value></value>
-        public IFileCabinetService Service { get; protected set; }
+        /// <value><see cref="IFileCabinetService"/> Service for using.</value>
+        protected IFileCabinetService Service { get; set; }
     }
 }

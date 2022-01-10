@@ -1,35 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Class for firstname property validation.
+    /// Class for FirstName property validation.
     /// </summary>
     public class FirstNameValidator : IRecordValidator
     {
-        private readonly int maxLength;
-        private readonly int minLength;
+        private readonly int maxFirstNameLength;
+        private readonly int minFirstNameLength;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FirstNameValidator"/> class.
         /// </summary>
-        /// <param name="minLength">Minimal Length of firstname of the records.</param>
-        /// <param name="maxLength">Maximum Length of firstname of the records.</param>
-        public FirstNameValidator(int minLength, int maxLength)
+        /// <param name="minFirstNameLength">Minimal Length of firstname of the records.</param>
+        /// <param name="maxFirstNameLength">Maximum Length of firstname of the records.</param>
+        public FirstNameValidator(int minFirstNameLength, int maxFirstNameLength)
         {
-            this.maxLength = maxLength;
-            this.minLength = minLength;
+            this.maxFirstNameLength = maxFirstNameLength;
+            this.minFirstNameLength = minFirstNameLength;
         }
 
         /// <summary>
-        /// Validate Firstname property.
+        /// Validates Firstname property.
         /// </summary>
-        /// <param name="parameters">Parameters to validate.</param>
-        public void ValidateParameters(CreateEditParameters parameters)
+        /// <param name="parameters">Record parameters object to validate.</param>
+        /// <exception cref="ArgumentNullException">source parameters is null. FirstName property is null, empty of whitespace.</exception>
+        /// <exception cref="ArgumentException">FirtName Length is more than <see cref="maxFirstNameLength"/> or less than <see cref="minFirstNameLength"/>.</exception>
+        public void ValidateParameters(RecordParameters parameters)
         {
             if (parameters == null)
             {
@@ -41,9 +39,9 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(parameters.FirstName);
             }
 
-            if (parameters.FirstName.Length < this.minLength || parameters.FirstName.Length > this.maxLength)
+            if (parameters.FirstName.Length < this.minFirstNameLength || parameters.FirstName.Length > this.maxFirstNameLength)
             {
-                throw new ArgumentException($"First Name Lenght is more than {this.maxLength} or less than {this.minLength}", parameters.FirstName);
+                throw new ArgumentException($"First Name Lenght is more than {this.maxFirstNameLength} or less than {this.minFirstNameLength}", parameters.FirstName);
             }
         }
     }

@@ -1,50 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Validation rule properties for json file.
+    /// Represents validation rule properties.
     /// </summary>
     public class ValidationRule
     {
         /// <summary>
-        /// Gets valid firstname length range.
+        /// Gets valid FirsTname length range.
         /// </summary>
-        /// <value></value>
+        /// <value><see cref="Range"/> for FirstName length property.</value>
         public Range FirstName { get; init; }
 
         /// <summary>
-        /// Gets valid lastname length range.
+        /// Gets valid LastName length range.
         /// </summary>
-        /// <value></value>
+        /// <value><see cref="Range"/> for LastName length property.</value>
         public Range LastName { get; init; }
 
         /// <summary>
-        /// Gets valid date of birth range.
+        /// Gets valid DateOfBirth range.
         /// </summary>
-        /// <value></value>
+        /// <value><see cref="DateRange"/> for DateOfBirth property.</value>
         public DateRange DateOfBirth { get; init; }
 
         /// <summary>
         /// Gets valid salary range.
         /// </summary>
-        /// <value></value>
+        /// <value><see cref="Range"/> for Salary property.</value>
         public Range Salary { get; init; }
 
         /// <summary>
         /// Gets valid height range.
         /// </summary>
-        /// <value></value>
+        /// <value><see cref="Range"/> for Height property.</value>
         public Range Height { get; init; }
 
         /// <summary>
         /// Gets valid gerders.
         /// </summary>
-        /// <value></value>
+        /// <value>List of valid genders for sex property.</value>
         public List<char> Genders { get; init; }
     }
 }

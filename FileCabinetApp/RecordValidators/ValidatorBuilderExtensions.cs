@@ -2,24 +2,25 @@
 using System.IO;
 using Microsoft.Extensions.Configuration;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Extension methods for creating Default and Custom.
+    /// Extension methods for creating Default and Custom validators.
     /// </summary>
     public static class ValidatorBuilderExtensions
     {
         private const string DefaultSection = "default";
         private const string CustomSection = "custom";
 
-        private static readonly FileInfo RulesFile = new FileInfo("validation-rules.json");
+        private static readonly FileInfo RulesFile = new ("validation-rules.json");
         private static readonly IConfiguration ValidationConfiguration = new ConfigurationBuilder().AddJsonFile(RulesFile.FullName, true, true).Build();
 
         /// <summary>
-        /// Creates Default Validator.
+        /// Creates Default validator.
         /// </summary>
         /// <param name="builder">builder instance.</param>
         /// <returns>Default Validator.</returns>
+        /// <exception cref="ArgumentNullException">builder is null.</exception>
         public static IRecordValidator Default(this ValidatorBuilder builder)
         {
             if (builder == null)
@@ -37,6 +38,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="builder">builder instance.</param>
         /// <returns>Custom Validator.</returns>
+        /// <exception cref="ArgumentNullException">builder is null.</exception>
         public static IRecordValidator Custom(this ValidatorBuilder builder)
         {
             if (builder == null)

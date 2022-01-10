@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using FileCabinetApp.CommandHandlers;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Services
 {
     /// <summary>
-    /// Memoizer for storing results of 'FindRecords' method, which may be needed, in order to avoid recalculating them.
+    /// Memoizer for storing results of <see cref="FileCabinetMemoryService.FindRecords(Dictionary{PropertyInfo, object}, OperationType)"/> method of <see cref="FileCabinetMemoryService"/>, in order to avoid recalculating results.
     /// </summary>
     public class Memoizer
     {
-        private readonly Dictionary<string, List<FileCabinetRecord>> argumentRecordsPairs = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<string, List<FileCabinetRecord>> argumentRecordsPairs = new (StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
         /// Gets the value associated with the specified key.
@@ -52,11 +51,11 @@ namespace FileCabinetApp
         {
             var sortedPropertiesWithValues = propertiesWithValues.OrderBy((key) => key.Key.Name);
 
-            StringBuilder keyBuilder = new StringBuilder();
+            StringBuilder keyBuilder = new ();
 
             foreach (var propertyNameValue in sortedPropertiesWithValues)
             {
-                keyBuilder.Append($"{propertyNameValue.Key.Name}={propertyNameValue.Value.ToString()} {operation} ");
+                keyBuilder.Append($"{propertyNameValue.Key.Name}={propertyNameValue.Value} {operation} ");
             }
 
             return keyBuilder.ToString();

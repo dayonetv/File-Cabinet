@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Handler for stat command.
+    /// Handler for 'stat' command.
     /// </summary>
     public class StatCommandHandler : ServiceCommandHandlerBase
     {
@@ -26,6 +23,7 @@ namespace FileCabinetApp.CommandHandlers
         /// Handles 'stat' command or moves request to the next handler.
         /// </summary>
         /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)
@@ -45,9 +43,9 @@ namespace FileCabinetApp.CommandHandlers
 
         private void Stat()
         {
-            (int total, int deleted) recordsCount = this.Service.GetStat();
+            (int total, int deleted) = this.Service.GetStat();
 
-            Console.WriteLine($"Total: {recordsCount.total} record(s).\nDeleted: {recordsCount.deleted} record(s).");
+            Console.WriteLine($"Total: {total} record(s).\nDeleted: {deleted} record(s).");
         }
     }
 }

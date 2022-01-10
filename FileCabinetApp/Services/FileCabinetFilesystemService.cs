@@ -6,11 +6,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using FileCabinetApp.CommandHandlers;
+using FileCabinetApp.RecordValidators;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Services
 {
     /// <summary>
-    /// Represents service for stroring records with the ability to add, edit and find some of them using file system.
+    /// Represents service for stroring records using associated *.db file.
     /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService
     {
@@ -28,7 +29,7 @@ namespace FileCabinetApp
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
-        /// <param name="fileStream">Stream to binary file.</param>
+        /// <param name="fileStream">Stream to *.db file.</param>
         /// <param name="validator">Current validator to be used. </param>
         public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
@@ -36,8 +37,13 @@ namespace FileCabinetApp
             this.validator = validator;
         }
 
-        /// <inheritdoc/>
-        public int CreateRecord(CreateEditParameters parameters)
+        /// <summary>
+        /// Creates new record and adds its to associated *.db file.
+        /// </summary>
+        /// <param name="parameters">Record parameters object. </param>
+        /// <returns>The Id of created record.</returns>
+        /// <exception cref="ArgumentNullException">Parameters is null.</exception>
+        public int CreateRecord(RecordParameters parameters)
         {
             if (parameters == null)
             {
@@ -67,7 +73,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void EditRecord(int id, CreateEditParameters parameters)
+        public void EditRecord(int id, RecordParameters parameters)
         {
             if (parameters == null)
             {
@@ -85,7 +91,7 @@ namespace FileCabinetApp
 
             this.validator.ValidateParameters(parameters);
 
-            FileCabinetRecord updatedRecord = new FileCabinetRecord()
+            FileCabinetRecord updatedRecord = new ()
             {
                 Id = id,
                 FirstName = parameters.FirstName,
@@ -111,7 +117,7 @@ namespace FileCabinetApp
                 return allRecords.AsReadOnly();
             }
 
-            List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> findedRecords = new ();
 
             switch (operation)
             {
@@ -120,7 +126,7 @@ namespace FileCabinetApp
 
             foreach (var propertyValue in propertiesWithValues)
             {
-                List<FileCabinetRecord> findedRecordsByOneProperty = new List<FileCabinetRecord>();
+                List<FileCabinetRecord> findedRecordsByOneProperty = new ();
 
                 switch (operation)
                 {
@@ -164,32 +170,22 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(snapshot));
             }
 
-            StringBuilder recordsInfo = new StringBuilder();
+            StringBuilder recordsInfo = new ();
 
-            List<FileCabinetRecord> recordsToAdd = new List<FileCabinetRecord>(snapshot.Records);
+            List<FileCabinetRecord> recordsToAdd = new (snapshot.Records);
 
             if (recordsToAdd.Count == 0)
             {
                 return "No records imported";
             }
 
-            List<FileCabinetRecord> invalidRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> invalidRecords = new ();
 
             foreach (var record in recordsToAdd)
             {
                 try
                 {
-                    CreateEditParameters parameters = new CreateEditParameters()
-                    {
-                        FirstName = record.FirstName,
-                        LastName = record.LastName,
-                        DateOfBirth = record.DateOfBirth,
-                        Height = record.Height,
-                        Salary = record.Salary,
-                        Sex = record.Sex,
-                    };
-
-                    this.validator.ValidateParameters(parameters);
+                    this.validator.ValidateParameters((RecordParameters)record);
                 }
                 catch (ArgumentException ex)
                 {
@@ -253,7 +249,7 @@ namespace FileCabinetApp
         {
             int amountOfAllRecords = (int)this.fileStream.Length / RecordByteSize;
 
-            List<FileCabinetRecord> notDeletedRecords = new List<FileCabinetRecord>(this.GetRecords());
+            List<FileCabinetRecord> notDeletedRecords = new (this.GetRecords());
 
             if (notDeletedRecords.Count != amountOfAllRecords)
             {
@@ -282,7 +278,7 @@ namespace FileCabinetApp
                 throw new ArgumentException("Id should be more than 0.", nameof(recordToInsert));
             }
 
-            this.validator.ValidateParameters(RecordToParameters(recordToInsert));
+            this.validator.ValidateParameters((RecordParameters)recordToInsert);
 
             long findedRecordPosition = this.FindRecordById(recordToInsert.Id);
 
@@ -298,26 +294,11 @@ namespace FileCabinetApp
             this.WriteRecordToFile(recordToInsert);
         }
 
-        private static CreateEditParameters RecordToParameters(FileCabinetRecord record)
-        {
-            CreateEditParameters parameters = new CreateEditParameters()
-            {
-                FirstName = record.FirstName,
-                LastName = record.LastName,
-                DateOfBirth = record.DateOfBirth,
-                Height = record.Height,
-                Salary = record.Salary,
-                Sex = record.Sex,
-            };
-
-            return parameters;
-        }
-
         private ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             this.fileStream.Seek(default, SeekOrigin.Begin);
 
-            List<FileCabinetRecord> readedRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> readedRecords = new ();
 
             for (int i = 0; i < this.fileStream.Length / RecordByteSize; i++)
             {
@@ -378,7 +359,7 @@ namespace FileCabinetApp
 
         private FileCabinetRecord ReadOneRecord()
         {
-            FileCabinetRecord readedRecord = new FileCabinetRecord();
+            FileCabinetRecord readedRecord = new ();
             bool isDeleted = false;
 
             using (BinaryReader binReader = new BinaryReader(this.fileStream, CurrentEncoding, true))

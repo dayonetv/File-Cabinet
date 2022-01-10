@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using FileCabinetApp.CommandHandlers;
+using FileCabinetApp.RecordValidators;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Services
 {
     /// <summary>
-    /// Represents service for stroring records with the ability to add, edit and find some of them.
+    /// Represents service for stroring records using List of <see cref="FileCabinetRecord"/>.
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
-        private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private readonly List<FileCabinetRecord> list = new ();
 
-        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
-        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
-        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new (StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new (StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new ();
 
         private readonly IRecordValidator validator;
 
@@ -38,7 +38,8 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="parameters">Parameter object. </param>
         /// <returns>The Id of created record.</returns>
-        public int CreateRecord(CreateEditParameters parameters)
+        /// <exception cref="ArgumentNullException">Parameters is null.</exception>
+        public int CreateRecord(RecordParameters parameters)
         {
             if (parameters == null)
             {
@@ -78,7 +79,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="id">Record Id to edit by. </param>
         /// <param name="parameters">Parameter object. </param>
-        public void EditRecord(int id, CreateEditParameters parameters)
+        public void EditRecord(int id, RecordParameters parameters)
         {
             if (parameters == null)
             {
@@ -124,28 +125,28 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(snapshot));
             }
 
-            StringBuilder recordsInfo = new StringBuilder();
+            StringBuilder importedRecordsInfo = new StringBuilder();
 
-            List<FileCabinetRecord> recordsToAdd = new List<FileCabinetRecord>(snapshot.Records);
+            List<FileCabinetRecord> recordsToAdd = new (snapshot.Records);
 
             if (recordsToAdd.Count == 0)
             {
                 return "No records imported";
             }
 
-            List<FileCabinetRecord> invalidRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> invalidRecords = new ();
 
             foreach (var record in recordsToAdd)
             {
                 try
                 {
-                    CreateEditParameters parameters = RecordToParameters(record);
+                    RecordParameters parameters = (RecordParameters)record;
 
                     this.validator.ValidateParameters(parameters);
                 }
                 catch (ArgumentException ex)
                 {
-                    recordsInfo.Append($"ID {record.Id}: {ex.Message}\n");
+                    importedRecordsInfo.Append($"ID {record.Id}: {ex.Message}\n");
                     invalidRecords.Add(record);
                 }
             }
@@ -154,7 +155,7 @@ namespace FileCabinetApp
 
             if (recordsToAdd.Count == 0)
             {
-                return recordsInfo.ToString() + "No records imported";
+                return importedRecordsInfo.ToString() + "No records imported";
             }
 
             int recordsToAddStartId = recordsToAdd[0].Id;
@@ -177,7 +178,7 @@ namespace FileCabinetApp
 
             this.memoizer.Clear();
 
-            return recordsInfo.ToString() + $"{recordsToAdd.Count} records were imported ";
+            return importedRecordsInfo.ToString() + $"{recordsToAdd.Count} records were imported ";
         }
 
         /// <inheritdoc/>
@@ -224,9 +225,7 @@ namespace FileCabinetApp
                 return this.list.AsReadOnly();
             }
 
-            List<FileCabinetRecord> findedRecords;
-
-            if (this.memoizer.TryGetValue((propertiesWithValues, operation), out findedRecords))
+            if (this.memoizer.TryGetValue((propertiesWithValues, operation), out List<FileCabinetRecord> findedRecords))
             {
                 return findedRecords.AsReadOnly();
             }
@@ -246,7 +245,7 @@ namespace FileCabinetApp
 
             foreach (var propertyValue in propertiesWithValues)
             {
-                List<FileCabinetRecord> findedRecordsByOneProperty = new List<FileCabinetRecord>();
+                List<FileCabinetRecord> findedRecordsByOneProperty = new ();
 
                 if (propertyValue.Key.Equals(firstnameProperty))
                 {
@@ -298,7 +297,7 @@ namespace FileCabinetApp
                 throw new ArgumentException("Id should be more than 0.", nameof(recordToInsert));
             }
 
-            this.validator.ValidateParameters(RecordToParameters(recordToInsert));
+            this.validator.ValidateParameters((RecordParameters)recordToInsert);
 
             this.memoizer.Clear();
 
@@ -320,26 +319,11 @@ namespace FileCabinetApp
             return "Memory service";
         }
 
-        private static CreateEditParameters RecordToParameters(FileCabinetRecord record)
-        {
-            CreateEditParameters parameters = new CreateEditParameters()
-            {
-                FirstName = record.FirstName,
-                LastName = record.LastName,
-                DateOfBirth = record.DateOfBirth,
-                Height = record.Height,
-                Salary = record.Salary,
-                Sex = record.Sex,
-            };
-
-            return parameters;
-        }
-
         /// <summary>
         /// Searches records by First Name in curent records using special 'firstNameDictionary' dictionary.
         /// </summary>
         /// <param name="firstName">First Name to search by.</param>
-        /// <returns>Iterator for finded records.</returns>
+        /// <returns>IEnumberable collection of finded records.</returns>
         private IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             return new MemoryFindedRecords(this.firstNameDictionary.GetValueOrDefault(firstName));
@@ -349,7 +333,7 @@ namespace FileCabinetApp
         /// Searches a records by Last Name in curent records using special 'lastNameDictionary' dictionary.
         /// </summary>
         /// <param name="lastName">Last Name to search by.</param>
-        /// <returns>Iterator for finded records.</returns>
+        /// <returns>IEnumberable collection of finded records.</returns>
         private IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             return new MemoryFindedRecords(this.lastNameDictionary.GetValueOrDefault(lastName));
@@ -359,7 +343,7 @@ namespace FileCabinetApp
         /// Searches a records by Date of birth in curent records using special 'dateOfBirthDictionary' dictionary.
         /// </summary>
         /// <param name="dateOfBirth">Date of Birth to search by.</param>
-        /// <returns>Iterator for finded records.</returns>
+        /// <returns>IEnumberable collection of finded records.</returns>
         private IEnumerable<FileCabinetRecord> FindByDateOfBith(DateTime dateOfBirth)
         {
             return new MemoryFindedRecords(this.dateOfBirthDictionary.GetValueOrDefault(dateOfBirth));

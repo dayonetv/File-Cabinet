@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Globalization;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Class for salary validation of the record.
+    /// Class for Salary property validation of the record.
     /// </summary>
     public class SalaryValidator : IRecordValidator
     {
@@ -23,10 +23,12 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Validate salary of the record.
+        /// Validates Salary property of the record.
         /// </summary>
-        /// <param name="parameters">Parameters to validate.</param>
-        public void ValidateParameters(CreateEditParameters parameters)
+        /// <param name="parameters">Record parameters object to validate. </param>
+        /// <exception cref="ArgumentNullException">Source parameters is null.</exception>
+        /// <exception cref="ArgumentException">Salary is more than <see cref="maxSalary"/> or less than <see cref="minSalary"/>.</exception>
+        public void ValidateParameters(RecordParameters parameters)
         {
             if (parameters == null)
             {

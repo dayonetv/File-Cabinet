@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Serialization;
 
 namespace FileCabinetGenerator
@@ -12,7 +13,7 @@ namespace FileCabinetGenerator
     /// </summary>
     public static class Program
     {
-        private const int AmountOfStringsForShortCommand = 8;
+        private const int AmountOfStringsForShortCommands = 8;
         private const int AmountOfStringsForFullCommand = 4;
         private const char FullCommandSeparator = '=';
 
@@ -26,13 +27,13 @@ namespace FileCabinetGenerator
         private const int MaxSalary = 1_000_000;
         private const short MaxHeight = 220;
         private const short MinHeight = 120;
-        private const string Chars = "abcdefghijklmnopqrstuvw";
+        private const string NameChars = "abcdefghijklmnopqrstuvw";
         private const string DateFormat = "d";
 
         private static readonly char[] Genders = { 'M', 'F' };
         private static readonly DateTime MinDateOfBirth = new (1950, 1, 1);
 
-        private static readonly Random Randomizer = new Random();
+        private static readonly Random Randomizer = new ();
 
         private static readonly string[] StartUpFullCommands = new string[]
         {
@@ -74,8 +75,14 @@ namespace FileCabinetGenerator
 
             var configuration = GetConfiguration(args);
 
-            if (configuration.amount >= 0 && configuration.id >= 0 && configuration.file != null && configuration.writeToMethod != null)
+            if (configuration.file != null && configuration.writeToMethod != null)
             {
+                if (configuration.amount <= 0 || configuration.id <= 0)
+                {
+                    Console.WriteLine($"Records-amount and start-id should be more than 0");
+                    return;
+                }
+
                 targetFile = configuration.file;
 
                 List<FileCabinetRecord> records = GenerateRandomRecords(configuration.id, configuration.amount);
@@ -107,12 +114,14 @@ namespace FileCabinetGenerator
 
             if (args.Length == AmountOfStringsForFullCommand)
             {
+                const int CommandParameterSplitAmount = 2;
+
                 for (int i = 0; i < args.Length; i++)
                 {
-                    var inputs = args[i].Split(FullCommandSeparator, 2);
+                    var inputs = args[i].Split(FullCommandSeparator, CommandParameterSplitAmount);
 
                     string command = inputs.First();
-                    string parameter = inputs[^1];
+                    string parameter = inputs.Last();
 
                     int indexOfCommand = Array.FindIndex(StartUpFullCommands, (cmd) => cmd.Equals(command, StringComparison.InvariantCultureIgnoreCase));
 
@@ -122,12 +131,12 @@ namespace FileCabinetGenerator
                     }
                     else
                     {
-                        Console.WriteLine($"Unkown command {command}");
+                        Console.WriteLine($"Unkown command: '{command}'");
                         break;
                     }
                 }
             }
-            else if (args.Length == AmountOfStringsForShortCommand)
+            else if (args.Length == AmountOfStringsForShortCommands)
             {
                 for (int i = 0; i < args.Length; i++)
                 {
@@ -142,7 +151,7 @@ namespace FileCabinetGenerator
                     }
                     else
                     {
-                        Console.WriteLine($"Unkown command {command}");
+                        Console.WriteLine($"Unkown command: '{command}'");
                         break;
                     }
                 }
@@ -219,15 +228,22 @@ namespace FileCabinetGenerator
         {
             csvWriter ??= new StreamWriter(targetFile.FullName);
 
+            PropertyInfo[] recordProperties = typeof(FileCabinetRecord).GetProperties();
+
             foreach (var record in recordsToWrite)
             {
-                csvWriter.Write($"{record.Id},");
-                csvWriter.Write($"{record.FirstName},");
-                csvWriter.Write($"{record.LastName},");
-                csvWriter.Write($"{record.DateOfBirth.ToString(DateFormat, CultureInfo.InvariantCulture)},");
-                csvWriter.Write($"{record.Height},");
-                csvWriter.Write($"{record.Salary},");
-                csvWriter.Write($"{record.Sex}");
+                for (int i = 0; i < recordProperties.Length - 1; i++)
+                {
+                    if (recordProperties[i].GetValue(record) is DateTime date)
+                    {
+                        csvWriter.Write($"{date.ToString(DateFormat, CultureInfo.InvariantCulture)},");
+                        continue;
+                    }
+
+                    csvWriter.Write($"{recordProperties[i].GetValue(record)},");
+                }
+
+                csvWriter.Write($"{recordProperties.Last().GetValue(record)}");
                 csvWriter.WriteLine();
             }
 
@@ -248,11 +264,11 @@ namespace FileCabinetGenerator
 
         private static List<FileCabinetRecord> GenerateRandomRecords(int startId, int recordsAmount)
         {
-            List<FileCabinetRecord> generatedRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> generatedRecords = new ();
 
             for (int i = 0; i < recordsAmount; i++)
             {
-                FileCabinetRecord randomRecord = new FileCabinetRecord()
+                FileCabinetRecord randomRecord = new ()
                 {
                     Id = startId++,
                     FirstName = GetRandomString(),
@@ -272,7 +288,7 @@ namespace FileCabinetGenerator
         private static string GetRandomString()
         {
             int stringLength = Randomizer.Next(MinNameLength, MaxNameLength);
-            return new string(Enumerable.Repeat(Chars, stringLength).Select(s => s[Randomizer.Next(s.Length)]).ToArray());
+            return new string(Enumerable.Repeat(NameChars, stringLength).Select(s => s[Randomizer.Next(s.Length)]).ToArray());
         }
 
         private static short GetRandomHeight()

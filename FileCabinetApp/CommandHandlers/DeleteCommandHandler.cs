@@ -3,20 +3,22 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Handler for delete command and delete parameters.
+    /// Handler for 'delete' command and parameters.
     /// </summary>
     public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
         private const string CommandName = "delete";
-        private const string KeyWord = "where";
-        private const char Separator = '=';
+
+        private const string KeyWord = "where ";
+        private const char PropertyNameValueSeparator = '=';
         private const char ValueTrimChar = '\'';
-        private const int SplitAmount = 1;
-        private const int NameValueSplitAmount = 2;
+        private const int KeyWordSplitAmount = 1;
+        private const int PropertyNameValueSplitAmount = 2;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
@@ -27,7 +29,11 @@ namespace FileCabinetApp.CommandHandlers
         {
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Handles 'delete' command or moves request to the next handler.
+        /// </summary>
+        /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)
@@ -43,13 +49,6 @@ namespace FileCabinetApp.CommandHandlers
             {
                 base.Handle(request);
             }
-        }
-
-        private static PropertyInfo GetProperty(string inputPropertyName)
-        {
-            PropertyInfo property = Array.Find(typeof(FileCabinetRecord).GetProperties(), (property) => property.Name.Equals(inputPropertyName, StringComparison.InvariantCultureIgnoreCase));
-
-            return property;
         }
 
         private static void DisplayDeletedIds(List<int> deletedIds)
@@ -88,24 +87,24 @@ namespace FileCabinetApp.CommandHandlers
 
             var inputs = parameters.Split(KeyWord, StringSplitOptions.RemoveEmptyEntries);
 
-            if (inputs.Length != SplitAmount)
+            if (inputs.Length != KeyWordSplitAmount)
             {
                 Console.WriteLine($"Wrong amount of parameters after '{KeyWord}' word.");
                 return;
             }
 
-            var propertyWithValue = inputs.First().Split(Separator, StringSplitOptions.TrimEntries);
+            var propertyWithValue = inputs.First().Split(PropertyNameValueSeparator, StringSplitOptions.TrimEntries);
 
-            if (propertyWithValue.Length != NameValueSplitAmount)
+            if (propertyWithValue.Length != PropertyNameValueSplitAmount)
             {
-                Console.WriteLine($"There should be one '{Separator}' symbol after {KeyWord} word.");
+                Console.WriteLine($"There should be one '{PropertyNameValueSeparator}' symbol after {KeyWord} word.");
                 return;
             }
 
-            string propertyName = propertyWithValue[0].Trim();
-            string propertyValue = propertyWithValue[^1].Trim(ValueTrimChar);
+            string propertyName = propertyWithValue.First().Trim();
+            string propertyValue = propertyWithValue.Last().Trim(ValueTrimChar);
 
-            PropertyInfo property = GetProperty(propertyName);
+            PropertyInfo property = GetProperty(propertyName, typeof(FileCabinetRecord));
 
             if (property == null)
             {
@@ -121,7 +120,7 @@ namespace FileCabinetApp.CommandHandlers
             }
             catch (FormatException ex)
             {
-                Console.WriteLine($"Invalid format for {propertyName} value. {ex.Message}");
+                Console.WriteLine($"Invalid format for '{propertyName}' value. {ex.Message}");
             }
             catch (ArgumentException ex)
             {

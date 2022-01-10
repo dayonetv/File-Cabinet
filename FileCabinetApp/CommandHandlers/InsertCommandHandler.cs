@@ -1,24 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Handler for insert command and insert paramaters.
+    /// Handler for 'insert' command and paramaters.
     /// </summary>
     public class InsertCommandHandler : ServiceCommandHandlerBase
     {
         private const string CommandName = "insert";
 
-        private const string KeyWord = "values";
-        private const char Separator = ',';
+        private const string KeyWord = " values ";
+        private const char PropertyNamesAndValuesSeparator = ',';
         private const char ValuesTrimChar = '\'';
-        private const int SplitAmount = 2;
+        private const int KeyWordSplitAmount = 2;
 
         private static readonly char[] TrimChars = new char[] { '(', ')' };
 
@@ -31,7 +29,11 @@ namespace FileCabinetApp.CommandHandlers
         {
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Handles 'insert' command or moves request to the next handler.
+        /// </summary>
+        /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)
@@ -51,7 +53,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private static FileCabinetRecord CreateRecord(string[] propertyNames, string[] propertyValues)
         {
-            FileCabinetRecord record = new FileCabinetRecord();
+            FileCabinetRecord record = new ();
 
             PropertyInfo[] recordProperties = record.GetType().GetProperties();
 
@@ -91,22 +93,22 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (!parameters.Contains(KeyWord, StringComparison.InvariantCultureIgnoreCase))
             {
-                Console.WriteLine($"'insert' command requires '{KeyWord}' word.");
+                Console.WriteLine($"'{CommandName}' command requires '{KeyWord}' word.");
                 return;
             }
 
             parameters = parameters.Replace(KeyWord, KeyWord, StringComparison.InvariantCultureIgnoreCase);
 
-            var inputs = parameters.Split(KeyWord, StringSplitOptions.TrimEntries);
+            var inputParts = parameters.Split(KeyWord, StringSplitOptions.TrimEntries);
 
-            if (inputs.Length != SplitAmount)
+            if (inputParts.Length != KeyWordSplitAmount)
             {
-                Console.WriteLine($"'insert' command can have only one '{KeyWord}' word.");
+                Console.WriteLine($"Properties and values should be sepatated with one '{KeyWord}' word.");
                 return;
             }
 
-            var propertyNames = inputs[0].Trim(TrimChars).Split(Separator, StringSplitOptions.TrimEntries);
-            var propertyValues = inputs[1].Trim(TrimChars).Split(Separator, StringSplitOptions.TrimEntries);
+            var propertyNames = inputParts[0].Trim(TrimChars).Split(PropertyNamesAndValuesSeparator, StringSplitOptions.TrimEntries);
+            var propertyValues = inputParts[1].Trim(TrimChars).Split(PropertyNamesAndValuesSeparator, StringSplitOptions.TrimEntries);
 
             if (propertyNames.Length != propertyValues.Length)
             {

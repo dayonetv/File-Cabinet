@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Operator for union searching criterias.
+    /// Logical operator for searching criteria.
     /// </summary>
     public enum OperationType
     {
         /// <summary>
-        /// No uinion.
+        /// Without operator.
         /// </summary>
         None,
 
@@ -30,7 +29,7 @@ namespace FileCabinetApp.CommandHandlers
     }
 
     /// <summary>
-    /// Handler for select command and select parameters.
+    /// Handler for 'select' command and parameters.
     /// </summary>
     public class SelectCommandHandler : ServiceCommandHandlerBase
     {
@@ -40,7 +39,7 @@ namespace FileCabinetApp.CommandHandlers
         private const string AndWord = " and ";
         private const string OrWord = " or ";
 
-        private const char SelectSeparator = ',';
+        private const char SelectPropertiesSeparator = ',';
         private const char PropertyValueSeparator = '=';
         private const string DateFormat = "d";
 
@@ -50,8 +49,8 @@ namespace FileCabinetApp.CommandHandlers
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         private static readonly char[] ValueTrimChars = { '\'', ' ' };
 
-        private readonly List<PropertyInfo> recordPropertiesToDisplay = new List<PropertyInfo>();
-        private readonly Dictionary<PropertyInfo, object> propertyValuePairs = new Dictionary<PropertyInfo, object>();
+        private readonly List<PropertyInfo> recordPropertiesToDisplay = new ();
+        private readonly Dictionary<PropertyInfo, object> propertyNameValuePairs = new ();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectCommandHandler"/> class.
@@ -62,7 +61,11 @@ namespace FileCabinetApp.CommandHandlers
         {
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Handles 'select' command or moves request to the next handler.
+        /// </summary>
+        /// <param name="request">Command and parameters to be handled.</param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public override void Handle(AppCommandRequest request)
         {
             if (request == null)
@@ -80,20 +83,51 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static PropertyInfo GetProperty(string inputPropertyName, Type type)
+        private static string[] GetPropertiesNamesAndValues(string wherePart, out OperationType operatorType, out bool correctness)
         {
-            PropertyInfo property = Array.Find(type.GetProperties(), (property) => property.Name.Equals(inputPropertyName, Comparison));
+            if (!wherePart.Contains(OrWord, Comparison) && !wherePart.Contains(AndWord, Comparison))
+            {
+                operatorType = OperationType.None;
+                correctness = true;
 
-            return property;
+                return new string[] { wherePart };
+            }
+            else if (wherePart.Contains(AndWord, Comparison) && !wherePart.Contains(OrWord, Comparison))
+            {
+                operatorType = OperationType.And;
+                wherePart = wherePart.Replace(AndWord, AndWord, Comparison);
+                correctness = true;
+
+                return wherePart.Split(AndWord, StringSplitOptions.RemoveEmptyEntries);
+            }
+            else if (wherePart.Contains(OrWord, Comparison) && !wherePart.Contains(AndWord, Comparison))
+            {
+                operatorType = OperationType.Or;
+                wherePart = wherePart.Replace(OrWord, OrWord, Comparison);
+                correctness = true;
+
+                return wherePart.Split(OrWord, StringSplitOptions.RemoveEmptyEntries);
+            }
+            else
+            {
+                Console.WriteLine($"Where part should contains only '{OperationType.And}' words or only '{OperationType.Or}' words.");
+
+                operatorType = OperationType.None;
+                correctness = false;
+
+                return Array.Empty<string>();
+            }
         }
 
         private static void PrintFrame(List<int> maxLengthList)
         {
+            const int WhiteSpaceAmount = 2;
+
             Console.Write("+");
 
             for (int i = 0; i < maxLengthList.Count; i++)
             {
-                Console.Write($"{new string('-', maxLengthList[i] + 2)}+");
+                Console.Write($"{new string('-', maxLengthList[i] + WhiteSpaceAmount)}+");
             }
 
             Console.WriteLine();
@@ -109,11 +143,11 @@ namespace FileCabinetApp.CommandHandlers
             string selectPart = inputs.First();
             string wherePart = inputs.Last() != selectPart ? inputs.Last() : string.Empty;
 
-            (bool success, OperationType operatorType) whereProcessingResult = this.ProcessWherePart(wherePart);
+            (bool wherePartCorectness, OperationType operatorType) = this.ProcessWherePart(wherePart);
 
-            if (this.ProcessSelectPart(selectPart) && whereProcessingResult.success)
+            if (wherePartCorectness && this.ProcessSelectPart(selectPart))
             {
-                var findedRecords = this.Service.FindRecords(this.propertyValuePairs, whereProcessingResult.operatorType);
+                var findedRecords = this.Service.FindRecords(this.propertyNameValuePairs, operatorType);
 
                 this.DisplayRecords(findedRecords.ToList());
             }
@@ -129,7 +163,7 @@ namespace FileCabinetApp.CommandHandlers
                 return true;
             }
 
-            var selectProperties = selectPart.Split(SelectSeparator, StringSplitOptions.RemoveEmptyEntries);
+            var selectProperties = selectPart.Split(SelectPropertiesSeparator, StringSplitOptions.RemoveEmptyEntries);
 
             if (selectProperties.Length == 0)
             {
@@ -161,41 +195,18 @@ namespace FileCabinetApp.CommandHandlers
 
         private (bool success, OperationType operatorType) ProcessWherePart(string wherePart)
         {
-            this.propertyValuePairs.Clear();
+            this.propertyNameValuePairs.Clear();
 
             if (string.IsNullOrEmpty(wherePart) || string.IsNullOrWhiteSpace(wherePart))
             {
                 return (true, OperationType.None);
             }
 
-            OperationType operatorType;
+            var wherePropertiesNamesValues = GetPropertiesNamesAndValues(wherePart, out OperationType operatorType, out bool success);
 
-            if (!wherePart.Contains(OrWord, Comparison) && !wherePart.Contains(AndWord, Comparison))
+            if (!success)
             {
-                operatorType = OperationType.None;
-            }
-            else if (wherePart.Contains(AndWord, Comparison) && !wherePart.Contains(OrWord, Comparison))
-            {
-                operatorType = OperationType.And;
-            }
-            else if (wherePart.Contains(OrWord, Comparison) && !wherePart.Contains(AndWord, Comparison))
-            {
-                operatorType = OperationType.Or;
-            }
-            else
-            {
-                Console.WriteLine($"Where part should contains only '{OperationType.And.ToString()}' words or only '{OperationType.Or.ToString()}' words.");
-                return (false, OperationType.None);
-            }
-
-            wherePart = wherePart.Replace(operatorType.ToString(), operatorType.ToString(), Comparison);
-
-            var wherePropertiesNamesValues = wherePart.Split(operatorType.ToString(), StringSplitOptions.RemoveEmptyEntries);
-
-            if (wherePropertiesNamesValues.Length == 0)
-            {
-                Console.WriteLine("Where properties-values are empty.");
-                return (false, OperationType.None);
+                return (success, operatorType);
             }
 
             foreach (var propertyNameValue in wherePropertiesNamesValues)
@@ -205,6 +216,7 @@ namespace FileCabinetApp.CommandHandlers
                 if (inputs.Length != PropertyPlusValueCount)
                 {
                     Console.WriteLine($"Properties and values should be separated with one '{PropertyValueSeparator}' char.");
+
                     return (false, OperationType.None);
                 }
 
@@ -222,7 +234,7 @@ namespace FileCabinetApp.CommandHandlers
                 try
                 {
                     object value = Convert.ChangeType(propertyValue, property.PropertyType, Culture);
-                    this.propertyValuePairs.Add(property, value);
+                    this.propertyNameValuePairs.Add(property, value);
                 }
                 catch (FormatException ex)
                 {
@@ -263,11 +275,12 @@ namespace FileCabinetApp.CommandHandlers
 
         private List<int> GetMaxLenghtList(List<FileCabinetRecord> findedRecords)
         {
-            List<int> propertiesNamesAndValuesMaxLenght = new List<int>();
+            List<int> propertiesNamesAndValuesMaxLenght = new ();
 
             foreach (var property in this.recordPropertiesToDisplay)
             {
                 int maxLength = (from record in findedRecords select property.GetValue(record) is DateTime date ? date.ToString(DateFormat, Culture).Length : property.GetValue(record).ToString().Length).Max();
+
                 propertiesNamesAndValuesMaxLenght.Add(maxLength > property.Name.Length ? maxLength : property.Name.Length);
             }
 
@@ -280,7 +293,7 @@ namespace FileCabinetApp.CommandHandlers
 
             for (int i = 0; i < maxLengthList.Count; i++)
             {
-                Console.Write("{0," + maxLengthList[i].ToString(Culture) + "} | ", this.recordPropertiesToDisplay[i].Name);
+                Console.Write("{0,-" + maxLengthList[i].ToString(Culture) + "} | ", this.recordPropertiesToDisplay[i].Name);
             }
 
             Console.WriteLine();

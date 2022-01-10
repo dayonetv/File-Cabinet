@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.RecordValidators
 {
     /// <summary>
-    /// Validator that contatins list of diffenent validators to be used.
+    /// Validator that contatins list of several validators to be used.
     /// </summary>
     public class CompositeValidator : IRecordValidator
     {
@@ -23,7 +20,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void ValidateParameters(CreateEditParameters parameters)
+        public void ValidateParameters(RecordParameters parameters)
         {
             foreach (var validator in this.validators)
             {

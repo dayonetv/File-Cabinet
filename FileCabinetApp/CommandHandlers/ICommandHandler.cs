@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Interface for creating Command Handlers.
+    /// Support handling of <see cref="AppCommandRequest"/>.
     /// </summary>
     public interface ICommandHandler
     {
@@ -19,9 +15,10 @@ namespace FileCabinetApp.CommandHandlers
         public ICommandHandler SetNext(ICommandHandler commandHandler);
 
         /// <summary>
-        /// Handle request.
+        /// Handles request or moves request to the next handler.
         /// </summary>
         /// <param name="request">Request to be handled. </param>
+        /// <exception cref="ArgumentNullException">request is null.</exception>
         public void Handle(AppCommandRequest request);
     }
 }

@@ -5,10 +5,10 @@ using System.Diagnostics;
 using System.Reflection;
 using FileCabinetApp.CommandHandlers;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Services
 {
     /// <summary>
-    /// Service that displays methods execution time.
+    /// Service that displays methods execution time to the console.
     /// </summary>
     public class ServiceMeter : IFileCabinetService
     {
@@ -24,7 +24,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public int CreateRecord(CreateEditParameters parameters)
+        public int CreateRecord(RecordParameters parameters)
         {
             Stopwatch creationTime = Stopwatch.StartNew();
 
@@ -37,7 +37,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void EditRecord(int id, CreateEditParameters parameters)
+        public void EditRecord(int id, RecordParameters parameters)
         {
             Stopwatch editingTime = Stopwatch.StartNew();
 
