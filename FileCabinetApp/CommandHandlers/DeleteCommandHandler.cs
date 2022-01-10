@@ -17,7 +17,7 @@ namespace FileCabinetApp.CommandHandlers
         private const string KeyWord = "where ";
         private const char Separator = '=';
         private const char ValueTrimChar = '\'';
-        private const int SplitAmount = 1;
+        private const int KeyWordSplitAmount = 1;
         private const int PropertyNameValueSplitAmount = 2;
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace FileCabinetApp.CommandHandlers
 
             var inputs = parameters.Split(KeyWord, StringSplitOptions.RemoveEmptyEntries);
 
-            if (inputs.Length != SplitAmount)
+            if (inputs.Length != KeyWordSplitAmount)
             {
                 Console.WriteLine($"Wrong amount of parameters after '{KeyWord}' word.");
                 return;
@@ -127,7 +127,7 @@ namespace FileCabinetApp.CommandHandlers
             }
             catch (FormatException ex)
             {
-                Console.WriteLine($"Invalid format for {propertyName} value. {ex.Message}");
+                Console.WriteLine($"Invalid format for '{propertyName}' value. {ex.Message}");
             }
             catch (ArgumentException ex)
             {

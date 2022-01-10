@@ -225,9 +225,7 @@ namespace FileCabinetApp.Services
                 return this.list.AsReadOnly();
             }
 
-            List<FileCabinetRecord> findedRecords;
-
-            if (this.memoizer.TryGetValue((propertiesWithValues, operation), out findedRecords))
+            if (this.memoizer.TryGetValue((propertiesWithValues, operation), out List<FileCabinetRecord> findedRecords))
             {
                 return findedRecords.AsReadOnly();
             }

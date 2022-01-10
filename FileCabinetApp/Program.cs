@@ -58,7 +58,7 @@ namespace FileCabinetApp
 
         private const string UseCommand = "use";
 
-        private static readonly Tuple<string, ValidationMode>[] RuleSet = new Tuple<string, ValidationMode>[]
+        private static readonly Tuple<string, ValidationMode>[] ValidationRuleSet = new Tuple<string, ValidationMode>[]
         {
             new Tuple<string, ValidationMode>("default", ValidationMode.Default),
             new Tuple<string, ValidationMode>("custom", ValidationMode.Custom),
@@ -84,6 +84,7 @@ namespace FileCabinetApp
         /// The main console-application entry point.
         /// </summary>
         /// <param name="args">Application startup parameters. </param>
+        /// <exception cref="ArgumentNullException">args is null.</exception>
         public static void Main(string[] args)
         {
             if (args == null)
@@ -238,17 +239,17 @@ namespace FileCabinetApp
 
         private static void SetValidator(string inputRule)
         {
-            int indexOfMode = Array.FindIndex(RuleSet, (rule) => rule.Item1.Equals(inputRule, StringComparison.InvariantCultureIgnoreCase));
+            int indexOfMode = Array.FindIndex(ValidationRuleSet, (rule) => rule.Item1.Equals(inputRule, StringComparison.InvariantCultureIgnoreCase));
 
             if (indexOfMode >= 0)
             {
-                switch (RuleSet[indexOfMode].Item2)
+                switch (ValidationRuleSet[indexOfMode].Item2)
                 {
                     case ValidationMode.Default: chosenValidator = new ValidatorBuilder().Default(); break;
                     case ValidationMode.Custom: chosenValidator = new ValidatorBuilder().Custom(); break;
                 }
 
-                Console.WriteLine($"Using {RuleSet[indexOfMode].Item2} rules.");
+                Console.WriteLine($"Using {ValidationRuleSet[indexOfMode].Item2} rules.");
             }
             else
             {

@@ -104,7 +104,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private static List<string> FindSimilarCommands(string incorrectCommand)
         {
-            List<string> suggestions = new List<string>();
+            List<string> suggestions = new ();
 
             foreach (var command in HelpMessages)
             {
@@ -119,29 +119,29 @@ namespace FileCabinetApp.CommandHandlers
 
         private static double GetSimilarity(string source, string target)
         {
-            int sourceWordCount = source.Length;
-            int targetWordCount = target.Length;
+            int sourceWordLength = source.Length;
+            int targetWordLength = target.Length;
 
-            int[][] distance = new int[sourceWordCount + 1][];
+            int[][] distance = new int[sourceWordLength + 1][];
 
             for (int i = 0; i < distance.GetLongLength(default); i++)
             {
-                distance[i] = new int[targetWordCount + 1];
+                distance[i] = new int[targetWordLength + 1];
             }
 
-            for (int i = 0; i <= sourceWordCount; i++)
+            for (int i = 0; i <= sourceWordLength; i++)
             {
                 distance[i][0] = i;
             }
 
-            for (int j = 0; j <= targetWordCount; j++)
+            for (int j = 0; j <= targetWordLength; j++)
             {
                 distance[0][j] = j;
             }
 
-            for (int i = 1; i <= sourceWordCount; i++)
+            for (int i = 1; i <= sourceWordLength; i++)
             {
-                for (int j = 1; j <= targetWordCount; j++)
+                for (int j = 1; j <= targetWordLength; j++)
                 {
                     int cost = (target[j - 1] == source[i - 1]) ? 0 : 1;
 
@@ -149,7 +149,7 @@ namespace FileCabinetApp.CommandHandlers
                 }
             }
 
-            return 1.0 - (distance[sourceWordCount][targetWordCount] / (double)Math.Max(source.Length, target.Length));
+            return 1.0 - (distance[sourceWordLength][targetWordLength] / (double)Math.Max(source.Length, target.Length));
         }
 
         private static void DisplaySimilarCommands(string command)

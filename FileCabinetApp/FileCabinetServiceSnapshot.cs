@@ -42,7 +42,7 @@ namespace FileCabinetApp
         /// <param name="writer">Stream to *.csv file.</param>
         public void SaveToScv(StreamWriter writer)
         {
-            FileCabinetRecordCsvWriter csvWriter = new FileCabinetRecordCsvWriter(writer);
+            FileCabinetRecordCsvWriter csvWriter = new (writer);
 
             for (int i = 0; i < this.records.Length; i++)
             {
@@ -56,7 +56,7 @@ namespace FileCabinetApp
         /// <param name="writer">Stream to *.xml file.</param>
         public void SaveToXml(StreamWriter writer)
         {
-            FileCabinetRecordXmlWriter xmlWriter = new FileCabinetRecordXmlWriter(XmlWriter.Create(writer));
+            FileCabinetRecordXmlWriter xmlWriter = new (XmlWriter.Create(writer));
 
             for (int i = 0; i < this.records.Length; i++)
             {
@@ -70,7 +70,7 @@ namespace FileCabinetApp
         /// <param name="reader">Stream to *.csv file.</param>
         public void LoadFromScv(StreamReader reader)
         {
-            FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader);
+            FileCabinetRecordCsvReader csvReader = new (reader);
 
             this.Records = csvReader.ReadAll().AsReadOnly();
         }
@@ -81,7 +81,7 @@ namespace FileCabinetApp
         /// <param name="reader">Stream to *.xml file.</param>
         public void LoadFromXml(FileStream reader)
         {
-            FileCabinetRecordXmlReader xmlReader = new FileCabinetRecordXmlReader(reader);
+            FileCabinetRecordXmlReader xmlReader = new (reader);
 
             this.Records = xmlReader.ReadAll().AsReadOnly();
         }

@@ -60,7 +60,7 @@ namespace FileCabinetApp
                 return null;
             }
 
-            RecordParameters parameters = new RecordParameters()
+            RecordParameters parameters = new ()
             {
                 FirstName = record.FirstName,
                 LastName = record.LastName,

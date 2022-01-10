@@ -11,7 +11,7 @@ namespace FileCabinetApp.RecordValidators
         private readonly List<IRecordValidator> validators = new List<IRecordValidator>();
 
         /// <summary>
-        /// Validate firstname property of the record.
+        /// Validates firstname property of the record.
         /// </summary>
         /// <param name="minLength">Minimal Length of firstname of the records.</param>
         /// <param name="maxLength">Maximum Length of firstname of the records.</param>
@@ -21,7 +21,7 @@ namespace FileCabinetApp.RecordValidators
         }
 
         /// <summary>
-        /// Validate lastname property of the record.
+        /// Validates lastname property of the record.
         /// </summary>
         /// <param name="minLength">Minimal Length of lastname of the records.</param>
         /// <param name="maxLength">Maximum Length of lastname of the records.</param>
@@ -31,7 +31,7 @@ namespace FileCabinetApp.RecordValidators
         }
 
         /// <summary>
-        /// Validate dateofbirth property of the record.
+        /// Validates dateofbirth property of the record.
         /// </summary>
         /// <param name="from">DateTime start range.</param>
         /// <param name="to">DateTime end range.</param>
@@ -41,7 +41,7 @@ namespace FileCabinetApp.RecordValidators
         }
 
         /// <summary>
-        /// Validate height property of the record.
+        /// Validates height property of the record.
         /// </summary>
         /// <param name="minHeight">Minimal height.</param>
         /// <param name="maxHeight">Maximum height.</param>
@@ -51,7 +51,7 @@ namespace FileCabinetApp.RecordValidators
         }
 
         /// <summary>
-        /// Validate salary property of the record.
+        /// Validates salary property of the record.
         /// </summary>
         /// <param name="minSalary">Minimal salary value.</param>
         /// <param name="maxSalary">Maximal salary value.</param>
@@ -61,7 +61,7 @@ namespace FileCabinetApp.RecordValidators
         }
 
         /// <summary>
-        /// Validate sex property of the record.
+        /// Validates sex property of the record.
         /// </summary>
         /// <param name="validGenders">Valid gender chars.</param>
         public void ValidateGender(char[] validGenders)

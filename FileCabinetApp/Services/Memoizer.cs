@@ -51,11 +51,11 @@ namespace FileCabinetApp.Services
         {
             var sortedPropertiesWithValues = propertiesWithValues.OrderBy((key) => key.Key.Name);
 
-            StringBuilder keyBuilder = new StringBuilder();
+            StringBuilder keyBuilder = new ();
 
             foreach (var propertyNameValue in sortedPropertiesWithValues)
             {
-                keyBuilder.Append($"{propertyNameValue.Key.Name}={propertyNameValue.Value.ToString()} {operation} ");
+                keyBuilder.Append($"{propertyNameValue.Key.Name}={propertyNameValue.Value} {operation} ");
             }
 
             return keyBuilder.ToString();

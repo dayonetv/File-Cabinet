@@ -27,13 +27,13 @@ namespace FileCabinetGenerator
         private const int MaxSalary = 1_000_000;
         private const short MaxHeight = 220;
         private const short MinHeight = 120;
-        private const string Chars = "abcdefghijklmnopqrstuvw";
+        private const string NameChars = "abcdefghijklmnopqrstuvw";
         private const string DateFormat = "d";
 
         private static readonly char[] Genders = { 'M', 'F' };
         private static readonly DateTime MinDateOfBirth = new (1950, 1, 1);
 
-        private static readonly Random Randomizer = new Random();
+        private static readonly Random Randomizer = new ();
 
         private static readonly string[] StartUpFullCommands = new string[]
         {
@@ -262,11 +262,11 @@ namespace FileCabinetGenerator
 
         private static List<FileCabinetRecord> GenerateRandomRecords(int startId, int recordsAmount)
         {
-            List<FileCabinetRecord> generatedRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> generatedRecords = new ();
 
             for (int i = 0; i < recordsAmount; i++)
             {
-                FileCabinetRecord randomRecord = new FileCabinetRecord()
+                FileCabinetRecord randomRecord = new ()
                 {
                     Id = startId++,
                     FirstName = GetRandomString(),
@@ -286,7 +286,7 @@ namespace FileCabinetGenerator
         private static string GetRandomString()
         {
             int stringLength = Randomizer.Next(MinNameLength, MaxNameLength);
-            return new string(Enumerable.Repeat(Chars, stringLength).Select(s => s[Randomizer.Next(s.Length)]).ToArray());
+            return new string(Enumerable.Repeat(NameChars, stringLength).Select(s => s[Randomizer.Next(s.Length)]).ToArray());
         }
 
         private static short GetRandomHeight()

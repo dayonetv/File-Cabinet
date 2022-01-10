@@ -14,10 +14,11 @@ namespace FileCabinetApp.Services
     /// </summary>
     public class ServiceLogger : IFileCabinetService
     {
-        private const string DateFormat = "d";
+        private const string PropertyDateFormat = "d";
+        private const string LogsDateFormat = "G";
 
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
-        private static readonly FileInfo LogFile = new FileInfo("logs.txt");
+        private static readonly FileInfo LogFile = new ("logs.txt");
 
         private readonly TextWriter logWriter = LogFile.CreateText();
         private readonly IFileCabinetService service;
@@ -34,7 +35,16 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public int CreateRecord(RecordParameters parameters)
         {
-            this.WriteInputs(nameof(this.CreateRecord), CreateEditParametersToString(parameters));
+            if (parameters == null)
+            {
+                ArgumentNullException exception = new ArgumentNullException(nameof(parameters));
+
+                this.WriteInputs(nameof(this.CreateRecord), exception.Message);
+
+                throw exception;
+            }
+
+            this.WriteInputs(nameof(this.CreateRecord), RecordParametersToString(parameters));
 
             var result = this.service.CreateRecord(parameters);
 
@@ -46,7 +56,16 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void EditRecord(int id, RecordParameters parameters)
         {
-            this.WriteInputs(nameof(this.EditRecord), $"{nameof(id)} = '{id}', {CreateEditParametersToString(parameters)}");
+            if (parameters == null)
+            {
+                ArgumentNullException exception = new ArgumentNullException(nameof(parameters));
+
+                this.WriteInputs(nameof(this.EditRecord), exception.Message);
+
+                throw exception;
+            }
+
+            this.WriteInputs(nameof(this.EditRecord), $"{nameof(id)} = '{id}', {RecordParametersToString(parameters)}");
 
             this.service.EditRecord(id, parameters);
 
@@ -60,7 +79,7 @@ namespace FileCabinetApp.Services
 
             var result = this.service.GetStat();
 
-            this.WriteInputs(nameof(this.GetStat), $"Total: {result.total}, Deleted: {result.deleted}");
+            this.WriteOutputs(nameof(this.GetStat), $"Total: {result.total}, Deleted: {result.deleted}");
 
             return result;
         }
@@ -96,7 +115,7 @@ namespace FileCabinetApp.Services
 
             var result = this.service.Delete(recordProperty, propertyValue);
 
-            this.WriteOutputs(nameof(this.Delete), string.Join(' ', result));
+            this.WriteOutputs(nameof(this.Delete), string.Join(',', result));
 
             return result;
         }
@@ -136,7 +155,7 @@ namespace FileCabinetApp.Services
 
             var records = this.service.FindRecords(propertiesWithValues, operation);
 
-            StringBuilder outputText = new StringBuilder();
+            StringBuilder outputText = new ();
 
             if (records != null)
             {
@@ -153,42 +172,56 @@ namespace FileCabinetApp.Services
 
         private static string RecordToString(FileCabinetRecord record)
         {
-            StringBuilder text = new StringBuilder();
+            StringBuilder recordPropertiesAndValues = new ();
 
-            text.Append($"{nameof(record.Id)} = '{record.Id}', ");
-            text.Append($"{nameof(record.FirstName)} = '{record.FirstName}', ");
-            text.Append($"{nameof(record.LastName)} = '{record.LastName}', ");
-            text.Append($"{nameof(record.DateOfBirth)} = '{record.DateOfBirth.ToString(DateFormat, Culture)}', ");
-            text.Append($"{nameof(record.Height)} = '{record.Height}', ");
-            text.Append($"{nameof(record.Salary)} = '{record.Salary}', ");
-            text.Append($"{nameof(record.Sex)} = '{record.Sex}'\n");
+            PropertyInfo[] recordProperties = record.GetType().GetProperties();
 
-            return text.ToString();
+            for (int i = 0; i < recordProperties.Length - 1; i++)
+            {
+                if (recordProperties[i].GetValue(record) is DateTime dateOfBirth)
+                {
+                    recordPropertiesAndValues.Append($"{recordProperties[i].Name} = '{dateOfBirth.ToString(PropertyDateFormat, Culture)}', ");
+                    continue;
+                }
+
+                recordPropertiesAndValues.Append($"{recordProperties[i].Name} = '{recordProperties[i].GetValue(record)}', ");
+            }
+
+            recordPropertiesAndValues.Append($"{recordProperties[^1].Name} = '{recordProperties[^1].GetValue(record)}'; ");
+
+            return recordPropertiesAndValues.ToString();
         }
 
-        private static string CreateEditParametersToString(RecordParameters parameters)
+        private static string RecordParametersToString(RecordParameters parameters)
         {
-            StringBuilder text = new StringBuilder();
+            StringBuilder parametersPropertiesAndValues = new ();
 
-            text.Append($"{nameof(parameters.FirstName)} = '{parameters?.FirstName}', ");
-            text.Append($"{nameof(parameters.LastName)} = '{parameters?.LastName}', ");
-            text.Append($"{nameof(parameters.DateOfBirth)} = '{parameters?.DateOfBirth.ToString(DateFormat, Culture)}', ");
-            text.Append($"{nameof(parameters.Height)} = '{parameters?.Height}', ");
-            text.Append($"{nameof(parameters.Salary)} = '{parameters?.Salary}', ");
-            text.Append($"{nameof(parameters.Sex)} = '{parameters?.Sex}'\n");
+            PropertyInfo[] parametersProperties = parameters.GetType().GetProperties();
 
-            return text.ToString();
+            for (int i = 0; i < parametersProperties.Length - 1; i++)
+            {
+                if (parametersProperties[i].GetValue(parameters) is DateTime dateOfBirth)
+                {
+                    parametersPropertiesAndValues.Append($"{parametersProperties[i].Name} = '{dateOfBirth.ToString(PropertyDateFormat, Culture)}', ");
+                }
+
+                parametersPropertiesAndValues.Append($"{parametersProperties[i].Name} = '{parametersProperties[i].GetValue(parameters)}', ");
+            }
+
+            parametersPropertiesAndValues.Append($"{parametersProperties[^1].Name} = '{parametersProperties[^1].GetValue(parameters)}'");
+
+            return parametersPropertiesAndValues.ToString();
         }
 
         private void WriteInputs(string methodName, string inputParameters)
         {
-            this.logWriter.WriteLine($"{DateTime.Now.ToString("G", Culture)} - Calling {methodName}() with {inputParameters ?? "null"}");
+            this.logWriter.WriteLine($"{DateTime.Now.ToString(LogsDateFormat, Culture)} - Calling {methodName}() with {inputParameters ?? "null"}");
             this.logWriter.Flush();
         }
 
         private void WriteOutputs(string methodName, string returningParameters)
         {
-            this.logWriter.WriteLine($"{DateTime.Now.ToString("G", Culture)} - {methodName}() returned '{returningParameters ?? "void"}'");
+            this.logWriter.WriteLine($"{DateTime.Now.ToString(LogsDateFormat, Culture)} - {methodName}() returned '{returningParameters ?? "void"}'");
             this.logWriter.Flush();
         }
     }

@@ -222,7 +222,7 @@
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ICommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
-            Handle request or moves request to the next handler.
+            Handles request or moves request to the next handler.
             </summary>
             <param name="request">Request to be handled. </param>
             <exception cref="T:System.ArgumentNullException">request is null.</exception>
@@ -508,6 +508,7 @@
             The main console-application entry point.
             </summary>
             <param name="args">Application startup parameters. </param>
+            <exception cref="T:System.ArgumentNullException">args is null.</exception>
         </member>
         <member name="T:FileCabinetApp.RecordParameters">
             <summary>
@@ -810,42 +811,42 @@
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilder.ValidateFirstName(System.Int32,System.Int32)">
             <summary>
-            Validate firstname property of the record.
+            Validates firstname property of the record.
             </summary>
             <param name="minLength">Minimal Length of firstname of the records.</param>
             <param name="maxLength">Maximum Length of firstname of the records.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilder.ValidateLastName(System.Int32,System.Int32)">
             <summary>
-            Validate lastname property of the record.
+            Validates lastname property of the record.
             </summary>
             <param name="minLength">Minimal Length of lastname of the records.</param>
             <param name="maxLength">Maximum Length of lastname of the records.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilder.ValidateDateOfBirth(System.DateTime,System.DateTime)">
             <summary>
-            Validate dateofbirth property of the record.
+            Validates dateofbirth property of the record.
             </summary>
             <param name="from">DateTime start range.</param>
             <param name="to">DateTime end range.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilder.ValidateHeight(System.Int32,System.Int32)">
             <summary>
-            Validate height property of the record.
+            Validates height property of the record.
             </summary>
             <param name="minHeight">Minimal height.</param>
             <param name="maxHeight">Maximum height.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilder.ValidateSalary(System.Decimal,System.Decimal)">
             <summary>
-            Validate salary property of the record.
+            Validates salary property of the record.
             </summary>
             <param name="minSalary">Minimal salary value.</param>
             <param name="maxSalary">Maximal salary value.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilder.ValidateGender(System.Char[])">
             <summary>
-            Validate sex property of the record.
+            Validates sex property of the record.
             </summary>
             <param name="validGenders">Valid gender chars.</param>
         </member>
@@ -866,6 +867,7 @@
             </summary>
             <param name="builder">builder instance.</param>
             <returns>Default Validator.</returns>
+            <exception cref="T:System.ArgumentNullException">builder is null.</exception>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilderExtensions.Custom(FileCabinetApp.RecordValidators.ValidatorBuilder)">
             <summary>
@@ -873,6 +875,7 @@
             </summary>
             <param name="builder">builder instance.</param>
             <returns>Custom Validator.</returns>
+            <exception cref="T:System.ArgumentNullException">builder is null.</exception>
         </member>
         <member name="T:FileCabinetApp.RecordWriters.FileCabinetRecordCsvWriter">
             <summary>

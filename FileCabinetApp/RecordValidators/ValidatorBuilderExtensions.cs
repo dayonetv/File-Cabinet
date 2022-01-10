@@ -20,6 +20,7 @@ namespace FileCabinetApp.RecordValidators
         /// </summary>
         /// <param name="builder">builder instance.</param>
         /// <returns>Default Validator.</returns>
+        /// <exception cref="ArgumentNullException">builder is null.</exception>
         public static IRecordValidator Default(this ValidatorBuilder builder)
         {
             if (builder == null)
@@ -37,6 +38,7 @@ namespace FileCabinetApp.RecordValidators
         /// </summary>
         /// <param name="builder">builder instance.</param>
         /// <returns>Custom Validator.</returns>
+        /// <exception cref="ArgumentNullException">builder is null.</exception>
         public static IRecordValidator Custom(this ValidatorBuilder builder)
         {
             if (builder == null)

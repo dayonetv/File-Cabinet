@@ -60,6 +60,7 @@ namespace FileCabinetApp.CommandHandlers
         private static Tuple<bool, string> YesNoChoiceValidator(char inputChoice)
         {
             bool result = Array.FindIndex(Choices, choice => choice.Item1.ToString().Equals(inputChoice.ToString(), StringComparison.InvariantCultureIgnoreCase)) >= 0;
+
             return new Tuple<bool, string>(result, result ? "Valid" : "Choice can only be 'Y' or 'N'");
         }
 
@@ -76,7 +77,7 @@ namespace FileCabinetApp.CommandHandlers
             string fileExtention = inputParams[0].Trim();
             string fileName = inputParams[^1].Trim();
 
-            FileInfo exportFile = new FileInfo(fileName);
+            FileInfo exportFile = new (fileName);
 
             bool toRewrite = true;
 
@@ -104,7 +105,7 @@ namespace FileCabinetApp.CommandHandlers
             }
             else
             {
-                Console.WriteLine($"Unknown: {fileExtention} parameter for 'export' command");
+                Console.WriteLine($"Unknown: '{fileExtention}' parameter for 'export' command");
             }
         }
 

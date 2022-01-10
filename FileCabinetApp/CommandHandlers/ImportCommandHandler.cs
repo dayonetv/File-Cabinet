@@ -63,7 +63,7 @@ namespace FileCabinetApp.CommandHandlers
             string importMode = inputParams[0].Trim();
             string fileName = inputParams[^1].Trim();
 
-            FileInfo importFile = new FileInfo(fileName);
+            FileInfo importFile = new (fileName);
 
             if (importFile.Exists)
             {
@@ -123,7 +123,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private string ImportFromXml(FileInfo fileToImportFrom)
         {
-            FileStream xmlReader = new FileStream(fileToImportFrom.FullName, FileMode.Open, FileAccess.Read, FileShare.None);
+            FileStream xmlReader = new (fileToImportFrom.FullName, FileMode.Open, FileAccess.Read, FileShare.None);
 
             try
             {

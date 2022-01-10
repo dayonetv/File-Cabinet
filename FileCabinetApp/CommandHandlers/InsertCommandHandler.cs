@@ -13,10 +13,10 @@ namespace FileCabinetApp.CommandHandlers
     {
         private const string CommandName = "insert";
 
-        private const string KeyWord = "values";
+        private const string KeyWord = " values ";
         private const char Separator = ',';
         private const char ValuesTrimChar = '\'';
-        private const int SplitAmount = 2;
+        private const int KeyWordSplitAmount = 2;
 
         private static readonly char[] TrimChars = new char[] { '(', ')' };
 
@@ -53,7 +53,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private static FileCabinetRecord CreateRecord(string[] propertyNames, string[] propertyValues)
         {
-            FileCabinetRecord record = new FileCabinetRecord();
+            FileCabinetRecord record = new ();
 
             PropertyInfo[] recordProperties = record.GetType().GetProperties();
 
@@ -101,9 +101,9 @@ namespace FileCabinetApp.CommandHandlers
 
             var inputs = parameters.Split(KeyWord, StringSplitOptions.TrimEntries);
 
-            if (inputs.Length != SplitAmount)
+            if (inputs.Length != KeyWordSplitAmount)
             {
-                Console.WriteLine($"'insert' command can have only one '{KeyWord}' word.");
+                Console.WriteLine($"Properties and values should be sepatated with one '{KeyWord}' word.");
                 return;
             }
 

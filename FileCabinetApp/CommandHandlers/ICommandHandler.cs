@@ -15,7 +15,7 @@ namespace FileCabinetApp.CommandHandlers
         public ICommandHandler SetNext(ICommandHandler commandHandler);
 
         /// <summary>
-        /// Handle request or moves request to the next handler.
+        /// Handles request or moves request to the next handler.
         /// </summary>
         /// <param name="request">Request to be handled. </param>
         /// <exception cref="ArgumentNullException">request is null.</exception>
