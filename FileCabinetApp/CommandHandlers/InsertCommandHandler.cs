@@ -93,7 +93,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (!parameters.Contains(KeyWord, StringComparison.InvariantCultureIgnoreCase))
             {
-                Console.WriteLine($"'insert' command requires '{KeyWord}' word.");
+                Console.WriteLine($"'{CommandName}' command requires '{KeyWord}' word.");
                 return;
             }
 

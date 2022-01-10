@@ -209,12 +209,6 @@ namespace FileCabinetApp.CommandHandlers
                 return (success, operatorType);
             }
 
-            if (wherePropertiesNamesValues.Length == 0)
-            {
-                Console.WriteLine("Where properties-values are empty.");
-                return (false, OperationType.None);
-            }
-
             foreach (var propertyNameValue in wherePropertiesNamesValues)
             {
                 var inputs = propertyNameValue.Split(PropertyValueSeparator, StringSplitOptions.RemoveEmptyEntries);

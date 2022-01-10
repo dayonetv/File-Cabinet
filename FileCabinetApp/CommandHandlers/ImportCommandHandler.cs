@@ -56,7 +56,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (inputParams.Length != AmountOfImportParameters)
             {
-                Console.WriteLine($"'import' command requires at least {AmountOfImportParameters} parameters. ");
+                Console.WriteLine($"'{CommandName}' command requires at least {AmountOfImportParameters} parameters. ");
                 return;
             }
 

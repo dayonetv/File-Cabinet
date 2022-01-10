@@ -70,7 +70,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (inputParams.Length != AmountOfExportParameters)
             {
-                Console.WriteLine($"'export' command requires at least {AmountOfExportParameters} parameters. ");
+                Console.WriteLine($"'{CommandName}' command requires at least {AmountOfExportParameters} parameters. ");
                 return;
             }
 
@@ -105,7 +105,7 @@ namespace FileCabinetApp.CommandHandlers
             }
             else
             {
-                Console.WriteLine($"Unknown: '{fileExtention}' parameter for 'export' command");
+                Console.WriteLine($"Unknown: '{fileExtention}' parameter for '{CommandName}' command");
             }
         }
 
