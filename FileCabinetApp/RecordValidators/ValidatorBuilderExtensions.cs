@@ -12,7 +12,7 @@ namespace FileCabinetApp.RecordValidators
         private const string DefaultSection = "default";
         private const string CustomSection = "custom";
 
-        private static readonly FileInfo RulesFile = new FileInfo("validation-rules.json");
+        private static readonly FileInfo RulesFile = new ("validation-rules.json");
         private static readonly IConfiguration ValidationConfiguration = new ConfigurationBuilder().AddJsonFile(RulesFile.FullName, true, true).Build();
 
         /// <summary>

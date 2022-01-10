@@ -8,7 +8,7 @@ namespace FileCabinetApp.RecordValidators
     /// </summary>
     public class ValidatorBuilder
     {
-        private readonly List<IRecordValidator> validators = new List<IRecordValidator>();
+        private readonly List<IRecordValidator> validators = new ();
 
         /// <summary>
         /// Validates firstname property of the record.

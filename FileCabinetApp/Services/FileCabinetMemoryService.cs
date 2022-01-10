@@ -14,11 +14,11 @@ namespace FileCabinetApp.Services
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
-        private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private readonly List<FileCabinetRecord> list = new ();
 
-        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
-        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
-        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new (StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new (StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new ();
 
         private readonly IRecordValidator validator;
 
@@ -125,16 +125,16 @@ namespace FileCabinetApp.Services
                 throw new ArgumentNullException(nameof(snapshot));
             }
 
-            StringBuilder recordsInfo = new StringBuilder();
+            StringBuilder importedRecordsInfo = new StringBuilder();
 
-            List<FileCabinetRecord> recordsToAdd = new List<FileCabinetRecord>(snapshot.Records);
+            List<FileCabinetRecord> recordsToAdd = new (snapshot.Records);
 
             if (recordsToAdd.Count == 0)
             {
                 return "No records imported";
             }
 
-            List<FileCabinetRecord> invalidRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> invalidRecords = new ();
 
             foreach (var record in recordsToAdd)
             {
@@ -146,7 +146,7 @@ namespace FileCabinetApp.Services
                 }
                 catch (ArgumentException ex)
                 {
-                    recordsInfo.Append($"ID {record.Id}: {ex.Message}\n");
+                    importedRecordsInfo.Append($"ID {record.Id}: {ex.Message}\n");
                     invalidRecords.Add(record);
                 }
             }
@@ -155,7 +155,7 @@ namespace FileCabinetApp.Services
 
             if (recordsToAdd.Count == 0)
             {
-                return recordsInfo.ToString() + "No records imported";
+                return importedRecordsInfo.ToString() + "No records imported";
             }
 
             int recordsToAddStartId = recordsToAdd[0].Id;
@@ -178,7 +178,7 @@ namespace FileCabinetApp.Services
 
             this.memoizer.Clear();
 
-            return recordsInfo.ToString() + $"{recordsToAdd.Count} records were imported ";
+            return importedRecordsInfo.ToString() + $"{recordsToAdd.Count} records were imported ";
         }
 
         /// <inheritdoc/>
@@ -245,7 +245,7 @@ namespace FileCabinetApp.Services
 
             foreach (var propertyValue in propertiesWithValues)
             {
-                List<FileCabinetRecord> findedRecordsByOneProperty = new List<FileCabinetRecord>();
+                List<FileCabinetRecord> findedRecordsByOneProperty = new ();
 
                 if (propertyValue.Key.Equals(firstnameProperty))
                 {

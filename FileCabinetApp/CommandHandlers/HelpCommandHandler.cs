@@ -14,7 +14,7 @@ namespace FileCabinetApp.CommandHandlers
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private const double SimilarityMinimalRatio = 0.4;
+        private const double CommandsSimilarityMinimalRatio = 0.4;
 
         private static readonly string[][] HelpMessages = new string[][]
         {
@@ -88,7 +88,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private static bool CheckCommand(string command)
         {
-            int indexOfCommand = Array.FindIndex(HelpMessages, 0, HelpMessages.Length, msg => string.Equals(msg[CommandHelpIndex], command, StringComparison.InvariantCultureIgnoreCase));
+            int indexOfCommand = Array.FindIndex(HelpMessages, 0, HelpMessages.Length, message => string.Equals(message[CommandHelpIndex], command, StringComparison.InvariantCultureIgnoreCase));
 
             return indexOfCommand >= 0;
         }
@@ -106,11 +106,11 @@ namespace FileCabinetApp.CommandHandlers
         {
             List<string> suggestions = new ();
 
-            foreach (var command in HelpMessages)
+            foreach (var message in HelpMessages)
             {
-                if (GetSimilarity(incorrectCommand.ToUpperInvariant(), command[CommandHelpIndex].ToUpperInvariant()) >= SimilarityMinimalRatio)
+                if (GetSimilarity(incorrectCommand.ToUpperInvariant(), message[CommandHelpIndex].ToUpperInvariant()) >= CommandsSimilarityMinimalRatio)
                 {
-                    suggestions.Add(command[CommandHelpIndex]);
+                    suggestions.Add(message[CommandHelpIndex]);
                 }
             }
 

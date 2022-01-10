@@ -15,7 +15,7 @@ namespace FileCabinetApp.CommandHandlers
         private const string CommandName = "delete";
 
         private const string KeyWord = "where ";
-        private const char Separator = '=';
+        private const char PropertyNameValueSeparator = '=';
         private const char ValueTrimChar = '\'';
         private const int KeyWordSplitAmount = 1;
         private const int PropertyNameValueSplitAmount = 2;
@@ -49,13 +49,6 @@ namespace FileCabinetApp.CommandHandlers
             {
                 base.Handle(request);
             }
-        }
-
-        private static PropertyInfo GetProperty(string inputPropertyName)
-        {
-            PropertyInfo property = Array.Find(typeof(FileCabinetRecord).GetProperties(), (property) => property.Name.Equals(inputPropertyName, StringComparison.InvariantCultureIgnoreCase));
-
-            return property;
         }
 
         private static void DisplayDeletedIds(List<int> deletedIds)
@@ -100,18 +93,18 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            var propertyWithValue = inputs.First().Split(Separator, StringSplitOptions.TrimEntries);
+            var propertyWithValue = inputs.First().Split(PropertyNameValueSeparator, StringSplitOptions.TrimEntries);
 
             if (propertyWithValue.Length != PropertyNameValueSplitAmount)
             {
-                Console.WriteLine($"There should be one '{Separator}' symbol after {KeyWord} word.");
+                Console.WriteLine($"There should be one '{PropertyNameValueSeparator}' symbol after {KeyWord} word.");
                 return;
             }
 
             string propertyName = propertyWithValue.First().Trim();
             string propertyValue = propertyWithValue.Last().Trim(ValueTrimChar);
 
-            PropertyInfo property = GetProperty(propertyName);
+            PropertyInfo property = GetProperty(propertyName, typeof(FileCabinetRecord));
 
             if (property == null)
             {

@@ -79,7 +79,7 @@ namespace FileCabinetGenerator
             {
                 if (configuration.amount <= 0 || configuration.id <= 0)
                 {
-                    Console.WriteLine($"Records-amount or start-id should be more than 0");
+                    Console.WriteLine($"Records-amount and start-id should be more than 0");
                     return;
                 }
 

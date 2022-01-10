@@ -10,7 +10,7 @@ namespace FileCabinetApp.CommandHandlers
     public class ImportCommandHandler : ServiceCommandHandlerBase
     {
         private const string CommandName = "import";
-        private const int AmountOFImportParams = 2;
+        private const int AmountOfImportParameters = 2;
 
         private readonly Tuple<string, Func<FileInfo, string>>[] importModes;
 
@@ -52,11 +52,11 @@ namespace FileCabinetApp.CommandHandlers
 
         private void Import(string parameters)
         {
-            var inputParams = parameters.Trim().Split(' ', AmountOFImportParams);
+            var inputParams = parameters.Trim().Split(' ', AmountOfImportParameters);
 
-            if (inputParams.Length != AmountOFImportParams)
+            if (inputParams.Length != AmountOfImportParameters)
             {
-                Console.WriteLine($"'import' command requires at least {AmountOFImportParams} parameters. ");
+                Console.WriteLine($"'import' command requires at least {AmountOfImportParameters} parameters. ");
                 return;
             }
 

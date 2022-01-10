@@ -39,7 +39,7 @@ namespace FileCabinetApp.CommandHandlers
         private const string AndWord = " and ";
         private const string OrWord = " or ";
 
-        private const char SelectSeparator = ',';
+        private const char SelectPropertiesSeparator = ',';
         private const char PropertyValueSeparator = '=';
         private const string DateFormat = "d";
 
@@ -81,13 +81,6 @@ namespace FileCabinetApp.CommandHandlers
             {
                 base.Handle(request);
             }
-        }
-
-        private static PropertyInfo GetProperty(string inputPropertyName, Type type)
-        {
-            PropertyInfo property = Array.Find(type.GetProperties(), (property) => property.Name.Equals(inputPropertyName, Comparison));
-
-            return property;
         }
 
         private static string[] GetPropertiesNamesAndValues(string wherePart, out OperationType operatorType, out bool correctness)
@@ -150,9 +143,9 @@ namespace FileCabinetApp.CommandHandlers
             string selectPart = inputs.First();
             string wherePart = inputs.Last() != selectPart ? inputs.Last() : string.Empty;
 
-            (bool success, OperationType operatorType) = this.ProcessWherePart(wherePart);
+            (bool wherePartCorectness, OperationType operatorType) = this.ProcessWherePart(wherePart);
 
-            if (success && this.ProcessSelectPart(selectPart))
+            if (wherePartCorectness && this.ProcessSelectPart(selectPart))
             {
                 var findedRecords = this.Service.FindRecords(this.propertyNameValuePairs, operatorType);
 
@@ -170,7 +163,7 @@ namespace FileCabinetApp.CommandHandlers
                 return true;
             }
 
-            var selectProperties = selectPart.Split(SelectSeparator, StringSplitOptions.RemoveEmptyEntries);
+            var selectProperties = selectPart.Split(SelectPropertiesSeparator, StringSplitOptions.RemoveEmptyEntries);
 
             if (selectProperties.Length == 0)
             {
@@ -209,10 +202,7 @@ namespace FileCabinetApp.CommandHandlers
                 return (true, OperationType.None);
             }
 
-            OperationType operatorType;
-            bool success;
-
-            var wherePropertiesNamesValues = GetPropertiesNamesAndValues(wherePart, out operatorType, out success);
+            var wherePropertiesNamesValues = GetPropertiesNamesAndValues(wherePart, out OperationType operatorType, out bool success);
 
             if (!success)
             {
@@ -291,7 +281,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private List<int> GetMaxLenghtList(List<FileCabinetRecord> findedRecords)
         {
-            List<int> propertiesNamesAndValuesMaxLenght = new List<int>();
+            List<int> propertiesNamesAndValuesMaxLenght = new ();
 
             foreach (var property in this.recordPropertiesToDisplay)
             {

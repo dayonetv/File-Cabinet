@@ -11,7 +11,7 @@ namespace FileCabinetApp.CommandHandlers
     {
         private const string CommandName = "export";
 
-        private const int AmountOfExportParams = 2;
+        private const int AmountOfExportParameters = 2;
 
         private static readonly Tuple<char, bool>[] Choices = new Tuple<char, bool>[]
         {
@@ -66,11 +66,11 @@ namespace FileCabinetApp.CommandHandlers
 
         private void Export(string parameters)
         {
-            var inputParams = parameters.Trim().Split(' ', AmountOfExportParams);
+            var inputParams = parameters.Trim().Split(' ', AmountOfExportParameters);
 
-            if (inputParams.Length != AmountOfExportParams)
+            if (inputParams.Length != AmountOfExportParameters)
             {
-                Console.WriteLine($"'export' command requires at least {AmountOfExportParams} parameters. ");
+                Console.WriteLine($"'export' command requires at least {AmountOfExportParameters} parameters. ");
                 return;
             }
 

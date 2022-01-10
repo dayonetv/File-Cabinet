@@ -37,7 +37,7 @@ namespace FileCabinetApp.Services
         {
             if (parameters == null)
             {
-                ArgumentNullException exception = new ArgumentNullException(nameof(parameters));
+                ArgumentNullException exception = new (nameof(parameters));
 
                 this.WriteInputs(nameof(this.CreateRecord), exception.Message);
 
@@ -58,7 +58,7 @@ namespace FileCabinetApp.Services
         {
             if (parameters == null)
             {
-                ArgumentNullException exception = new ArgumentNullException(nameof(parameters));
+                ArgumentNullException exception = new (nameof(parameters));
 
                 this.WriteInputs(nameof(this.EditRecord), exception.Message);
 

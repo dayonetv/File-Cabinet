@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -80,6 +81,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             input = input?.Trim();
             bool result = !string.IsNullOrEmpty(input);
+
             return new Tuple<bool, string, string>(result, input, input);
         }
 
@@ -92,7 +94,26 @@ namespace FileCabinetApp.CommandHandlers
         {
             input = input?.Trim();
             bool result = char.TryParse(input, out char symbol);
+
             return new Tuple<bool, string, char>(result, input, symbol);
+        }
+
+        /// <summary>
+        /// Gets property from the type by property name.
+        /// </summary>
+        /// <param name="propertyName"><see cref="string"/>property name.</param>
+        /// <param name="targetType"><see cref="Type"/>type to get properties from.</param>
+        /// <returns>Finded property. (null if property is not found).</returns>
+        protected static PropertyInfo GetProperty(string propertyName, Type targetType)
+        {
+            if (targetType == null)
+            {
+                throw new ArgumentNullException(nameof(targetType));
+            }
+
+            PropertyInfo property = Array.Find(targetType.GetProperties(), (property) => property.Name.Equals(propertyName, StringComparison.InvariantCultureIgnoreCase));
+
+            return property;
         }
     }
 }

@@ -54,9 +54,9 @@ namespace FileCabinetApp.RecordWriters
             this.csvWriter.Flush();
         }
 
-        private void WritePropertyNames(Type type)
+        private void WritePropertyNames(Type targetType)
         {
-            foreach (var property in type.GetProperties())
+            foreach (var property in targetType.GetProperties())
             {
                 this.csvWriter.Write($"{property.Name}, ");
             }

@@ -43,9 +43,9 @@ namespace FileCabinetApp.CommandHandlers
 
         private void Stat()
         {
-            (int total, int deleted) recordsCount = this.Service.GetStat();
+            (int total, int deleted) = this.Service.GetStat();
 
-            Console.WriteLine($"Total: {recordsCount.total} record(s).\nDeleted: {recordsCount.deleted} record(s).");
+            Console.WriteLine($"Total: {total} record(s).\nDeleted: {deleted} record(s).");
         }
     }
 }

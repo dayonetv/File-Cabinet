@@ -11,12 +11,12 @@ namespace FileCabinetApp.CommandHandlers
     {
         private const string CommandName = "create";
 
-        private const int DefaultMaxNameLength = 60;
-        private const int DefaultMinSalary = 0;
-        private const short DefaultMaxHeight = 220;
+        private const int MaxNameLength = 60;
+        private const int MinSalary = 0;
+        private const short MaxHeight = 220;
 
-        private static readonly Predicate<char> DefaultGenderPredicate = new ((sex) => char.IsLetter(sex));
-        private static readonly Predicate<DateTime> DefaultDateOfBirthPredicate = new ((date) => date < DateTime.Now);
+        private static readonly Predicate<char> GenderValidationPredicate = new ((sex) => char.IsLetter(sex));
+        private static readonly Predicate<DateTime> DateOfBirthValidationPredicate = new ((date) => date < DateTime.Now);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateCommandHandler"/> class.
@@ -58,6 +58,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             input = input?.Trim();
             bool result = decimal.TryParse(input, out decimal decValue);
+
             return new Tuple<bool, string, decimal>(result, input, decValue);
         }
 
@@ -70,6 +71,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             input = input?.Trim();
             bool result = short.TryParse(input, out short intValue);
+
             return new Tuple<bool, string, short>(result, input, intValue);
         }
 
@@ -80,7 +82,8 @@ namespace FileCabinetApp.CommandHandlers
         /// <returns>validation success, validation message.</returns>
         private static Tuple<bool, string> FirstNameValidator(string firstName)
         {
-            bool result = firstName?.Length < DefaultMaxNameLength;
+            bool result = firstName?.Length < MaxNameLength;
+
             return new Tuple<bool, string>(result, result ? "Valid" : "first name is too long");
         }
 
@@ -91,7 +94,8 @@ namespace FileCabinetApp.CommandHandlers
         /// <returns>validation success, validation message.</returns>
         private static Tuple<bool, string> LastNameValidator(string lastName)
         {
-            bool result = lastName?.Length < DefaultMaxNameLength;
+            bool result = lastName?.Length < MaxNameLength;
+
             return new Tuple<bool, string>(result, result ? "Valid" : "last name is too long");
         }
 
@@ -102,7 +106,8 @@ namespace FileCabinetApp.CommandHandlers
         /// <returns>validation success, validation message.</returns>
         private static Tuple<bool, string> DateOfBirthValidator(DateTime dateOfBirth)
         {
-            bool result = DefaultDateOfBirthPredicate(dateOfBirth);
+            bool result = DateOfBirthValidationPredicate(dateOfBirth);
+
             return new Tuple<bool, string>(result, result ? "Valid" : "wrong date of birth");
         }
 
@@ -113,7 +118,8 @@ namespace FileCabinetApp.CommandHandlers
         /// <returns>validation success, validation message.</returns>
         private static Tuple<bool, string> HeightValidator(short height)
         {
-            bool result = height < DefaultMaxHeight;
+            bool result = height < MaxHeight;
+
             return new Tuple<bool, string>(result, result ? "Valid" : "height is too big");
         }
 
@@ -124,8 +130,9 @@ namespace FileCabinetApp.CommandHandlers
         /// <returns>validation success, validation message.</returns>
         private static Tuple<bool, string> SalaryValidator(decimal salary)
         {
-            int minSalary = DefaultMinSalary;
+            int minSalary = MinSalary;
             bool result = salary >= minSalary;
+
             return new Tuple<bool, string>(result, result ? "Valid" : $"salary can not be less than {minSalary}");
         }
 
@@ -136,7 +143,8 @@ namespace FileCabinetApp.CommandHandlers
         /// <returns>validation success, validation message.</returns>
         private static Tuple<bool, string> GenderValidator(char sex)
         {
-            bool result = DefaultGenderPredicate(sex);
+            bool result = GenderValidationPredicate(sex);
+
             return new Tuple<bool, string>(result, result ? "Valid" : "gender wrong format");
         }
 
@@ -149,6 +157,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             input = input?.Trim();
             bool result = DateTime.TryParseExact(input, "d", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime date);
+
             return new Tuple<bool, string, DateTime>(result, input, date);
         }
 

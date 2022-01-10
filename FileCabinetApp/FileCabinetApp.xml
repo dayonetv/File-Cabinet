@@ -55,6 +55,14 @@
             <param name="input">input string to convert.</param>
             <returns>converting success, converting message, converting result. </returns>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.GetProperty(System.String,System.Type)">
+            <summary>
+            Gets property from the type by property name.
+            </summary>
+            <param name="propertyName"><see cref="T:System.String"/>property name.</param>
+            <param name="targetType"><see cref="T:System.Type"/>type to get properties from.</param>
+            <returns>Finded property. (null if property is not found).</returns>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.CreateCommandHandler">
             <summary>
             Handler for 'create' command.
@@ -645,8 +653,8 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.RecordValidators.FirstNameValidator"/> class.
             </summary>
-            <param name="minLength">Minimal Length of firstname of the records.</param>
-            <param name="maxLength">Maximum Length of firstname of the records.</param>
+            <param name="minFirstNameLength">Minimal Length of firstname of the records.</param>
+            <param name="maxFirstNameLength">Maximum Length of firstname of the records.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.FirstNameValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <summary>
@@ -654,7 +662,7 @@
             </summary>
             <param name="parameters">Record parameters object to validate.</param>
             <exception cref="T:System.ArgumentNullException">source parameters is null. FirstName property is null, empty of whitespace.</exception>
-            <exception cref="T:System.ArgumentException">FirtName Length is more than <see cref="F:FileCabinetApp.RecordValidators.FirstNameValidator.maxLength"/> or less than <see cref="F:FileCabinetApp.RecordValidators.FirstNameValidator.minLength"/>.</exception>
+            <exception cref="T:System.ArgumentException">FirtName Length is more than <see cref="F:FileCabinetApp.RecordValidators.FirstNameValidator.maxFirstNameLength"/> or less than <see cref="F:FileCabinetApp.RecordValidators.FirstNameValidator.minFirstNameLength"/>.</exception>
         </member>
         <member name="T:FileCabinetApp.RecordValidators.GenderValidator">
             <summary>
@@ -715,8 +723,8 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.RecordValidators.LastNameValidator"/> class.
             </summary>
-            <param name="minLength">Minimal Length of firstname of the records.</param>
-            <param name="maxLength">Maximum Length of firstname of the records.</param>
+            <param name="minLastNameLength">Minimal Length of firstname of the records.</param>
+            <param name="maxLastNameLength">Maximum Length of firstname of the records.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.LastNameValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <summary>
@@ -724,7 +732,7 @@
             </summary>
             <param name="parameters">Parameters to validate.</param>
             <exception cref="T:System.ArgumentNullException">Source parameters is null. LastName property is null, empty or whitespace.</exception>
-            <exception cref="T:System.ArgumentException">LastName Length is more than <see cref="F:FileCabinetApp.RecordValidators.LastNameValidator.maxLength"/> or less than <see cref="F:FileCabinetApp.RecordValidators.LastNameValidator.minLength"/>.</exception>
+            <exception cref="T:System.ArgumentException">LastName Length is more than <see cref="F:FileCabinetApp.RecordValidators.LastNameValidator.maxLastNameLength"/> or less than <see cref="F:FileCabinetApp.RecordValidators.LastNameValidator.minLastNameLength"/>.</exception>
         </member>
         <member name="T:FileCabinetApp.RecordValidators.Range">
             <summary>

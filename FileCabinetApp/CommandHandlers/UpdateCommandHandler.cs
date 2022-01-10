@@ -118,13 +118,6 @@ namespace FileCabinetApp.CommandHandlers
             return true;
         }
 
-        private static PropertyInfo GetProperty(string inputPropertyName, Type typeToGetPropertiesFrom)
-        {
-            PropertyInfo property = Array.Find(typeToGetPropertiesFrom.GetProperties(), (property) => property.Name.Equals(inputPropertyName, StringComparison.InvariantCultureIgnoreCase));
-
-            return property;
-        }
-
         private void Insert(string parameters)
         {
             parameters = parameters.Trim();

@@ -31,7 +31,7 @@ namespace FileCabinetApp.RecordReaders
         /// <returns>List of readed records. </returns>
         public List<FileCabinetRecord> ReadAll()
         {
-            List<FileCabinetRecord> readedRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> readedRecords = new ();
 
             while (!this.reader.EndOfStream)
             {
@@ -43,7 +43,7 @@ namespace FileCabinetApp.RecordReaders
 
         private FileCabinetRecord ReadOneRecord()
         {
-            FileCabinetRecord readedRecord = new FileCabinetRecord();
+            FileCabinetRecord readedRecord = new ();
 
             string readedLine = this.reader.ReadLine().Trim();
 

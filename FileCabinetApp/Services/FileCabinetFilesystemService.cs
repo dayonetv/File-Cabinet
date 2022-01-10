@@ -91,7 +91,7 @@ namespace FileCabinetApp.Services
 
             this.validator.ValidateParameters(parameters);
 
-            FileCabinetRecord updatedRecord = new FileCabinetRecord()
+            FileCabinetRecord updatedRecord = new ()
             {
                 Id = id,
                 FirstName = parameters.FirstName,
@@ -117,7 +117,7 @@ namespace FileCabinetApp.Services
                 return allRecords.AsReadOnly();
             }
 
-            List<FileCabinetRecord> findedRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> findedRecords = new ();
 
             switch (operation)
             {
@@ -126,7 +126,7 @@ namespace FileCabinetApp.Services
 
             foreach (var propertyValue in propertiesWithValues)
             {
-                List<FileCabinetRecord> findedRecordsByOneProperty = new List<FileCabinetRecord>();
+                List<FileCabinetRecord> findedRecordsByOneProperty = new ();
 
                 switch (operation)
                 {
@@ -170,16 +170,16 @@ namespace FileCabinetApp.Services
                 throw new ArgumentNullException(nameof(snapshot));
             }
 
-            StringBuilder recordsInfo = new StringBuilder();
+            StringBuilder recordsInfo = new ();
 
-            List<FileCabinetRecord> recordsToAdd = new List<FileCabinetRecord>(snapshot.Records);
+            List<FileCabinetRecord> recordsToAdd = new (snapshot.Records);
 
             if (recordsToAdd.Count == 0)
             {
                 return "No records imported";
             }
 
-            List<FileCabinetRecord> invalidRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> invalidRecords = new ();
 
             foreach (var record in recordsToAdd)
             {
@@ -249,7 +249,7 @@ namespace FileCabinetApp.Services
         {
             int amountOfAllRecords = (int)this.fileStream.Length / RecordByteSize;
 
-            List<FileCabinetRecord> notDeletedRecords = new List<FileCabinetRecord>(this.GetRecords());
+            List<FileCabinetRecord> notDeletedRecords = new (this.GetRecords());
 
             if (notDeletedRecords.Count != amountOfAllRecords)
             {
@@ -298,7 +298,7 @@ namespace FileCabinetApp.Services
         {
             this.fileStream.Seek(default, SeekOrigin.Begin);
 
-            List<FileCabinetRecord> readedRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> readedRecords = new ();
 
             for (int i = 0; i < this.fileStream.Length / RecordByteSize; i++)
             {
@@ -359,7 +359,7 @@ namespace FileCabinetApp.Services
 
         private FileCabinetRecord ReadOneRecord()
         {
-            FileCabinetRecord readedRecord = new FileCabinetRecord();
+            FileCabinetRecord readedRecord = new ();
             bool isDeleted = false;
 
             using (BinaryReader binReader = new BinaryReader(this.fileStream, CurrentEncoding, true))

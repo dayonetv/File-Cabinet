@@ -7,18 +7,18 @@ namespace FileCabinetApp.RecordValidators
     /// </summary>
     public class LastNameValidator : IRecordValidator
     {
-        private readonly int maxLength;
-        private readonly int minLength;
+        private readonly int maxLastNameLength;
+        private readonly int minLastNameLength;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LastNameValidator"/> class.
         /// </summary>
-        /// <param name="minLength">Minimal Length of firstname of the records.</param>
-        /// <param name="maxLength">Maximum Length of firstname of the records.</param>
-        public LastNameValidator(int minLength, int maxLength)
+        /// <param name="minLastNameLength">Minimal Length of firstname of the records.</param>
+        /// <param name="maxLastNameLength">Maximum Length of firstname of the records.</param>
+        public LastNameValidator(int minLastNameLength, int maxLastNameLength)
         {
-            this.maxLength = maxLength;
-            this.minLength = minLength;
+            this.maxLastNameLength = maxLastNameLength;
+            this.minLastNameLength = minLastNameLength;
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace FileCabinetApp.RecordValidators
         /// </summary>
         /// <param name="parameters">Parameters to validate.</param>
         /// <exception cref="ArgumentNullException">Source parameters is null. LastName property is null, empty or whitespace.</exception>
-        /// <exception cref="ArgumentException">LastName Length is more than <see cref="maxLength"/> or less than <see cref="minLength"/>.</exception>
+        /// <exception cref="ArgumentException">LastName Length is more than <see cref="maxLastNameLength"/> or less than <see cref="minLastNameLength"/>.</exception>
         public void ValidateParameters(RecordParameters parameters)
         {
             if (parameters == null)
@@ -39,9 +39,9 @@ namespace FileCabinetApp.RecordValidators
                 throw new ArgumentNullException(parameters.LastName);
             }
 
-            if (parameters.LastName.Length < this.minLength || parameters.LastName.Length > this.maxLength)
+            if (parameters.LastName.Length < this.minLastNameLength || parameters.LastName.Length > this.maxLastNameLength)
             {
-                throw new ArgumentException($"First Name Lenght is more than {this.maxLength} or less than {this.minLength}", parameters.FirstName);
+                throw new ArgumentException($"First Name Lenght is more than {this.maxLastNameLength} or less than {this.minLastNameLength}", parameters.FirstName);
             }
         }
     }

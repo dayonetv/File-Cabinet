@@ -12,7 +12,7 @@ namespace FileCabinetApp.Services
     /// </summary>
     public class Memoizer
     {
-        private readonly Dictionary<string, List<FileCabinetRecord>> argumentRecordsPairs = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<string, List<FileCabinetRecord>> argumentRecordsPairs = new (StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
         /// Gets the value associated with the specified key.

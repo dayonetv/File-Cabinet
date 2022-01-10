@@ -14,7 +14,7 @@ namespace FileCabinetApp.CommandHandlers
         private const string CommandName = "insert";
 
         private const string KeyWord = " values ";
-        private const char Separator = ',';
+        private const char ValuesSeparator = ',';
         private const char ValuesTrimChar = '\'';
         private const int KeyWordSplitAmount = 2;
 
@@ -99,16 +99,16 @@ namespace FileCabinetApp.CommandHandlers
 
             parameters = parameters.Replace(KeyWord, KeyWord, StringComparison.InvariantCultureIgnoreCase);
 
-            var inputs = parameters.Split(KeyWord, StringSplitOptions.TrimEntries);
+            var inputParts = parameters.Split(KeyWord, StringSplitOptions.TrimEntries);
 
-            if (inputs.Length != KeyWordSplitAmount)
+            if (inputParts.Length != KeyWordSplitAmount)
             {
                 Console.WriteLine($"Properties and values should be sepatated with one '{KeyWord}' word.");
                 return;
             }
 
-            var propertyNames = inputs[0].Trim(TrimChars).Split(Separator, StringSplitOptions.TrimEntries);
-            var propertyValues = inputs[1].Trim(TrimChars).Split(Separator, StringSplitOptions.TrimEntries);
+            var propertyNames = inputParts[0].Trim(TrimChars).Split(ValuesSeparator, StringSplitOptions.TrimEntries);
+            var propertyValues = inputParts[1].Trim(TrimChars).Split(ValuesSeparator, StringSplitOptions.TrimEntries);
 
             if (propertyNames.Length != propertyValues.Length)
             {
