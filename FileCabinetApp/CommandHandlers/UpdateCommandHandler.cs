@@ -26,8 +26,8 @@ namespace FileCabinetApp.CommandHandlers
 
         private static readonly char[] ValueTrimChars = { '\'', ' ' };
 
-        private readonly Dictionary<PropertyInfo, object> setPartPropertiesValues = new Dictionary<PropertyInfo, object>();
-        private readonly Dictionary<PropertyInfo, object> wherePartPropertiesValues = new Dictionary<PropertyInfo, object>();
+        private readonly Dictionary<PropertyInfo, object> setPartPropertiesValues = new ();
+        private readonly Dictionary<PropertyInfo, object> wherePartPropertiesValues = new ();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateCommandHandler"/> class.
@@ -103,27 +103,24 @@ namespace FileCabinetApp.CommandHandlers
                     return false;
                 }
 
-                object value;
-
                 try
                 {
-                    value = Convert.ChangeType(propertyValue, property.PropertyType, CultureInfo.InvariantCulture);
+                    object value = Convert.ChangeType(propertyValue, property.PropertyType, CultureInfo.InvariantCulture);
+                    partDictionary.Add(property, value);
                 }
                 catch (FormatException ex)
                 {
                     Console.WriteLine($"{ex.Message} - {propertyName}='{propertyValue}'.");
                     return false;
                 }
-
-                partDictionary.Add(property, value);
             }
 
             return true;
         }
 
-        private static PropertyInfo GetProperty(string inputPropertyName, Type type)
+        private static PropertyInfo GetProperty(string inputPropertyName, Type typeToGetPropertiesFrom)
         {
-            PropertyInfo property = Array.Find(type.GetProperties(), (property) => property.Name.Equals(inputPropertyName, StringComparison.InvariantCultureIgnoreCase));
+            PropertyInfo property = Array.Find(typeToGetPropertiesFrom.GetProperties(), (property) => property.Name.Equals(inputPropertyName, StringComparison.InvariantCultureIgnoreCase));
 
             return property;
         }

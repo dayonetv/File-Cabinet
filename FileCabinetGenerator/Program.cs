@@ -13,7 +13,7 @@ namespace FileCabinetGenerator
     /// </summary>
     public static class Program
     {
-        private const int AmountOfStringsForShortCommand = 8;
+        private const int AmountOfStringsForShortCommands = 8;
         private const int AmountOfStringsForFullCommand = 4;
         private const char FullCommandSeparator = '=';
 
@@ -75,14 +75,14 @@ namespace FileCabinetGenerator
 
             var configuration = GetConfiguration(args);
 
-            if (configuration.amount <= 0 || configuration.id <= 0)
-            {
-                Console.WriteLine($"Records-amount or start-id should be more than 0");
-                return;
-            }
-
             if (configuration.file != null && configuration.writeToMethod != null)
             {
+                if (configuration.amount <= 0 || configuration.id <= 0)
+                {
+                    Console.WriteLine($"Records-amount or start-id should be more than 0");
+                    return;
+                }
+
                 targetFile = configuration.file;
 
                 List<FileCabinetRecord> records = GenerateRandomRecords(configuration.id, configuration.amount);
@@ -129,12 +129,12 @@ namespace FileCabinetGenerator
                     }
                     else
                     {
-                        Console.WriteLine($"Unkown command {command}");
+                        Console.WriteLine($"Unkown command: '{command}'");
                         break;
                     }
                 }
             }
-            else if (args.Length == AmountOfStringsForShortCommand)
+            else if (args.Length == AmountOfStringsForShortCommands)
             {
                 for (int i = 0; i < args.Length; i++)
                 {
@@ -149,7 +149,7 @@ namespace FileCabinetGenerator
                     }
                     else
                     {
-                        Console.WriteLine($"Unkown command {command}");
+                        Console.WriteLine($"Unkown command: '{command}'");
                         break;
                     }
                 }

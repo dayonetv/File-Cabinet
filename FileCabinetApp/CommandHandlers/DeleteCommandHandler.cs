@@ -12,7 +12,7 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
-        private const string CommandName = "delete ";
+        private const string CommandName = "delete";
 
         private const string KeyWord = "where ";
         private const char Separator = '=';

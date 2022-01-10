@@ -45,7 +45,7 @@ namespace FileCabinetApp.RecordReaders
         {
             FileCabinetRecord readedRecord = new FileCabinetRecord();
 
-            string readedLine = this.reader.ReadLine();
+            string readedLine = this.reader.ReadLine().Trim();
 
             var readedPropertiesValues = readedLine.Split(PropertiesSeparator, StringSplitOptions.RemoveEmptyEntries);
 

@@ -48,18 +48,15 @@ namespace FileCabinetApp
         private const string CabinetRecordsFile = "cabinet-records.db";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
 
-        private const int AmountOfInputArgsForShortMode = 2;
-        private const int AmountOfInputArgsForFullMode = 1;
         private const char DefaultStartupModeSeparator = '=';
 
-        private static readonly Tuple<string, int>[] StartupModes = new Tuple<string, int>[]
-        {
-            new Tuple<string, int>("--validation-rules", AmountOfInputArgsForFullMode),
-            new Tuple<string, int>("-v", AmountOfInputArgsForShortMode),
-            new Tuple<string, int>("--storage", AmountOfInputArgsForFullMode),
-            new Tuple<string, int>("-s", AmountOfInputArgsForShortMode),
-            new Tuple<string, int>("use", AmountOfInputArgsForFullMode),
-        };
+        private const string ValidationFullCommand = "--validation-rules";
+        private const string ValidationShortCommand = "-v";
+
+        private const string StorageFullCommand = "--storage";
+        private const string StorageShortCommand = "-s";
+
+        private const string UseCommand = "use";
 
         private static readonly Tuple<string, ValidationMode>[] RuleSet = new Tuple<string, ValidationMode>[]
         {
@@ -94,25 +91,11 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(args));
             }
 
-            var validationMode = ValidatorChooser(args);
-
-            switch (validationMode)
-            {
-                case ValidationMode.Default: chosenValidator = new ValidatorBuilder().Default(); break;
-                case ValidationMode.Custom: chosenValidator = new ValidatorBuilder().Custom(); break;
-                default: chosenValidator = new ValidatorBuilder().Default(); break;
-            }
-
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
 
-            Console.WriteLine($"Using {validationMode} rules.");
+            ChooseValidatior(args);
 
-            switch (StorageChooser(args))
-            {
-                case StorageMode.Memory: fileCabinetService = new FileCabinetMemoryService(chosenValidator); break;
-                case StorageMode.File: fileCabinetService = new FileCabinetFilesystemService(new FileStream(CabinetRecordsFile, FileMode.Create), chosenValidator); break;
-                default: fileCabinetService = new FileCabinetMemoryService(chosenValidator); break;
-            }
+            ChooseStorage(args);
 
             Console.WriteLine($"Strorage: {fileCabinetService}");
 
@@ -171,60 +154,6 @@ namespace FileCabinetApp
             return helpHandler;
         }
 
-        private static ValidationMode ValidatorChooser(string[] args)
-        {
-            if (args.Length == 0)
-            {
-                return ValidationMode.Default;
-            }
-
-            var inputs = args.Length == AmountOfInputArgsForShortMode ? args : args.First().Split(DefaultStartupModeSeparator, 2);
-
-            string inputRule;
-
-            int indexOfMode = GetIndexOfMode(inputs, args);
-
-            if (indexOfMode >= 0)
-            {
-                inputRule = inputs[^1];
-            }
-            else
-            {
-                return ValidationMode.Default;
-            }
-
-            int ruleIndex = Array.FindIndex(RuleSet, tuple => tuple.Item1.Equals(inputRule, StringComparison.InvariantCultureIgnoreCase));
-
-            return ruleIndex >= 0 ? RuleSet[ruleIndex].Item2 : ValidationMode.Default;
-        }
-
-        private static StorageMode StorageChooser(string[] args)
-        {
-            if (args.Length == 0)
-            {
-                return StorageMode.Memory;
-            }
-
-            var inputs = args.Length == AmountOfInputArgsForShortMode ? args : args.First().Split(DefaultStartupModeSeparator, 2);
-
-            string inputStorage;
-
-            int indexOfMode = GetIndexOfMode(inputs, args);
-
-            if (indexOfMode >= 0)
-            {
-                inputStorage = inputs[^1];
-            }
-            else
-            {
-                return StorageMode.Memory;
-            }
-
-            int storageIndex = Array.FindIndex(StorageSet, tuple => tuple.Item1.Equals(inputStorage, StringComparison.InvariantCultureIgnoreCase));
-
-            return storageIndex >= 0 ? StorageSet[storageIndex].Item2 : StorageMode.Memory;
-        }
-
         private static void ActivateUsingModes(string[] args)
         {
             if (args.Length == 0)
@@ -232,39 +161,167 @@ namespace FileCabinetApp
                 return;
             }
 
-            var inputs = args.First().Split('-', 2);
+            int useCommandIndex = Array.FindIndex(args, (arg) => arg.StartsWith(UseCommand, StringComparison.InvariantCultureIgnoreCase));
 
-            string inputUsingMode;
-
-            int indexOfMode = GetIndexOfMode(inputs, args);
-
-            if (indexOfMode >= 0)
+            if (useCommandIndex < 0)
             {
-                inputUsingMode = inputs[^1];
-
-                var switchOn = (from mode in UsingModes where mode.Item1.Equals(inputUsingMode, StringComparison.InvariantCultureIgnoreCase) select mode.Item2).FirstOrDefault();
-
-                fileCabinetService = switchOn?.Invoke() ?? fileCabinetService;
+                return;
             }
+
+            var inputs = args[useCommandIndex].Split('-', 2);
+
+            string inputUsingMode = inputs.Last();
+
+            var switchOn = (from mode in UsingModes where mode.Item1.Equals(inputUsingMode, StringComparison.InvariantCultureIgnoreCase) select mode.Item2).FirstOrDefault();
+
+            fileCabinetService = switchOn?.Invoke() ?? fileCabinetService;
         }
 
         private static IFileCabinetService SwitchOnStopWatch()
         {
+            Console.WriteLine("Using stopwatch.");
             return new ServiceMeter(fileCabinetService);
         }
 
         private static IFileCabinetService SwitchOnLogger()
         {
+            Console.WriteLine("Using logger.");
             return new ServiceLogger(SwitchOnStopWatch());
         }
 
-        private static int GetIndexOfMode(string[] inputs, string[] args)
+        private static void ChooseValidatior(string[] args)
         {
-            string inputMode = inputs.First();
+            int validationCommandIndex = Array.FindIndex(args, (arg) => arg.StartsWith(ValidationFullCommand, StringComparison.InvariantCultureIgnoreCase));
 
-            int indexOfMode = Array.FindIndex(StartupModes, mode => inputMode.Equals(mode.Item1, StringComparison.InvariantCultureIgnoreCase) && args.Length == mode.Item2);
+            if (validationCommandIndex >= 0)
+            {
+                ProcessValidationFullCommand(args, validationCommandIndex);
+                return;
+            }
 
-            return indexOfMode;
+            validationCommandIndex = Array.FindIndex(args, (arg) => arg.Equals(ValidationShortCommand, StringComparison.InvariantCultureIgnoreCase));
+
+            if (validationCommandIndex >= 0)
+            {
+                ProcessValidationShortCommand(args, validationCommandIndex);
+                return;
+            }
+
+            chosenValidator = new ValidatorBuilder().Default();
+
+            Console.WriteLine($"Using {ValidationMode.Default} rules.");
+        }
+
+        private static void ProcessValidationFullCommand(string[] args, int validationCommandIndex)
+        {
+            var inputs = args[validationCommandIndex].Split(DefaultStartupModeSeparator, StringSplitOptions.TrimEntries);
+
+            string inputRule = inputs.Last();
+
+            SetValidator(inputRule);
+        }
+
+        private static void ProcessValidationShortCommand(string[] args, int validationCommandIndex)
+        {
+            if (validationCommandIndex == args.Length - 1)
+            {
+                chosenValidator = new ValidatorBuilder().Default();
+                Console.WriteLine($"Using {ValidationMode.Default} rules.");
+
+                return;
+            }
+
+            string inputRule = args[validationCommandIndex + 1].Trim();
+
+            SetValidator(inputRule);
+        }
+
+        private static void SetValidator(string inputRule)
+        {
+            int indexOfMode = Array.FindIndex(RuleSet, (rule) => rule.Item1.Equals(inputRule, StringComparison.InvariantCultureIgnoreCase));
+
+            if (indexOfMode >= 0)
+            {
+                switch (RuleSet[indexOfMode].Item2)
+                {
+                    case ValidationMode.Default: chosenValidator = new ValidatorBuilder().Default(); break;
+                    case ValidationMode.Custom: chosenValidator = new ValidatorBuilder().Custom(); break;
+                }
+
+                Console.WriteLine($"Using {RuleSet[indexOfMode].Item2} rules.");
+            }
+            else
+            {
+                Console.WriteLine($"Unknown validation rule: '{inputRule}'.");
+
+                chosenValidator = new ValidatorBuilder().Default();
+
+                Console.WriteLine($"Using {ValidationMode.Default} rules.");
+            }
+        }
+
+        private static void ChooseStorage(string[] args)
+        {
+            int storageCommandIndex = Array.FindIndex(args, (arg) => arg.StartsWith(StorageFullCommand, StringComparison.InvariantCultureIgnoreCase));
+
+            if (storageCommandIndex >= 0)
+            {
+                ProcessStorageFullCommand(args, storageCommandIndex);
+                return;
+            }
+
+            storageCommandIndex = Array.FindIndex(args, (arg) => arg.Equals(StorageShortCommand, StringComparison.InvariantCultureIgnoreCase));
+
+            if (storageCommandIndex >= 0)
+            {
+                ProcessStorageShortCommand(args, storageCommandIndex);
+                return;
+            }
+
+            fileCabinetService = new FileCabinetMemoryService(chosenValidator);
+        }
+
+        private static void ProcessStorageFullCommand(string[] args, int storageCommandIndex)
+        {
+            var inputs = args[storageCommandIndex].Split(DefaultStartupModeSeparator, StringSplitOptions.TrimEntries);
+
+            string inputStorageMode = inputs.Last();
+
+            SetStorage(inputStorageMode);
+        }
+
+        private static void ProcessStorageShortCommand(string[] args, int storageCommandIndex)
+        {
+            if (storageCommandIndex == args.Length - 1)
+            {
+                fileCabinetService = new FileCabinetMemoryService(chosenValidator);
+
+                return;
+            }
+
+            string inputStorageMode = args[storageCommandIndex + 1].Trim();
+
+            SetStorage(inputStorageMode);
+        }
+
+        private static void SetStorage(string inputStorageMode)
+        {
+            int indexOfMode = Array.FindIndex(StorageSet, (rule) => rule.Item1.Equals(inputStorageMode, StringComparison.InvariantCultureIgnoreCase));
+
+            if (indexOfMode >= 0)
+            {
+                switch (StorageSet[indexOfMode].Item2)
+                {
+                    case StorageMode.Memory: fileCabinetService = new FileCabinetMemoryService(chosenValidator); break;
+                    case StorageMode.File: fileCabinetService = new FileCabinetFilesystemService(new FileStream(CabinetRecordsFile, FileMode.Create), chosenValidator); break;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Unknown storage mode: '{inputStorageMode}'.");
+
+                fileCabinetService = new FileCabinetMemoryService(chosenValidator);
+            }
         }
     }
 }

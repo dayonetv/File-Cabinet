@@ -49,8 +49,8 @@ namespace FileCabinetApp.CommandHandlers
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         private static readonly char[] ValueTrimChars = { '\'', ' ' };
 
-        private readonly List<PropertyInfo> recordPropertiesToDisplay = new List<PropertyInfo>();
-        private readonly Dictionary<PropertyInfo, object> propertyValuePairs = new Dictionary<PropertyInfo, object>();
+        private readonly List<PropertyInfo> recordPropertiesToDisplay = new ();
+        private readonly Dictionary<PropertyInfo, object> propertyNameValuePairs = new ();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectCommandHandler"/> class.
@@ -90,6 +90,42 @@ namespace FileCabinetApp.CommandHandlers
             return property;
         }
 
+        private static string[] GetPropertiesNamesAndValues(string wherePart, out OperationType operatorType, out bool correctness)
+        {
+            if (!wherePart.Contains(OrWord, Comparison) && !wherePart.Contains(AndWord, Comparison))
+            {
+                operatorType = OperationType.None;
+                correctness = true;
+
+                return new string[] { wherePart };
+            }
+            else if (wherePart.Contains(AndWord, Comparison) && !wherePart.Contains(OrWord, Comparison))
+            {
+                operatorType = OperationType.And;
+                wherePart = wherePart.Replace(AndWord, AndWord, Comparison);
+                correctness = true;
+
+                return wherePart.Split(AndWord, StringSplitOptions.RemoveEmptyEntries);
+            }
+            else if (wherePart.Contains(OrWord, Comparison) && !wherePart.Contains(AndWord, Comparison))
+            {
+                operatorType = OperationType.Or;
+                wherePart = wherePart.Replace(OrWord, OrWord, Comparison);
+                correctness = true;
+
+                return wherePart.Split(OrWord, StringSplitOptions.RemoveEmptyEntries);
+            }
+            else
+            {
+                Console.WriteLine($"Where part should contains only '{OperationType.And}' words or only '{OperationType.Or}' words.");
+
+                operatorType = OperationType.None;
+                correctness = false;
+
+                return Array.Empty<string>();
+            }
+        }
+
         private static void PrintFrame(List<int> maxLengthList)
         {
             const int WhiteSpaceAmount = 2;
@@ -114,11 +150,11 @@ namespace FileCabinetApp.CommandHandlers
             string selectPart = inputs.First();
             string wherePart = inputs.Last() != selectPart ? inputs.Last() : string.Empty;
 
-            (bool success, OperationType operatorType) whereProcessingResult = this.ProcessWherePart(wherePart);
+            (bool success, OperationType operatorType) = this.ProcessWherePart(wherePart);
 
-            if (this.ProcessSelectPart(selectPart) && whereProcessingResult.success)
+            if (success && this.ProcessSelectPart(selectPart))
             {
-                var findedRecords = this.Service.FindRecords(this.propertyValuePairs, whereProcessingResult.operatorType);
+                var findedRecords = this.Service.FindRecords(this.propertyNameValuePairs, operatorType);
 
                 this.DisplayRecords(findedRecords.ToList());
             }
@@ -166,7 +202,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private (bool success, OperationType operatorType) ProcessWherePart(string wherePart)
         {
-            this.propertyValuePairs.Clear();
+            this.propertyNameValuePairs.Clear();
 
             if (string.IsNullOrEmpty(wherePart) || string.IsNullOrWhiteSpace(wherePart))
             {
@@ -174,28 +210,14 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             OperationType operatorType;
+            bool success;
 
-            if (!wherePart.Contains(OrWord, Comparison) && !wherePart.Contains(AndWord, Comparison))
-            {
-                operatorType = OperationType.None;
-            }
-            else if (wherePart.Contains(AndWord, Comparison) && !wherePart.Contains(OrWord, Comparison))
-            {
-                operatorType = OperationType.And;
-            }
-            else if (wherePart.Contains(OrWord, Comparison) && !wherePart.Contains(AndWord, Comparison))
-            {
-                operatorType = OperationType.Or;
-            }
-            else
-            {
-                Console.WriteLine($"Where part should contains only '{OperationType.And}' words or only '{OperationType.Or}' words.");
-                return (false, OperationType.None);
-            }
+            var wherePropertiesNamesValues = GetPropertiesNamesAndValues(wherePart, out operatorType, out success);
 
-            wherePart = wherePart.Replace(operatorType.ToString(), operatorType.ToString(), Comparison);
-
-            var wherePropertiesNamesValues = wherePart.Split(operatorType.ToString(), StringSplitOptions.RemoveEmptyEntries);
+            if (!success)
+            {
+                return (success, operatorType);
+            }
 
             if (wherePropertiesNamesValues.Length == 0)
             {
@@ -210,6 +232,7 @@ namespace FileCabinetApp.CommandHandlers
                 if (inputs.Length != PropertyPlusValueCount)
                 {
                     Console.WriteLine($"Properties and values should be separated with one '{PropertyValueSeparator}' char.");
+
                     return (false, OperationType.None);
                 }
 
@@ -227,7 +250,7 @@ namespace FileCabinetApp.CommandHandlers
                 try
                 {
                     object value = Convert.ChangeType(propertyValue, property.PropertyType, Culture);
-                    this.propertyValuePairs.Add(property, value);
+                    this.propertyNameValuePairs.Add(property, value);
                 }
                 catch (FormatException ex)
                 {
@@ -273,6 +296,7 @@ namespace FileCabinetApp.CommandHandlers
             foreach (var property in this.recordPropertiesToDisplay)
             {
                 int maxLength = (from record in findedRecords select property.GetValue(record) is DateTime date ? date.ToString(DateFormat, Culture).Length : property.GetValue(record).ToString().Length).Max();
+
                 propertiesNamesAndValuesMaxLenght.Add(maxLength > property.Name.Length ? maxLength : property.Name.Length);
             }
 
