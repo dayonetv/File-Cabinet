@@ -72,7 +72,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.CreateCommandHandler"/> class.
             </summary>
-            <param name="service">Current service. </param>
+            <param name="service">Current service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -621,7 +621,7 @@
         </member>
         <member name="M:FileCabinetApp.RecordValidators.DateOfBirthValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <summary>
-            Validate DateOfBirth property of the records.
+            Validates DateOfBirth property of the records.
             </summary>
             <param name="parameters">Parameters to validate.</param>
             <exception cref="T:System.ArgumentNullException">Source parameters is null.</exception>
@@ -683,25 +683,25 @@
             <exception cref="T:System.ArgumentNullException">source parameters is null.</exception>
             <exception cref="T:System.ArgumentException">Sex contains invalid chars.</exception>
         </member>
-        <member name="T:FileCabinetApp.RecordValidators.HeigthValidator">
+        <member name="T:FileCabinetApp.RecordValidators.HeightValidator">
             <summary>
             Class for Height property validation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.RecordValidators.HeigthValidator.#ctor(System.Int32,System.Int32)">
+        <member name="M:FileCabinetApp.RecordValidators.HeightValidator.#ctor(System.Int32,System.Int32)">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.RecordValidators.HeigthValidator"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.RecordValidators.HeightValidator"/> class.
             </summary>
             <param name="minHeight">Minimal height.</param>
             <param name="maxHeight">Maximum height.</param>
         </member>
-        <member name="M:FileCabinetApp.RecordValidators.HeigthValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
+        <member name="M:FileCabinetApp.RecordValidators.HeightValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <summary>
             Validates Height property of the record.
             </summary>
             <param name="parameters">Record parameters object to validate. </param>
             <exception cref="T:System.ArgumentNullException">source parameters is null.</exception>
-            <exception cref="T:System.ArgumentException">Height is more than <see cref="F:FileCabinetApp.RecordValidators.HeigthValidator.maxHeight"/> or less than <see cref="F:FileCabinetApp.RecordValidators.HeigthValidator.minHeight"/>.</exception>
+            <exception cref="T:System.ArgumentException">Height is more than <see cref="F:FileCabinetApp.RecordValidators.HeightValidator.maxHeight"/> or less than <see cref="F:FileCabinetApp.RecordValidators.HeightValidator.minHeight"/>.</exception>
         </member>
         <member name="T:FileCabinetApp.RecordValidators.IRecordValidator">
             <summary>
@@ -819,48 +819,48 @@
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilder.ValidateFirstName(System.Int32,System.Int32)">
             <summary>
-            Validates firstname property of the record.
+            Builds <see cref="T:FileCabinetApp.RecordValidators.FirstNameValidator"/>.
             </summary>
             <param name="minLength">Minimal Length of firstname of the records.</param>
             <param name="maxLength">Maximum Length of firstname of the records.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilder.ValidateLastName(System.Int32,System.Int32)">
             <summary>
-            Validates lastname property of the record.
+            Builds <see cref="T:FileCabinetApp.RecordValidators.LastNameValidator"/>.
             </summary>
             <param name="minLength">Minimal Length of lastname of the records.</param>
             <param name="maxLength">Maximum Length of lastname of the records.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilder.ValidateDateOfBirth(System.DateTime,System.DateTime)">
             <summary>
-            Validates dateofbirth property of the record.
+            Builds <see cref="T:FileCabinetApp.RecordValidators.DateOfBirthValidator"/>.
             </summary>
             <param name="from">DateTime start range.</param>
             <param name="to">DateTime end range.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilder.ValidateHeight(System.Int32,System.Int32)">
             <summary>
-            Validates height property of the record.
+            Builds <see cref="T:FileCabinetApp.RecordValidators.HeightValidator"/>.
             </summary>
             <param name="minHeight">Minimal height.</param>
             <param name="maxHeight">Maximum height.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilder.ValidateSalary(System.Decimal,System.Decimal)">
             <summary>
-            Validates salary property of the record.
+            Builds <see cref="T:FileCabinetApp.RecordValidators.SalaryValidator"/>.
             </summary>
             <param name="minSalary">Minimal salary value.</param>
             <param name="maxSalary">Maximal salary value.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilder.ValidateGender(System.Char[])">
             <summary>
-            Validates sex property of the record.
+            Builds <see cref="T:FileCabinetApp.RecordValidators.GenderValidator"/>.
             </summary>
             <param name="validGenders">Valid gender chars.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidators.ValidatorBuilder.Create">
             <summary>
-            Creates new IRecordValidator.
+            Creates new <see cref="T:FileCabinetApp.RecordValidators.CompositeValidator"/> composed of builded validators.
             </summary>
             <returns>Created validator.</returns>
         </member>

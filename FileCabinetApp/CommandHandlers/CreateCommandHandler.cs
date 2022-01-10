@@ -21,7 +21,7 @@ namespace FileCabinetApp.CommandHandlers
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateCommandHandler"/> class.
         /// </summary>
-        /// <param name="service">Current service. </param>
+        /// <param name="service">Current service.</param>
         public CreateCommandHandler(IFileCabinetService service)
             : base(service)
         {

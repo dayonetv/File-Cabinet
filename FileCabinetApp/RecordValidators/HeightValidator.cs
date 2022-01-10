@@ -6,17 +6,17 @@ namespace FileCabinetApp.RecordValidators
     /// <summary>
     /// Class for Height property validation.
     /// </summary>
-    public class HeigthValidator : IRecordValidator
+    public class HeightValidator : IRecordValidator
     {
         private readonly int minHeight;
         private readonly int maxHeight;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HeigthValidator"/> class.
+        /// Initializes a new instance of the <see cref="HeightValidator"/> class.
         /// </summary>
         /// <param name="minHeight">Minimal height.</param>
         /// <param name="maxHeight">Maximum height.</param>
-        public HeigthValidator(int minHeight, int maxHeight)
+        public HeightValidator(int minHeight, int maxHeight)
         {
             this.maxHeight = maxHeight;
             this.minHeight = minHeight;

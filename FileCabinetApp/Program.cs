@@ -49,6 +49,7 @@ namespace FileCabinetApp
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
 
         private const char DefaultStartupModeSeparator = '=';
+        private const char UseCommandSeparator = '-';
 
         private const string ValidationFullCommand = "--validation-rules";
         private const string ValidationShortCommand = "-v";
@@ -57,6 +58,8 @@ namespace FileCabinetApp
         private const string StorageShortCommand = "-s";
 
         private const string UseCommand = "use";
+
+        private const int DefaultSplitAmount = 2;
 
         private static readonly Tuple<string, ValidationMode>[] ValidationRuleSet = new Tuple<string, ValidationMode>[]
         {
@@ -110,7 +113,7 @@ namespace FileCabinetApp
             do
             {
                 Console.Write("> ");
-                var inputs = Console.ReadLine().Split(' ', 2, StringSplitOptions.TrimEntries);
+                var inputs = Console.ReadLine().Split(' ', DefaultSplitAmount, StringSplitOptions.TrimEntries);
 
                 const int commandIndex = 0;
                 const int parametersIndex = 1;
@@ -169,7 +172,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            var inputs = args[useCommandIndex].Split('-', 2);
+            var inputs = args[useCommandIndex].Split(UseCommandSeparator, DefaultSplitAmount);
 
             string inputUsingMode = inputs.Last();
 

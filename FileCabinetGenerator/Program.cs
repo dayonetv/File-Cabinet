@@ -114,9 +114,11 @@ namespace FileCabinetGenerator
 
             if (args.Length == AmountOfStringsForFullCommand)
             {
+                const int CommandParameterSplitAmount = 2;
+
                 for (int i = 0; i < args.Length; i++)
                 {
-                    var inputs = args[i].Split(FullCommandSeparator, 2);
+                    var inputs = args[i].Split(FullCommandSeparator, CommandParameterSplitAmount);
 
                     string command = inputs.First();
                     string parameter = inputs.Last();

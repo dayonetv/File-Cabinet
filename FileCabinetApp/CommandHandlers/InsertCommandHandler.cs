@@ -14,7 +14,7 @@ namespace FileCabinetApp.CommandHandlers
         private const string CommandName = "insert";
 
         private const string KeyWord = " values ";
-        private const char ValuesSeparator = ',';
+        private const char PropertyNamesAndValuesSeparator = ',';
         private const char ValuesTrimChar = '\'';
         private const int KeyWordSplitAmount = 2;
 
@@ -107,8 +107,8 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            var propertyNames = inputParts[0].Trim(TrimChars).Split(ValuesSeparator, StringSplitOptions.TrimEntries);
-            var propertyValues = inputParts[1].Trim(TrimChars).Split(ValuesSeparator, StringSplitOptions.TrimEntries);
+            var propertyNames = inputParts[0].Trim(TrimChars).Split(PropertyNamesAndValuesSeparator, StringSplitOptions.TrimEntries);
+            var propertyValues = inputParts[1].Trim(TrimChars).Split(PropertyNamesAndValuesSeparator, StringSplitOptions.TrimEntries);
 
             if (propertyNames.Length != propertyValues.Length)
             {

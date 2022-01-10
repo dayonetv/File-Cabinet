@@ -299,7 +299,7 @@ namespace FileCabinetApp.CommandHandlers
 
             for (int i = 0; i < maxLengthList.Count; i++)
             {
-                Console.Write("{0," + maxLengthList[i].ToString(Culture) + "} | ", this.recordPropertiesToDisplay[i].Name);
+                Console.Write("{0,-" + maxLengthList[i].ToString(Culture) + "} | ", this.recordPropertiesToDisplay[i].Name);
             }
 
             Console.WriteLine();

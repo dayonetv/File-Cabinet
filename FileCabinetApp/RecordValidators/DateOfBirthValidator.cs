@@ -25,7 +25,7 @@ namespace FileCabinetApp.RecordValidators
         }
 
         /// <summary>
-        /// Validate DateOfBirth property of the records.
+        /// Validates DateOfBirth property of the records.
         /// </summary>
         /// <param name="parameters">Parameters to validate.</param>
         /// <exception cref="ArgumentNullException">Source parameters is null.</exception>
