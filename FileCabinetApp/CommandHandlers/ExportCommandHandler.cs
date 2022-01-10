@@ -10,6 +10,7 @@ namespace FileCabinetApp.CommandHandlers
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
         private const string CommandName = "export";
+
         private const int AmountOfExportParams = 2;
 
         private static readonly Tuple<char, bool>[] Choices = new Tuple<char, bool>[]

@@ -13,11 +13,12 @@ namespace FileCabinetApp.CommandHandlers
     public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
         private const string CommandName = "delete ";
+
         private const string KeyWord = "where ";
         private const char Separator = '=';
         private const char ValueTrimChar = '\'';
         private const int SplitAmount = 1;
-        private const int NameValueSplitAmount = 2;
+        private const int PropertyNameValueSplitAmount = 2;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
@@ -101,7 +102,7 @@ namespace FileCabinetApp.CommandHandlers
 
             var propertyWithValue = inputs.First().Split(Separator, StringSplitOptions.TrimEntries);
 
-            if (propertyWithValue.Length != NameValueSplitAmount)
+            if (propertyWithValue.Length != PropertyNameValueSplitAmount)
             {
                 Console.WriteLine($"There should be one '{Separator}' symbol after {KeyWord} word.");
                 return;

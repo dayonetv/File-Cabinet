@@ -47,7 +47,7 @@ namespace FileCabinetApp.RecordReaders
 
             string readedLine = this.reader.ReadLine();
 
-            var readedPropertiesValues = readedLine.Split(PropertiesSeparator, StringSplitOptions.TrimEntries);
+            var readedPropertiesValues = readedLine.Split(PropertiesSeparator, StringSplitOptions.RemoveEmptyEntries);
 
             PropertyInfo[] properties = readedRecord.GetType().GetProperties();
 
@@ -57,7 +57,7 @@ namespace FileCabinetApp.RecordReaders
                 {
                     try
                     {
-                        properties[i].SetValue(readedRecord, Convert.ChangeType(readedPropertiesValues[i], properties[i].PropertyType, Culture));
+                        properties[i].SetValue(readedRecord, Convert.ChangeType(readedPropertiesValues[i].Trim(), properties[i].PropertyType, Culture));
                     }
                     catch (FormatException)
                     {

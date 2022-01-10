@@ -20,14 +20,14 @@ namespace FileCabinetApp.CommandHandlers
         private const char SetPartSplitSeparator = ',';
 
         private const int PartsSplitCount = 2;
-        private const int NamesValuesSplitCount = 2;
+        private const int PropertyNamePlusValueSplitCount = 2;
 
-        private const char NameValueSeparator = '=';
+        private const char PropertyNameValueSeparator = '=';
 
         private static readonly char[] ValueTrimChars = { '\'', ' ' };
 
-        private readonly Dictionary<PropertyInfo, object> setPropertiesValues = new Dictionary<PropertyInfo, object>();
-        private readonly Dictionary<PropertyInfo, object> wherePropertiesValues = new Dictionary<PropertyInfo, object>();
+        private readonly Dictionary<PropertyInfo, object> setPartPropertiesValues = new Dictionary<PropertyInfo, object>();
+        private readonly Dictionary<PropertyInfo, object> wherePartPropertiesValues = new Dictionary<PropertyInfo, object>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateCommandHandler"/> class.
@@ -84,9 +84,9 @@ namespace FileCabinetApp.CommandHandlers
 
             foreach (var input in partInputs)
             {
-                var propertyNamesValues = input.Split(NameValueSeparator, StringSplitOptions.RemoveEmptyEntries);
+                var propertyNamesValues = input.Split(PropertyNameValueSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-                if (propertyNamesValues.Length != NamesValuesSplitCount)
+                if (propertyNamesValues.Length != PropertyNamePlusValueSplitCount)
                 {
                     Console.WriteLine($"Property should have one value");
                     return false;
@@ -146,7 +146,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (setAndWhereParts.Length != PartsSplitCount)
             {
-                Console.WriteLine($"There should be {PartsSplitCount} parts: {SetKeyWord} and {WhereKeyWord}.");
+                Console.WriteLine($"There should be {PartsSplitCount} parts: '{SetKeyWord}' and '{WhereKeyWord}'.");
                 return;
             }
 
@@ -157,7 +157,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (this.ProcessSetPart(setPart) && this.ProcessWherePart(wherePart))
                 {
-                    var findedRecords = this.Service.FindRecords(this.wherePropertiesValues, OperationType.And).ToList();
+                    var findedRecords = this.Service.FindRecords(this.wherePartPropertiesValues, OperationType.And).ToList();
 
                     if (findedRecords.Count == 0)
                     {
@@ -178,28 +178,28 @@ namespace FileCabinetApp.CommandHandlers
 
         private bool ProcessSetPart(string setPart)
         {
-            this.setPropertiesValues.Clear();
+            this.setPartPropertiesValues.Clear();
 
-            if (setPart.Contains("id", StringComparison.InvariantCultureIgnoreCase))
+            if (setPart.Contains(nameof(FileCabinetRecord.Id), StringComparison.InvariantCultureIgnoreCase))
             {
-                Console.WriteLine("Set phase can not contain 'id' property to update.");
+                Console.WriteLine($"Set part can not contain '{nameof(FileCabinetRecord.Id)}' property to update.");
                 return false;
             }
 
             var setInputs = setPart.Split(SetPartSplitSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-            return ProcessPartInputs(setInputs, this.setPropertiesValues, typeof(RecordParameters));
+            return ProcessPartInputs(setInputs, this.setPartPropertiesValues, typeof(RecordParameters));
         }
 
         private bool ProcessWherePart(string wherePart)
         {
-            this.wherePropertiesValues.Clear();
+            this.wherePartPropertiesValues.Clear();
 
             wherePart = wherePart.Replace(WherePartSplitSeparator, WherePartSplitSeparator, StringComparison.InvariantCultureIgnoreCase);
 
             var whereInputs = wherePart.Split(WherePartSplitSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-            return ProcessPartInputs(whereInputs, this.wherePropertiesValues, typeof(FileCabinetRecord));
+            return ProcessPartInputs(whereInputs, this.wherePartPropertiesValues, typeof(FileCabinetRecord));
         }
 
         private void UpdateFindedRecords(List<FileCabinetRecord> findedRecords)
@@ -208,7 +208,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 RecordParameters parameters = (RecordParameters)record;
 
-                foreach (var propertyValue in this.setPropertiesValues)
+                foreach (var propertyValue in this.setPartPropertiesValues)
                 {
                     propertyValue.Key.SetValue(parameters, propertyValue.Value);
                 }

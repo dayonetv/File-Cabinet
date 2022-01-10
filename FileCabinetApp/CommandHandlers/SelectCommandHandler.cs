@@ -92,11 +92,13 @@ namespace FileCabinetApp.CommandHandlers
 
         private static void PrintFrame(List<int> maxLengthList)
         {
+            const int WhiteSpaceAmount = 2;
+
             Console.Write("+");
 
             for (int i = 0; i < maxLengthList.Count; i++)
             {
-                Console.Write($"{new string('-', maxLengthList[i] + 2)}+");
+                Console.Write($"{new string('-', maxLengthList[i] + WhiteSpaceAmount)}+");
             }
 
             Console.WriteLine();
@@ -187,7 +189,7 @@ namespace FileCabinetApp.CommandHandlers
             }
             else
             {
-                Console.WriteLine($"Where part should contains only '{OperationType.And.ToString()}' words or only '{OperationType.Or.ToString()}' words.");
+                Console.WriteLine($"Where part should contains only '{OperationType.And}' words or only '{OperationType.Or}' words.");
                 return (false, OperationType.None);
             }
 

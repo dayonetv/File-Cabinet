@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Serialization;
 
 namespace FileCabinetGenerator
@@ -74,7 +75,13 @@ namespace FileCabinetGenerator
 
             var configuration = GetConfiguration(args);
 
-            if (configuration.amount >= 0 && configuration.id >= 0 && configuration.file != null && configuration.writeToMethod != null)
+            if (configuration.amount <= 0 || configuration.id <= 0)
+            {
+                Console.WriteLine($"Records-amount or start-id should be more than 0");
+                return;
+            }
+
+            if (configuration.file != null && configuration.writeToMethod != null)
             {
                 targetFile = configuration.file;
 
@@ -112,7 +119,7 @@ namespace FileCabinetGenerator
                     var inputs = args[i].Split(FullCommandSeparator, 2);
 
                     string command = inputs.First();
-                    string parameter = inputs[^1];
+                    string parameter = inputs.Last();
 
                     int indexOfCommand = Array.FindIndex(StartUpFullCommands, (cmd) => cmd.Equals(command, StringComparison.InvariantCultureIgnoreCase));
 
@@ -219,15 +226,22 @@ namespace FileCabinetGenerator
         {
             csvWriter ??= new StreamWriter(targetFile.FullName);
 
+            PropertyInfo[] recordProperties = typeof(FileCabinetRecord).GetProperties();
+
             foreach (var record in recordsToWrite)
             {
-                csvWriter.Write($"{record.Id},");
-                csvWriter.Write($"{record.FirstName},");
-                csvWriter.Write($"{record.LastName},");
-                csvWriter.Write($"{record.DateOfBirth.ToString(DateFormat, CultureInfo.InvariantCulture)},");
-                csvWriter.Write($"{record.Height},");
-                csvWriter.Write($"{record.Salary},");
-                csvWriter.Write($"{record.Sex}");
+                for (int i = 0; i < recordProperties.Length - 1; i++)
+                {
+                    if (recordProperties[i].GetValue(record) is DateTime date)
+                    {
+                        csvWriter.Write($"{date.ToString(DateFormat, CultureInfo.InvariantCulture)},");
+                        continue;
+                    }
+
+                    csvWriter.Write($"{recordProperties[i].GetValue(record)},");
+                }
+
+                csvWriter.Write($"{recordProperties.Last().GetValue(record)}");
                 csvWriter.WriteLine();
             }
 

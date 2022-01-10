@@ -73,7 +73,7 @@ namespace FileCabinetApp.Services
         /// Finds records by propeties and their values.
         /// </summary>
         /// <param name="propertiesWithValues">Dictionary of property and value pairs for finding records.</param>
-        /// <param name="operation">Operation type for compound searching by several properties.</param>
+        /// <param name="operation"><see cref="OperationType"/> for searching properties.</param>
         /// <returns>Collection of finded records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindRecords(Dictionary<PropertyInfo, object> propertiesWithValues, OperationType operation);
     }

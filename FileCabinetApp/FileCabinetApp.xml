@@ -1097,7 +1097,7 @@
             Finds records by propeties and their values.
             </summary>
             <param name="propertiesWithValues">Dictionary of property and value pairs for finding records.</param>
-            <param name="operation">Operation type for compound searching by several properties.</param>
+            <param name="operation"><see cref="T:FileCabinetApp.CommandHandlers.OperationType"/> for searching properties.</param>
             <returns>Collection of finded records.</returns>
         </member>
         <member name="T:FileCabinetApp.Services.Memoizer">
