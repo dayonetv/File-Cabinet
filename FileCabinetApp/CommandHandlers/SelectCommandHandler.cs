@@ -265,6 +265,8 @@ namespace FileCabinetApp.CommandHandlers
             this.PrintPropertyNames(maxLengthList);
             PrintFrame(maxLengthList);
 
+            findedRecords = findedRecords.OrderBy((record) => record.Id).ToList();
+
             foreach (var record in findedRecords)
             {
                 this.PrintRecord(record, maxLengthList);

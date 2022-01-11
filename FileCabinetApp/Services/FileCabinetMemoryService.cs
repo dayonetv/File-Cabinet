@@ -158,10 +158,14 @@ namespace FileCabinetApp.Services
                 return importedRecordsInfo.ToString() + "No records imported";
             }
 
-            int recordsToAddStartId = recordsToAdd[0].Id;
-            int recirdsToAddEndID = recordsToAdd[^1].Id;
+            List<int> recordsToAddIdentificators = (from record in recordsToAdd select record.Id).ToList();
 
-            List<FileCabinetRecord> recordsToEdit = this.list.FindAll((rec) => rec.Id >= recordsToAddStartId && rec.Id <= recirdsToAddEndID);
+            List<FileCabinetRecord> recordsToEdit = new ();
+
+            foreach (var id in recordsToAddIdentificators)
+            {
+                recordsToEdit.AddRange(this.list.FindAll((rec) => rec.Id == id));
+            }
 
             if (recordsToEdit.Count != 0)
             {
